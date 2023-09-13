@@ -6,6 +6,8 @@ import com.veullustigpws.pws.connection.Server;
 
 public class App {
 	public static void main(String[] args) {
+		new UIFrame();
+		
 		Scanner scanner = new Scanner(System.in);
 		String response;
 		while (true) {
