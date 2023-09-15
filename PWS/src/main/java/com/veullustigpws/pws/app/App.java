@@ -1,12 +1,18 @@
 package com.veullustigpws.pws.app;
 
 import java.util.Scanner;
+import javax.swing.SwingUtilities;
 import com.veullustigpws.pws.connection.Client;
 import com.veullustigpws.pws.connection.Server;
 
 public class App {
 	public static void main(String[] args) {
-		new UIFrame();
+		SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new UIFrame();
+            }
+        });
 		
 		Scanner scanner = new Scanner(System.in);
 		String response;
