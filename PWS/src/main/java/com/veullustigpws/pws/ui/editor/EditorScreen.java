@@ -1,47 +1,63 @@
 package com.veullustigpws.pws.ui.editor;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
-import javax.swing.Box;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.app.UIFrame;
+import com.veullustigpws.pws.texteditor.TextEditorManager;
+import com.veullustigpws.pws.ui.editor.parts.DocumentEditor;
+import com.veullustigpws.pws.ui.editor.parts.EditorMenu;
 
 public class EditorScreen extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private UIFrame frame;
-	private JScrollPane scrollTextPane;
-	private JTextPane textPane;
+	private DocumentEditor docEditor;
+	private TextEditorManager textEditorManager;
 	
 	public EditorScreen(UIFrame frame) {
-		this.frame = frame;
+		
 		
 		this.setFocusable(true);
-		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		this.setLayout(new BorderLayout());
+		this.setBackground(AppConstants.defaultBackgroundColor);
 		
 		initComponents();
 		this.repaint();
+		
+		
 	}
 	
 	private void initComponents() {
 		
-		textPane = new JTextPane();
+		// Document editor
+		docEditor = new DocumentEditor();
 		
-		textPane.setContentType("text/html");
-		textPane.setText("Test<br> test");
+		// Text editor manager
+		textEditorManager = new TextEditorManager(docEditor);
 		
-		scrollTextPane = new JScrollPane(textPane);
+		// Menu
+		EditorMenu menu = new EditorMenu(textEditorManager);
+		
+		JScrollPane scrollTextPane = new JScrollPane(docEditor);
 		scrollTextPane.setMaximumSize(new Dimension(1000, 9999));
 		scrollTextPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollTextPane.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-//		this.add(Box.createRigidArea(new Dimension(200, 9999)));
-		this.add(Box.createHorizontalGlue());
-		this.add(scrollTextPane);
-		this.add(Box.createHorizontalGlue());
-//		this.add(Box.createRigidArea(new Dimension(200, 9999)));
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+		centerPanel.add(scrollTextPane);
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 120, 30, 120));
+		centerPanel.setBackground(AppConstants.defaultBackgroundColor);
+		
+		// Add together
+		this.add(menu, BorderLayout.NORTH);
+		this.add(centerPanel, BorderLayout.CENTER);
 	}
 }

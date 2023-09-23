@@ -7,12 +7,15 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
+import com.veullustigpws.pws.ui.monitor.MonitorScreen;
 
 public class UIFrame extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private EditorScreen editorScreen;
+	private MonitorScreen monitorScreen;
+	
 
 	public UIFrame() {
 		super();
@@ -30,7 +33,6 @@ public class UIFrame extends JFrame {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			// TODO: Handle 
 		}
 		
 		initComponents();
@@ -39,8 +41,16 @@ public class UIFrame extends JFrame {
 	}
 	
 	private void initComponents() {
-		editorScreen = new EditorScreen(this);
-		this.add(editorScreen, BorderLayout.CENTER);
+		if (App.runServer) {
+			monitorScreen = new MonitorScreen(this);
+			this.add(monitorScreen, BorderLayout.CENTER);
+		} else {
+			editorScreen = new EditorScreen(this);
+			this.add(editorScreen, BorderLayout.CENTER);
+		}
+		
+		
+		
 		
 	}
 }
