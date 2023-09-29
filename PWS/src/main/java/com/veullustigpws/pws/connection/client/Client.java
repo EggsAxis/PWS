@@ -1,4 +1,4 @@
-package com.veullustigpws.pws.connection;
+package com.veullustigpws.pws.connection.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,12 +10,20 @@ public class Client implements Runnable {
 	
 	private int serverPort;
 	private Socket client;
+	private ParticipantManager manager;
+	
 	private BufferedReader in;
 	private PrintWriter out;
 	private boolean done;
 	
-	public Client() {
-		run();
+	public Client(ParticipantManager manager) {
+		this.manager = manager;
+	}
+	
+	public void connect(int port) {
+		this.serverPort = port;
+		Thread t = new Thread(this);
+		t.start();
 	}
 	
 	@Override
@@ -29,15 +37,11 @@ public class Client implements Runnable {
 			Thread thread = new Thread(handler);
 			thread.start();
 			
-			String inMsg;
-			while ((inMsg = in.readLine()) != null) {
-				System.out.println(inMsg);
-			}
+			System.out.println("Ran client successfully.");
 		} catch (IOException e) {
 			e.printStackTrace();
 			shutdown();
 		}
-		
 	}
 	
 	public void shutdown() {

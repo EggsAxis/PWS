@@ -1,11 +1,15 @@
-package com.veullustigpws.pws.app;
+package com.veullustigpws.pws.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import com.veullustigpws.pws.app.App;
+import com.veullustigpws.pws.connection.client.ParticipantManager;
+import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
 import com.veullustigpws.pws.ui.monitor.MonitorScreen;
 
@@ -32,8 +36,7 @@ public class UIFrame extends JFrame {
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-		}
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {}
 		
 		initComponents();
 		
@@ -42,15 +45,22 @@ public class UIFrame extends JFrame {
 	
 	private void initComponents() {
 		if (App.runServer) {
-			monitorScreen = new MonitorScreen(this);
-			this.add(monitorScreen, BorderLayout.CENTER);
+			HostingManager manager = new HostingManager();
+			FillUpScreen fillUpScreen = new FillUpScreen(manager);
+			manager.setFillUpScreen(fillUpScreen);
+			this.setScreen(fillUpScreen);
 		} else {
-			editorScreen = new EditorScreen(this);
-			this.add(editorScreen, BorderLayout.CENTER);
+			ParticipantManager manager = new ParticipantManager();
+			ParticipantWaitingScreen waitingScreen = new ParticipantWaitingScreen();
+			manager.setWaitingScreen(waitingScreen);
+			this.setScreen(waitingScreen);
 		}
 		
-		
-		
-		
+	}
+	
+	public void setScreen(JPanel panel) {
+		this.getContentPane().removeAll();
+		this.add(panel, BorderLayout.CENTER);
+		this.repaint();
 	}
 }

@@ -1,4 +1,4 @@
-package com.veullustigpws.pws.connection;
+package com.veullustigpws.pws.connection.hosting;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,25 +13,33 @@ import java.util.concurrent.Executors;
 public class Server implements Runnable {
 	
 	private ArrayList<ConnectionHandler> connections;
-	private ServerSocket server;
+	private ServerSocket socket;
 	private boolean done;
 	private ExecutorService threadpool;
+	
+	private int port;
 	
 	public Server() {
 		connections = new ArrayList<>();
 		done = false;
+		
+		Thread thread = new Thread(this);
+		thread.start();
 	}
 	
 	@Override
 	public void run() {
 		try {
-			server = new ServerSocket(0);
-			System.out.println("Port: " + server.getLocalPort());
+			socket = new ServerSocket(0);
+			
+			port = socket.getLocalPort();
+			
+			System.out.println("Port: " + port);
 			
 			threadpool = Executors.newCachedThreadPool();
 			
 			while (!done) {
-				Socket client = server.accept();
+				Socket client = socket.accept();
 				ConnectionHandler handler = new ConnectionHandler(client);
 				connections.add(handler);
 				threadpool.execute(handler);
@@ -52,10 +60,10 @@ public class Server implements Runnable {
 	}
 	
 	public void shutdown() {
-		if (server.isClosed()) return;
+		if (socket.isClosed()) return;
 		try {
 			done = true;
-			server.close();
+			socket.close();
 			
 			for (ConnectionHandler ch : connections) {
 				ch.shutdown();
@@ -64,6 +72,10 @@ public class Server implements Runnable {
 		} catch (IOException e) {
 			// Cannot handle
 		}
+	}
+	
+	public int getPortNumber() {
+		return port;
 	}
 	
 	class ConnectionHandler implements Runnable {

@@ -10,17 +10,17 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import com.veullustigpws.pws.app.AppConstants;
-import com.veullustigpws.pws.app.UIFrame;
+import com.veullustigpws.pws.connection.hosting.HostingManager;
 
 public class MonitorScreen extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private UIFrame frame;
+	private HostingManager manager;
 	
 	private JLabel timeLabel;
 	
-	public MonitorScreen(UIFrame frame) {
-		this.frame = frame;
+	public MonitorScreen(HostingManager manager) {
+		this.manager = manager;
 		
 		this.setFocusable(true);
 		this.setLayout(new BorderLayout());

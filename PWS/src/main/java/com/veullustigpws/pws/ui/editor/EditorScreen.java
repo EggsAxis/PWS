@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import com.veullustigpws.pws.app.AppConstants;
-import com.veullustigpws.pws.app.UIFrame;
+import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
 import com.veullustigpws.pws.ui.editor.parts.DocumentEditor;
 import com.veullustigpws.pws.ui.editor.parts.EditorMenu;
@@ -21,8 +21,10 @@ public class EditorScreen extends JPanel {
 	private DocumentEditor docEditor;
 	private TextEditorManager textEditorManager;
 	
-	public EditorScreen(UIFrame frame) {
-		
+	private ParticipantManager manager;
+	
+	public EditorScreen(ParticipantManager manager) {
+		this.manager = manager;
 		
 		this.setFocusable(true);
 		this.setLayout(new BorderLayout());
