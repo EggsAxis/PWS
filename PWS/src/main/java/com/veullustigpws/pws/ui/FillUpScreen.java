@@ -13,6 +13,8 @@ public class FillUpScreen extends JPanel {
 	private HostingManager manager;
 	
 	public FillUpScreen(HostingManager manager) {
+		this.manager = manager;
+		
 		this.setLayout(new BorderLayout());
 		
 		initComponents();
@@ -20,10 +22,10 @@ public class FillUpScreen extends JPanel {
 	
 	private void initComponents() {
 		JButton startButton = new JButton();
-		startButton.setText("Start Assignment");
+		startButton.setText("Start Opdracht");
 		startButton.addActionListener(e -> {
-			System.out.println("Starting asignment.");
 			App.Window.setScreen(new MonitorScreen(manager));
+			manager.startAssignment();
 		});
 		
 		

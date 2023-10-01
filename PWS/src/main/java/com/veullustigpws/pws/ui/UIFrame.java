@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import com.veullustigpws.pws.app.App;
+import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
@@ -51,8 +52,10 @@ public class UIFrame extends JFrame {
 			this.setScreen(fillUpScreen);
 		} else {
 			ParticipantManager manager = new ParticipantManager();
-			ParticipantWaitingScreen waitingScreen = new ParticipantWaitingScreen();
+			ParticipantWaitingScreen waitingScreen = new ParticipantWaitingScreen(manager);
 			manager.setWaitingScreen(waitingScreen);
+			
+			manager.startClient(new ParticipantData("Milan Veul", "mv25949"));
 			this.setScreen(waitingScreen);
 		}
 		
