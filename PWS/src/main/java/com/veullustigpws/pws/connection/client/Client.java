@@ -1,14 +1,12 @@
 package com.veullustigpws.pws.connection.client;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
 
 public class Client implements Runnable {
@@ -18,8 +16,6 @@ public class Client implements Runnable {
 	private Socket client;
 	private ParticipantManager manager;
 	
-	private BufferedReader strIn;
-	private PrintWriter strOut;
 	private ObjectInputStream objIn;
 	private ObjectOutputStream objOut;
 	private boolean alive;
@@ -35,16 +31,20 @@ public class Client implements Runnable {
 		t.start();
 	}
 	
-	public void sendMessageToServer(String msg) {
-		strOut.println(msg);
+	public void sendMessageToServer(String protocol) {
+		Message msg = new Message(protocol);
+		try {
+			objOut.writeObject(msg);
+		} catch (IOException e) {
+			Debug.error("Unable to send message to server.");
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
 	public void run() {
 		try {
 			client = new Socket(ip, serverPort);
-			strOut = new PrintWriter(client.getOutputStream(), true);
-			strIn = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			objOut = new ObjectOutputStream(client.getOutputStream());
 			objIn = new ObjectInputStream(client.getInputStream());
 			
@@ -55,8 +55,8 @@ public class Client implements Runnable {
 			Debug.log("Client has been ran successfully.");
 			
 			// Send ParticipantData
-			strOut.println(Protocol.SendParticipantData);
-			objOut.writeObject(manager.getParticipantData());
+			Message msg = new Message(Protocol.SendParticipantData, manager.getParticipantData());
+			objOut.writeObject(msg);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -67,8 +67,6 @@ public class Client implements Runnable {
 	public void shutdown() {
 		try {
 			alive = false;
-			strIn.close();
-			strOut.close();
 			objIn.close();
 			objOut.close();
 		} catch (IOException e) {
@@ -79,36 +77,36 @@ public class Client implements Runnable {
 	class InputHandler implements Runnable {
 		@Override
 		public void run() {
-			String msg;
+			Message msg;
 			try {
-				while (alive && (msg = strIn.readLine()) != null) {
+				while (alive && (msg = (Message) objIn.readObject()) != null) {
 					handleInput(msg);
 				}
-			} catch (IOException e) {
-				manager.leave();
+			} catch (IOException | ClassNotFoundException e) {
+				Debug.error("Unable to receive message from server.");
 			}
 		}
 		
-		private void handleInput(String msg) {
-			String[] input = msg.split(Protocol.ConnectChar);
-			String inputType = input[0];
+		private void handleInput(Message msg) {
 			
-			switch (inputType) {
+			switch (msg.getDescription()) {
 			case Protocol.StartAssignment:
 				manager.assignmentStarted();
 				break;
 			case Protocol.RequestWork:
-				requestWork();
+				sendWork();
 				break;
 			default:
-				Debug.error("Unable to handle input.");
+				Debug.error("Unknown input.");
 			}
 		}
 		
-		private void requestWork() {
+		private void sendWork() {
 			try {
 				ParticipantWorkState pws = manager.getParticipantWorkState();
-				objOut.writeObject(pws);
+				Debug.log("Sending text length = " + pws.getDocument().getLength());
+				Message work = new Message(Protocol.SendRequestedWork, pws);
+				objOut.writeObject(work);
 			} catch (IOException e) {
 				Debug.error("Unable to send ParticipantWorkState");
 			}

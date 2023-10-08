@@ -1,6 +1,8 @@
 package com.veullustigpws.pws.connection.client;
 
 import java.util.Scanner;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
@@ -8,6 +10,7 @@ import com.veullustigpws.pws.assignment.ParticipantWorkState;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.ui.ParticipantWaitingScreen;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
+import com.veullustigpws.pws.utils.StringUtilities;
 
 public class ParticipantManager {
 	
@@ -17,6 +20,14 @@ public class ParticipantManager {
 	private Client client;
 	private ParticipantData participantData;
 	
+	public ParticipantManager() {
+		waitingScreen = new ParticipantWaitingScreen(this);
+		editorScreen = new EditorScreen(this);
+	}
+	
+	public void openWaitingScreen() {
+		App.Window.setScreen(waitingScreen);
+	}
 	
 	public void startClient(ParticipantData participantData) {
 		this.participantData = participantData;
@@ -35,8 +46,20 @@ public class ParticipantManager {
 	
 	
 	public ParticipantWorkState getParticipantWorkState() {
+		StyledDocument doc = editorScreen.getStyledDocument();
+		
+		// Get word count
+		String txt = "";
+		try {
+			txt = doc.getText(0, doc.getLength());
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+		int wordCount = StringUtilities.getWordCount(txt);
+		
+		ParticipantWorkState pws = new ParticipantWorkState(participantData, doc, wordCount);
 		Debug.log("Sent ParticipantWorkState");
-		return null;
+		return pws;
 	}
 	
 	public void leave() {
@@ -49,19 +72,11 @@ public class ParticipantManager {
 	
 	
 	public void assignmentStarted() {
-		editorScreen = new EditorScreen(this);
 		App.Window.setScreen(editorScreen);
-		
 		Debug.log("Assignment has started.");
 	}
 	
-	
 	// Setters
-	public void setWaitingScreen(ParticipantWaitingScreen waitingScreen) {
-		this.waitingScreen = waitingScreen;
-	}
-	
-	
 	public ParticipantData getParticipantData() {
 		return participantData;
 	}

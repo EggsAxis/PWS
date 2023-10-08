@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.connection.Protocol;
+import com.veullustigpws.pws.listeners.WorkStateListener;
 import com.veullustigpws.pws.ui.FillUpScreen;
 import com.veullustigpws.pws.ui.monitor.MonitorScreen;
+import com.veullustigpws.pws.ui.monitor.ViewWorkScreen;
 
 public class HostingManager {
 	
 	// Screens
 	private MonitorScreen monitorScreen;
 	private FillUpScreen fillUpScreen;
+	private ViewWorkScreen viewWorkScreen;
 	
 	// Participants
 	private ArrayList<ParticipantData> participants = new ArrayList<>();
@@ -29,18 +34,27 @@ public class HostingManager {
 	private Timer requestTimer;
 	private static final long requestTimerDelay = 5*1000;
 	
+	// Listeners
+	private ArrayList<WorkStateListener> workStateListeners = new ArrayList<>();
 	
 	public HostingManager() {
 		server = new Server(this);
+		
+		monitorScreen = new MonitorScreen(this);
+		fillUpScreen = new FillUpScreen(this);
+		viewWorkScreen = new ViewWorkScreen(this);
+		
+		addWorkStateListener(viewWorkScreen);
 	}
 	
 	
+	// EVENTS
 	void participantEntered(ParticipantData pd) {
 		participants.add(pd);
 		Debug.log(pd.getName() + " entered.");
 	}
 	
-	public void participantLeft(int ID) {
+	void participantLeft(int ID) {
 		ParticipantData pd = getParticipantDataByID(ID);
 		participants.remove(pd);
 		Debug.log(pd.getName() + " left.");
@@ -48,28 +62,59 @@ public class HostingManager {
 	
 	public void startAssignment() {
 		server.startAssignment();
+		App.Window.setScreen(monitorScreen);
+		monitorScreen.refreshParticipants();
 		Debug.log("Started assignment.");
 		
 		// Start request timer
+		startRequestTimer();
+	}
+	
+	private void startRequestTimer() {
 		requestTimer = new Timer();
 		requestTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				participantWorkStates = server.gatherRequestedWork();
+				server.broadcast(Protocol.RequestWork);
 				Debug.log("Requested ParticipantWorkState");
 			}
 		}, requestTimerDelay, requestTimerDelay);
 	}
 	
 	
-	// Setters
-	public void setMonitorScreen(MonitorScreen monitorScreen) {
-		this.monitorScreen = monitorScreen;
-	}
-	public void setFillUpScreen(FillUpScreen fillUpScreen) {
-		this.fillUpScreen = fillUpScreen;
+	public void viewWork(int participantID) {
+		if (!participantWorkStates.containsKey(participantID)) {
+			Debug.error("Does not contain work of user ID " + participantID);
+			return;
+		}
+		viewWorkScreen.shown = true;
+		viewWorkScreen.setParticipantWorkState(participantWorkStates.get(participantID));
+		App.Window.setScreen(viewWorkScreen);
 	}
 	
+	public void receivedRequestedWork(ParticipantWorkState pws, int ID) {
+		participantWorkStates.put(ID, pws);
+		for (WorkStateListener wsl : workStateListeners)  {
+			if (wsl == null) continue;
+			wsl.changedWorkState(participantWorkStates);
+		}
+		Debug.log(" - Received work state of user " + ID);
+		Debug.log("Received text length = " + participantWorkStates.get(ID).getDocument().getLength());
+	}
+	
+	public void returnToMonitorScreen() {
+		App.Window.setScreen(monitorScreen);
+	}
+	public void openFillUpScreen() {
+		App.Window.setScreen(fillUpScreen);
+	}
+	
+	
+	public void addWorkStateListener(WorkStateListener wsl) {
+		workStateListeners.add(wsl);
+	}
+	
+	// setters
 	void setPortNumber(int portNumber) {
 		this.portNumber = portNumber;
 	}
@@ -90,6 +135,12 @@ public class HostingManager {
 			}
 		}
 		return null;
+	}
+	
+	public int getWordCountByID(int ID) {
+		ParticipantWorkState pws = participantWorkStates.get(ID);
+		if (pws == null) return -1;
+		return pws.getWordCount();
 	}
 	
 }

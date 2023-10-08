@@ -15,9 +15,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.StyledEditorKit;
 import com.veullustigpws.pws.app.AppConstants;
-import com.veullustigpws.pws.filters.IntegerInputFilter;
-import com.veullustigpws.pws.texteditor.EditorMenuListener;
+import com.veullustigpws.pws.listeners.EditorMenuListener;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
+import com.veullustigpws.pws.utils.IntegerInputFilter;
 
 public class EditorMenu extends JScrollPane {
 	private static final long serialVersionUID = 1L;

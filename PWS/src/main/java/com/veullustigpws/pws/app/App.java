@@ -19,6 +19,7 @@ public class App {
             @Override
             public void run() {
                 Window = new UIFrame();
+                Window.open();
             }
         });
 	}

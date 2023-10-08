@@ -1,4 +1,4 @@
-package com.veullustigpws.pws.filters;
+package com.veullustigpws.pws.utils;
 
 import java.awt.Color;
 import javax.swing.text.DefaultCaret;

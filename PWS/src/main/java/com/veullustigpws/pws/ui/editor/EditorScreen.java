@@ -8,6 +8,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.text.StyledDocument;
 import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
@@ -32,8 +33,6 @@ public class EditorScreen extends JPanel {
 		
 		initComponents();
 		this.repaint();
-		
-		
 	}
 	
 	private void initComponents() {
@@ -61,5 +60,9 @@ public class EditorScreen extends JPanel {
 		// Add together
 		this.add(menu, BorderLayout.NORTH);
 		this.add(centerPanel, BorderLayout.CENTER);
+	}
+	
+	public StyledDocument getStyledDocument() {
+		return docEditor.getStyledDocument();
 	}
 }

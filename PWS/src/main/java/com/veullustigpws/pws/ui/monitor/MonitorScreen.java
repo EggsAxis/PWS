@@ -13,11 +13,13 @@ import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 
 public class MonitorScreen extends JPanel {
-
 	private static final long serialVersionUID = 1L;
+	
 	private HostingManager manager;
 	
+	
 	private JLabel timeLabel;
+	private ParticipantListPanel partsPanel;
 	
 	public MonitorScreen(HostingManager manager) {
 		this.manager = manager;
@@ -33,7 +35,7 @@ public class MonitorScreen extends JPanel {
 	
 	private void initComponents() {
 		// Participants panel
-		ParticipantListPanel partsPanel = new ParticipantListPanel();
+		partsPanel = new ParticipantListPanel(manager);
 		
 		// Bottom menu
 		JPanel bottomMenu = new JPanel();
@@ -65,6 +67,10 @@ public class MonitorScreen extends JPanel {
 		// Add together
 		this.add(partsPanel, BorderLayout.CENTER);
 		this.add(bottomMenu, BorderLayout.SOUTH);
+	}
+	
+	public void refreshParticipants() {
+		partsPanel.refreshParticipants();
 	}
 	
 }

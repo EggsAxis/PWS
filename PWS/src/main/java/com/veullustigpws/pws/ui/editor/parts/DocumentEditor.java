@@ -6,7 +6,7 @@ import javax.swing.JTextPane;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyledEditorKit;
-import com.veullustigpws.pws.filters.HighlightCaret;
+import com.veullustigpws.pws.utils.HighlightCaret;
 
 public class DocumentEditor extends JTextPane {
 	private static final long serialVersionUID = 1L;

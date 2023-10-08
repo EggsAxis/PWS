@@ -1,22 +1,19 @@
 package com.veullustigpws.pws.connection.hosting;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
 
 public class Server implements Runnable{
@@ -57,7 +54,6 @@ public class Server implements Runnable{
 			
 			// Accept all clients
 			threadpool = Executors.newCachedThreadPool();
-			
 			while (joinable) {
 				Socket client = socket.accept();
 				ConnectionHandler handler = new ConnectionHandler(client);
@@ -75,17 +71,7 @@ public class Server implements Runnable{
 		broadcast(Protocol.StartAssignment);
 	}
 	
-	public HashMap<Integer, ParticipantWorkState> gatherRequestedWork() {
-		broadcast(Protocol.RequestWork);
-		HashMap<Integer, ParticipantWorkState> pwsList = new HashMap<>();
-		
-		for (ConnectionHandler c : connections) {
-			ParticipantWorkState pws = (ParticipantWorkState) c.receiveObject();
-			pwsList.put(c.ID, pws);
-		}
-		
-		return pwsList;
-	}
+	
 	
 	public void broadcast(String msg) {
 		for (ConnectionHandler ch : connections) {
@@ -111,8 +97,6 @@ public class Server implements Runnable{
 		private Socket client;
 		private int ID = -1;
 		
-		private BufferedReader strIn;
-		private PrintWriter strOut;
 		private ObjectInputStream objIn;
 		private ObjectOutputStream objOut;
 		
@@ -124,35 +108,35 @@ public class Server implements Runnable{
 		@Override
 		public void run() {
 			try {
-				strOut = new PrintWriter(client.getOutputStream(), true);
-				strIn = new BufferedReader(new InputStreamReader(client.getInputStream()));
 				objOut = new ObjectOutputStream(client.getOutputStream());
 				objIn = new ObjectInputStream(client.getInputStream());
 				
-				String message;
-				while ((message = strIn.readLine()) != null && alive) {
-					handleInput(message);
+				// Contineously checking for messages
+				Message msg;
+				while ((msg = (Message) objIn.readObject()) != null && alive) {
+					handleInput(msg);
 				}
-			} catch (IOException e) {
+			} catch (IOException | ClassNotFoundException e) {
 				shutdown();
 			}
 			
 		}
 		
-		private void handleInput(String msg) {
+		private void handleInput(Message msg) {
 			try {
-				String[] input = msg.split(Protocol.ConnectChar);
-				String inputType = input[0];
-				
-				switch (inputType) {
+				switch (msg.getDescription()) {
 				case Protocol.SendParticipantData:
-					ParticipantData pd = (ParticipantData) receiveObject();
+					ParticipantData pd = (ParticipantData) msg.getContent();
 					pd.setID(ID);
 					manager.participantEntered(pd);
 					break;
 				case Protocol.ParticipantLeaves:
 					manager.participantLeft(ID);
 					breakConnection();
+					break;
+				case Protocol.SendRequestedWork:
+					ParticipantWorkState pws = (ParticipantWorkState) msg.getContent();
+					manager.receivedRequestedWork(pws, ID);
 					break;
 				default: 
 					Debug.error("Unable to read protocol of server input.");
@@ -164,7 +148,11 @@ public class Server implements Runnable{
 		}
 		
 		public void sendMessage(String msg) {
-			strOut.println(msg);
+			try {
+				objOut.writeObject(new Message(msg));
+			} catch (IOException e) {
+				Debug.error("Unable to send message.");
+			}
 		}
 		
 		private void breakConnection() {
@@ -173,20 +161,8 @@ public class Server implements Runnable{
 			shutdown();
 		}
 		
-		private Object receiveObject() {
-			Object o = null;
-			try {
-				 o = objIn.readObject();
-			} catch (ClassNotFoundException | IOException e) {
-				Debug.error("Failed to receive object.");
-			}
-			return o;
-		}
-		
 		public void shutdown() {
 			try {
-				strIn.close();
-				strOut.close();
 				objIn.close();
 				objOut.close();
 				
