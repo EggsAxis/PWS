@@ -12,12 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.PlainDocument;
 import javax.swing.text.StyledEditorKit;
 import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.listeners.EditorMenuListener;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
-import com.veullustigpws.pws.utils.IntegerInputFilter;
+import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 
 public class EditorMenu extends JScrollPane {
 	private static final long serialVersionUID = 1L;
@@ -73,8 +72,7 @@ public class EditorMenu extends JScrollPane {
 		fontSizeTF.setText("12");
 		fontSizeTF.setFont(AppConstants.textFieldFont);
 		fontSizeTF.setHorizontalAlignment(JTextField.RIGHT);
-		PlainDocument doc = (PlainDocument) fontSizeTF.getDocument();
-		doc.setDocumentFilter(new IntegerInputFilter());
+		fontSizeTF.addKeyListener(new TextFieldIntegerInputFilter());
 		
 		fontSizeTF.addActionListener(menuListener.new FontSizeListener(fontSizeTF));
 		

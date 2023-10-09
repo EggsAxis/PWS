@@ -99,7 +99,7 @@ public class HostingManager {
 			wsl.changedWorkState(participantWorkStates);
 		}
 		Debug.log(" - Received work state of user " + ID);
-		Debug.log("Received text length = " + participantWorkStates.get(ID).getDocument().getLength());
+		Debug.log("Received text length = " + pws.getDocument().getLength());
 	}
 	
 	public void returnToMonitorScreen() {

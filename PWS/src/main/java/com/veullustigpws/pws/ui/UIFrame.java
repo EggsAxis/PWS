@@ -8,9 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import com.veullustigpws.pws.app.App;
-import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
+import com.veullustigpws.pws.ui.roomoptions.RoomOptionsScreen;
 
 public class UIFrame extends JFrame {
 	
@@ -40,8 +40,8 @@ public class UIFrame extends JFrame {
 			hostingManager = new HostingManager();
 			
 		} else {
-			participantManager = new ParticipantManager();
-			participantManager.startClient(new ParticipantData("Milan Veul", "mv25949"));
+//			participantManager = new ParticipantManager();
+//			participantManager.startClient(new ParticipantData("Milan Veul", "mv25949"));
 		}
 	}
 	
@@ -50,9 +50,10 @@ public class UIFrame extends JFrame {
 			hostingManager.openFillUpScreen();
 		}
 		else {
-			participantManager.openWaitingScreen();
+//			participantManager.openWaitingScreen();
+			this.add(new RoomOptionsScreen());
 		}
-		this.setMinimumSize(new Dimension(700, 600));
+		this.setMinimumSize(new Dimension(800, 500));
 		this.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		
 		this.setLocationRelativeTo(null);
