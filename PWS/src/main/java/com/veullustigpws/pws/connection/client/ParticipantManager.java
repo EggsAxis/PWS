@@ -1,5 +1,7 @@
 package com.veullustigpws.pws.connection.client;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
@@ -7,20 +9,32 @@ import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.connection.ConnectData;
 import com.veullustigpws.pws.connection.Protocol;
+import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.ui.ParticipantWaitingScreen;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
+import com.veullustigpws.pws.ui.login.LoginScreen;
+import com.veullustigpws.pws.utils.JoinCodeGenerator;
 import com.veullustigpws.pws.utils.StringUtilities;
 
 public class ParticipantManager {
 	
+	private LoginScreen loginScreen;
 	private EditorScreen editorScreen;
 	private ParticipantWaitingScreen waitingScreen;
 	
 	private Client client;
 	private ParticipantData participantData;
 	
-	public ParticipantManager() {
+	public ParticipantManager(ParticipantConnectData connectData, LoginScreen loginScreen) throws WrongConnectionDataException {
+		this.loginScreen = loginScreen;
+		participantData = connectData.getParticipantData();
+		
+		startClient(connectData);
+	}
+	
+	private void loadScreens() {
 		waitingScreen = new ParticipantWaitingScreen(this);
 		editorScreen = new EditorScreen(this);
 	}
@@ -29,19 +43,13 @@ public class ParticipantManager {
 		App.Window.setScreen(waitingScreen);
 	}
 	
-	public void startClient(ParticipantData participantData) {
-		this.participantData = participantData;
-		
-		Scanner scanner = new Scanner(System.in);
-		
-		System.out.println("Enter server IP: ");
-		String ip = scanner.nextLine();
-		System.out.println("Enter server port: ");
-		int port = scanner.nextInt();
-		scanner.close();
-		
-		client = new Client(this);
-		client.connect(ip, port);
+	public void startClient(ParticipantConnectData participantConnectData) throws WrongConnectionDataException {
+		try {
+			client = new Client(this);
+			client.connect(participantConnectData);
+		} catch (WrongConnectionDataException e) {
+			throw e;
+		}
 	}
 	
 	
@@ -68,6 +76,15 @@ public class ParticipantManager {
 		client.sendMessageToServer(Protocol.ParticipantLeaves);
 		client.shutdown();
 		System.exit(0); // GO BACK TO START SCREEN
+	}
+	
+	public void joinedRoom() {
+		Debug.log("Correct password. Succesfully joined room.");
+		loadScreens();
+		openWaitingScreen();
+	}
+	public void incorrectPassword() {
+		loginScreen.incorrectPassword();
 	}
 	
 	

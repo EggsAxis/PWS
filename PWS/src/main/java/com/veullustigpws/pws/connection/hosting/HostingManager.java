@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
+import com.veullustigpws.pws.assignment.AssignmentOptions;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
 import com.veullustigpws.pws.connection.Protocol;
@@ -26,9 +27,9 @@ public class HostingManager {
 	private HashMap<Integer, ParticipantWorkState> participantWorkStates = new HashMap<>();
 	
 	// Server info
+	private AssignmentOptions assignmentOptions;
 	private Server server;
-	private String localIP;
-	private int portNumber;
+	private String serverCode;
 	
 	// Timer
 	private Timer requestTimer;
@@ -37,7 +38,8 @@ public class HostingManager {
 	// Listeners
 	private ArrayList<WorkStateListener> workStateListeners = new ArrayList<>();
 	
-	public HostingManager() {
+	public HostingManager(AssignmentOptions options) {
+		this.assignmentOptions = options;
 		server = new Server(this);
 		
 		monitorScreen = new MonitorScreen(this);
@@ -115,11 +117,8 @@ public class HostingManager {
 	}
 	
 	// setters
-	void setPortNumber(int portNumber) {
-		this.portNumber = portNumber;
-	}
-	void setLocalIP(String localIP) {
-		this.localIP = localIP;
+	void setServerCode(String code) {
+		this.serverCode = code;
 	}
 	
 	
@@ -127,7 +126,9 @@ public class HostingManager {
 	public ArrayList<ParticipantData> getParticipants() {
 		return participants;
 	}
-	
+	public AssignmentOptions getAssignmentOptions() {
+		return assignmentOptions;
+	}
 	public ParticipantData getParticipantDataByID(int ID) {
 		for (ParticipantData pd : participants) {
 			if (pd.getID() == ID) {

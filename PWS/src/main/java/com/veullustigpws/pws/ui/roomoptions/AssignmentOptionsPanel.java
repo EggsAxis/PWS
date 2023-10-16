@@ -17,13 +17,25 @@ import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 public class AssignmentOptionsPanel extends JPanel {
 	private static final long serialVersionUID = -1949973482540721500L;
 	
+	private JTextField assignmentNameTF;
+	private JTextArea descriptionTextArea;
+	private JTextField durationTF;
+	private JTextField wordCountTF;
+	private CheckSlider timerReminderSlider;
+	private JComboBox<Integer> reminderFreqCB;
+	
 	public AssignmentOptionsPanel(int width) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setPreferredSize(new Dimension(width, 800));
+		this.setPreferredSize(new Dimension(width, 700));
 		this.setBorder(BorderFactory.createEmptyBorder(50, 20, 0, 20));
-//		this.setBackground(AppConstants.defaultBackgroundColor);
 		
 		initComponents();
+		
+		// DEBUG
+		assignmentNameTF.setText("Test assignment");
+		descriptionTextArea.setText("bla bla bla");
+		durationTF.setText("60");
+		wordCountTF.setText("100");
 	}
 	
 	private void initComponents() {
@@ -35,10 +47,11 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Room name
 		JLabel assignmentNameLbl = new JLabel("Naam opdracht");
-		JTextField assignmentNameTF = new JTextField();
+		assignmentNameTF = new JTextField();
+		assignmentNameTF.setTransferHandler(null); // Disables copy-paste
 		assignmentNameTF.setMaximumSize(new Dimension(200, 30));
 		assignmentNameTF.setAlignmentX(Component.LEFT_ALIGNMENT);
-		assignmentNameTF.addKeyListener(new TextFieldSizeLimiter(assignmentNameTF, 16));
+		assignmentNameTF.addKeyListener(new TextFieldSizeLimiter(assignmentNameTF, 42));
 		this.add(assignmentNameLbl);
 		addLabelPadding();
 		this.add(assignmentNameTF);
@@ -49,7 +62,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Assignment description
 		JLabel descriptionLbl = new JLabel("Opdrachtbeschrijving");
-		JTextArea descriptionTextArea = new JTextArea();
+		descriptionTextArea = new JTextArea();
 		descriptionTextArea.setWrapStyleWord(true);
 		descriptionTextArea.setLineWrap(true);
 		JScrollPane descriptionScrollPane = new JScrollPane(descriptionTextArea);
@@ -65,7 +78,8 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Duration
 		JLabel durationLbl = new JLabel("Lengte (minuten)");
-		JTextField durationTF = new JTextField();
+		durationTF = new JTextField();
+		durationTF.setTransferHandler(null); // Disables copy-paste
 		durationTF.setMaximumSize(new Dimension(40, 25));
 		durationTF.setAlignmentX(Component.LEFT_ALIGNMENT);
 		durationTF.addKeyListener(new TextFieldSizeLimiter(durationTF, 3));
@@ -80,7 +94,8 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Word count
 		JLabel wordCountLbl = new JLabel("Woordendoel");
-		JTextField wordCountTF = new JTextField();
+		wordCountTF = new JTextField();
+		wordCountTF.setTransferHandler(null); // Disables copy-paste
 		wordCountTF.setMaximumSize(new Dimension(40, 25));
 		wordCountTF.setAlignmentX(Component.LEFT_ALIGNMENT);
 		wordCountTF.addKeyListener(new TextFieldSizeLimiter(wordCountTF, 4));
@@ -95,24 +110,21 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Time reminder
 		JLabel timeReminderLabel = new JLabel("Tijdsherinnering");
-		CheckSlider timerReminderSlider = new CheckSlider();
+		timerReminderSlider = new CheckSlider();
 		timerReminderSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
 		JLabel freqLbl = new JLabel("Frequentie");
 		Integer[] options = {5, 10, 15, 30};
-		JComboBox<Integer> freqCB = new JComboBox<Integer>(options);
-		freqCB.setMaximumSize(new Dimension(40, 25));
-		freqCB.setAlignmentX(Component.LEFT_ALIGNMENT);
-		freqCB.setFocusable(false);
+		reminderFreqCB = new JComboBox<Integer>(options);
+		reminderFreqCB.setMaximumSize(new Dimension(40, 25));
+		reminderFreqCB.setAlignmentX(Component.LEFT_ALIGNMENT);
+		reminderFreqCB.setFocusable(false);
 		this.add(timeReminderLabel);
 		addLabelPadding();
 		this.add(timerReminderSlider);
 		addLabelPadding();
 		this.add(freqLbl);
 		addLabelPadding();
-		this.add(freqCB);
-		
-		
-		
+		this.add(reminderFreqCB);
 	}
 	
 	private void addComponentPadding() {
@@ -120,6 +132,28 @@ public class AssignmentOptionsPanel extends JPanel {
 	}
 	private void addLabelPadding() {
 		this.add(Box.createRigidArea(new Dimension(0, RoomOptionsScreen.LABEL_PADDING)));
+	}
+	
+	// Getters
+	public String getAssignmentName() {
+		return assignmentNameTF.getText();
+	}
+	public String getAssignmentDescription() {
+		return descriptionTextArea.getText();
+	}
+	public int getAssignmentDuration() {
+		if (durationTF.getText().isEmpty()) return 0;
+		return Integer.parseInt(durationTF.getText());
+	}
+	public int getWordCount() {
+		if (wordCountTF.getText().isEmpty()) return 0;
+		return Integer.parseInt(wordCountTF.getText());
+	}
+	public boolean getSendTimeReminder() {
+		return timerReminderSlider.isSelected();
+	}
+	public int getTimeReminderFrequency() {
+		return (Integer) reminderFreqCB.getSelectedItem();
 	}
 	
 }

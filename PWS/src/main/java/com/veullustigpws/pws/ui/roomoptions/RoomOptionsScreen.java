@@ -7,8 +7,13 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import com.veullustigpws.pws.assignment.AssignmentOptions;
+import com.veullustigpws.pws.assignment.RoomOptionsValidator;
+import com.veullustigpws.pws.connection.hosting.HostingManager;
 
 public class RoomOptionsScreen extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -17,13 +22,17 @@ public class RoomOptionsScreen extends JPanel {
 	public static final int LABEL_PADDING = 10;
 	public static final int COMPONENT_PADDING = 30;
 	
+	private AssignmentOptionsPanel assignmentPnl;
+	private RoomOptionsPanel roomPnl;
+	
+	
 	public RoomOptionsScreen() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		initComponents();
 	}
 
-
+	
 	private void initComponents() {
 		// Done & Cancel buttons
 		JButton doneBtn = new JButton("Creëer");
@@ -38,6 +47,10 @@ public class RoomOptionsScreen extends JPanel {
 		doneBtn.setMaximumSize(btnDim);
 		cancelBtn.setMaximumSize(btnDim);
 		
+		doneBtn.addActionListener(e -> {
+			submit();
+		});
+		
 		// Bottom button panel
 		JPanel btnPnl = new JPanel();
 		btnPnl.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 60));
@@ -49,8 +62,8 @@ public class RoomOptionsScreen extends JPanel {
 		btnPnl.add(cancelBtn);
 		
 		// Option panel
-		AssignmentOptionsPanel assignmentPnl = new AssignmentOptionsPanel(WIDTH/2);
-		RoomOptionsPanel roomPnl = new RoomOptionsPanel(WIDTH/2);
+		assignmentPnl = new AssignmentOptionsPanel(WIDTH/2);
+		roomPnl = new RoomOptionsPanel(WIDTH/2);
 		
 		// Center panel
 		JPanel centerPnl = new JPanel();
@@ -71,5 +84,25 @@ public class RoomOptionsScreen extends JPanel {
 		
 		
 		this.add(scrollPane);
+	}
+	
+	private void submit() {
+		AssignmentOptions options = new AssignmentOptions();
+		
+		options.setAssignmentName(assignmentPnl.getAssignmentName());
+		options.setAssignmentDescription(assignmentPnl.getAssignmentDescription());
+		options.setAssignmentDuration(assignmentPnl.getAssignmentDuration());
+		options.setWordCount(assignmentPnl.getWordCount());
+		options.setSendTimeReminder(assignmentPnl.getSendTimeReminder());
+		options.setTimeReminderFrequency(assignmentPnl.getTimeReminderFrequency());
+		
+		options.setRoomName(roomPnl.getRoomName());
+		options.setPassword(roomPnl.getRoomPassword());
+		options.setDetectionEnabled(roomPnl.getDetectionEnabled());
+		
+		boolean correctInput = RoomOptionsValidator.ValidateSubmission(options);
+		if (!correctInput) {
+			JOptionPane.showMessageDialog(null, "Vul alle velden in.", "Error", JOptionPane.OK_OPTION);
+		}
 	}
 }

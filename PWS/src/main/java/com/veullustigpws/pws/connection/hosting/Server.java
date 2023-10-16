@@ -10,11 +10,15 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.connection.ConnectData;
 import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
+import com.veullustigpws.pws.utils.JoinCodeGenerator;
 
 public class Server implements Runnable{
 	
@@ -24,6 +28,8 @@ public class Server implements Runnable{
 	private ArrayList<ConnectionHandler> connections;
 	private ServerSocket socket;
 	private ExecutorService threadpool;
+	
+
 	
 	
 	public Server(HostingManager manager) {
@@ -43,14 +49,16 @@ public class Server implements Runnable{
 			// Gather server information
 			InetAddress ip = InetAddress.getLocalHost();
 			int port = socket.getLocalPort();
+			String code = JoinCodeGenerator.IPToCode(new ConnectData(ip.getHostAddress(), port));
 			
 			Debug.log("SERVER INFO:");
 			Debug.log(" > IP: " + ip.getHostAddress());
 			Debug.log(" > Name: " + ip.getHostName());
 			Debug.log(" > Port: " + port);
+			Debug.log(" > Code: " + code);
 			
-			manager.setLocalIP(ip.getHostAddress());
-			manager.setPortNumber(port);
+			
+			manager.setServerCode(code);
 			
 			// Accept all clients
 			threadpool = Executors.newCachedThreadPool();
@@ -58,7 +66,8 @@ public class Server implements Runnable{
 				Socket client = socket.accept();
 				ConnectionHandler handler = new ConnectionHandler(client);
 				connections.add(handler);
-				threadpool.execute(handler);
+				Future<?> future = threadpool.submit(handler);
+				handler.setFuture(future);
 			}
 		} catch (IOException e) {
 			shutdown();
@@ -93,6 +102,7 @@ public class Server implements Runnable{
 	
 	class ConnectionHandler implements Runnable {
 		
+		private Future<?> future;
 		private boolean alive;
 		private Socket client;
 		private int ID = -1;
@@ -111,7 +121,7 @@ public class Server implements Runnable{
 				objOut = new ObjectOutputStream(client.getOutputStream());
 				objIn = new ObjectInputStream(client.getInputStream());
 				
-				// Contineously checking for messages
+				// Continuously checking for messages
 				Message msg;
 				while ((msg = (Message) objIn.readObject()) != null && alive) {
 					handleInput(msg);
@@ -125,6 +135,9 @@ public class Server implements Runnable{
 		private void handleInput(Message msg) {
 			try {
 				switch (msg.getDescription()) {
+				case Protocol.SendPassword:
+					managePassword((String) msg.getContent());
+					break;
 				case Protocol.SendParticipantData:
 					ParticipantData pd = (ParticipantData) msg.getContent();
 					pd.setID(ID);
@@ -147,6 +160,16 @@ public class Server implements Runnable{
 			
 		}
 		
+		private void managePassword(String password) {
+			if (manager.getAssignmentOptions().getPassword().equals(password)) {
+				sendMessage(Protocol.CorrectPassword);
+			} else {
+				sendMessage(Protocol.IncorrectPassword);
+				Debug.log("User tried to enter with incorrect password.");
+				breakConnection();
+			}
+		}
+		
 		public void sendMessage(String msg) {
 			try {
 				objOut.writeObject(new Message(msg));
@@ -163,6 +186,7 @@ public class Server implements Runnable{
 		
 		public void shutdown() {
 			try {
+				future.cancel(true);
 				objIn.close();
 				objOut.close();
 				
@@ -171,7 +195,10 @@ public class Server implements Runnable{
 			} catch (IOException e) {
 				// ignore 
 			}
-			
+		}
+		
+		void setFuture(Future<?> future) {
+			this.future = future;
 		}
 	}
 	

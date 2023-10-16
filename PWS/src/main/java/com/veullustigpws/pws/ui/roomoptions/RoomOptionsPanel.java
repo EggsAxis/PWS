@@ -13,14 +13,21 @@ import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 public class RoomOptionsPanel extends JPanel {
 	private static final long serialVersionUID = -5178622122847540349L;
 	
+	private JTextField roomNameTF;
+	private JTextField passwordTF;
+	private CheckSlider fraudDetectionSlider;
+	
+	
 	
 	public RoomOptionsPanel(int width) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setPreferredSize(new Dimension(width, 800));
+		this.setPreferredSize(new Dimension(width, 700));
 		this.setBorder(BorderFactory.createEmptyBorder(50, 20, 0, 20));
-//		this.setBackground(AppConstants.defaultBackgroundColor);
-		
 		initComponents();
+		
+		// DEBUG
+		roomNameTF.setText("Test room");
+		passwordTF.setText("password");
 	}
 
 	private void initComponents() {
@@ -32,10 +39,10 @@ public class RoomOptionsPanel extends JPanel {
 		
 		// Room name
 		JLabel roomNameLbl = new JLabel("Omgevingsnaam");
-		JTextField roomNameTF = new JTextField();
+		roomNameTF = new JTextField();
 		roomNameTF.setMaximumSize(new Dimension(200, 30));
 		roomNameTF.setAlignmentX(Component.LEFT_ALIGNMENT);
-		roomNameTF.addKeyListener(new TextFieldSizeLimiter(roomNameTF, 16));
+		roomNameTF.addKeyListener(new TextFieldSizeLimiter(roomNameTF, 42));
 		this.add(roomNameLbl);
 		addLabelPadding();
 		this.add(roomNameTF);
@@ -46,10 +53,10 @@ public class RoomOptionsPanel extends JPanel {
 		
 		// Password
 		JLabel passwordLbl = new JLabel("Wachtwoord");
-		JTextField passwordTF = new JTextField();
+		passwordTF = new JTextField();
 		passwordTF.setMaximumSize(new Dimension(200, 30));
 		passwordTF.setAlignmentX(Component.LEFT_ALIGNMENT);
-		passwordTF.addKeyListener(new TextFieldSizeLimiter(passwordTF, 16));
+		passwordTF.addKeyListener(new TextFieldSizeLimiter(passwordTF, 42));
 		this.add(passwordLbl);
 		addLabelPadding();
 		this.add(passwordTF);
@@ -58,9 +65,9 @@ public class RoomOptionsPanel extends JPanel {
 		addComponentPadding();
 		
 		
-		// Password
+		// Fraud detection
 		JLabel fraudDetectionLbl = new JLabel("Fraudedetectie");
-		CheckSlider fraudDetectionSlider = new CheckSlider();
+		fraudDetectionSlider = new CheckSlider();
 		fraudDetectionSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.add(fraudDetectionLbl);
 		addLabelPadding();
@@ -75,4 +82,14 @@ public class RoomOptionsPanel extends JPanel {
 		this.add(Box.createRigidArea(new Dimension(0, RoomOptionsScreen.LABEL_PADDING)));
 	}
 	
+	// Getters
+	public String getRoomName() {
+		return roomNameTF.getText();
+	}
+	public String getRoomPassword() {
+		return passwordTF.getText();
+	}
+	public boolean getDetectionEnabled() {
+		return fraudDetectionSlider.isSelected();
+	}
 }

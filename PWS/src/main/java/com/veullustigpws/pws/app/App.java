@@ -2,6 +2,7 @@ package com.veullustigpws.pws.app;
 
 import java.util.Scanner;
 import javax.swing.SwingUtilities;
+
 import com.veullustigpws.pws.ui.UIFrame;
 
 public class App {
@@ -22,5 +23,6 @@ public class App {
                 Window.open();
             }
         });
+		scanner.close();
 	}
 }

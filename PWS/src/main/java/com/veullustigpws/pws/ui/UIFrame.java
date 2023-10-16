@@ -2,14 +2,19 @@ package com.veullustigpws.pws.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import com.veullustigpws.pws.app.App;
+import com.veullustigpws.pws.assignment.AssignmentOptions;
+import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
+import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
+import com.veullustigpws.pws.ui.login.LoginScreen;
 import com.veullustigpws.pws.ui.roomoptions.RoomOptionsScreen;
 
 public class UIFrame extends JFrame {
@@ -18,6 +23,9 @@ public class UIFrame extends JFrame {
 	
 	private HostingManager hostingManager;
 	private ParticipantManager participantManager;
+	
+	private RoomOptionsScreen roomOptionsScreen;
+	private LoginScreen loginScreen;
 	
 
 	public UIFrame() {
@@ -37,28 +45,34 @@ public class UIFrame extends JFrame {
 	
 	private void initComponents() {
 		if (App.runServer) {
-			hostingManager = new HostingManager();
-			
+			roomOptionsScreen = new RoomOptionsScreen();
 		} else {
-//			participantManager = new ParticipantManager();
-//			participantManager.startClient(new ParticipantData("Milan Veul", "mv25949"));
+			loginScreen = new LoginScreen();
 		}
 	}
 	
 	public void open() {
 		if (App.runServer) {
-			hostingManager.openFillUpScreen();
+			setScreen(roomOptionsScreen);
 		}
 		else {
-//			participantManager.openWaitingScreen();
-			this.add(new RoomOptionsScreen());
+			setScreen(loginScreen);
 		}
 		this.setMinimumSize(new Dimension(800, 500));
 		this.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
-		
 		this.setLocationRelativeTo(null);
-		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		
+		
 		this.setVisible(true);
+	}
+	
+	public void startRoom(AssignmentOptions options) {
+		hostingManager = new HostingManager(options);
+		hostingManager.openFillUpScreen();
+	}
+	
+	public void connectToRoom(ParticipantConnectData participantConnectData, LoginScreen loginScreen) throws WrongConnectionDataException {
+		participantManager = new ParticipantManager(participantConnectData, loginScreen);
 	}
 	
 	public void setScreen(JPanel panel) {
