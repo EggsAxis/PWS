@@ -33,12 +33,9 @@ public class EditorMenu extends JScrollPane {
 		menuListener = new EditorMenuListener(textEditorManager);
 		
 		this.setPreferredSize(new Dimension(9999, 90));
-		this.setBackground(new Color(245, 245, 245));
+		this.setBackground(new Color(60, 62, 67));
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);		
-		TitledBorder title = BorderFactory.createTitledBorder("Menu");
-		title.setTitleFont(AppConstants.jPanelTitleFont);
-		this.setBorder(title);
+		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
 		
 		initComponents();
@@ -55,9 +52,20 @@ public class EditorMenu extends JScrollPane {
 		initTextDecorationPanel();
 		inner.add(Box.createRigidArea(new Dimension(padding, 0)));
 		
+		initHandinButton();
+//		inner.add(Box.createRigidArea(new Dimension(2*padding, 0)));
+		
 		this.setViewportView(inner);
 	}
 	
+	private void initHandinButton() {
+		JButton handinBtn = new JButton("Inleveren");
+		handinBtn.setFocusable(false);
+		
+		inner.add(handinBtn);
+		
+	}
+
 	private void initFontsizePanel() {
 		JPanel fontsizePanel = new JPanel();
 		fontsizePanel.setMaximumSize(new Dimension(100, 55));

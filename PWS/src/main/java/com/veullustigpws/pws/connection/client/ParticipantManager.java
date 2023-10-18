@@ -1,21 +1,17 @@
 package com.veullustigpws.pws.connection.client;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Scanner;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
+import com.veullustigpws.pws.assignment.AssignmentOptions;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
-import com.veullustigpws.pws.connection.ConnectData;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.ui.ParticipantWaitingScreen;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
 import com.veullustigpws.pws.ui.login.LoginScreen;
-import com.veullustigpws.pws.utils.JoinCodeGenerator;
 import com.veullustigpws.pws.utils.StringUtilities;
 
 public class ParticipantManager {
@@ -26,6 +22,8 @@ public class ParticipantManager {
 	
 	private Client client;
 	private ParticipantData participantData;
+	
+	private AssignmentOptions assignmentOptions;
 	
 	public ParticipantManager(ParticipantConnectData connectData, LoginScreen loginScreen) throws WrongConnectionDataException {
 		this.loginScreen = loginScreen;
@@ -88,7 +86,8 @@ public class ParticipantManager {
 	}
 	
 	
-	public void assignmentStarted() {
+	public void assignmentStarted(AssignmentOptions assignmentOptions) {
+		this.assignmentOptions = assignmentOptions;
 		App.Window.setScreen(editorScreen);
 		Debug.log("Assignment has started.");
 	}

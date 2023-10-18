@@ -58,7 +58,7 @@ public class EditorScreen extends JPanel {
 		centerPanel.setBackground(AppConstants.defaultBackgroundColor);
 		
 		// Add together
-		this.add(menu, BorderLayout.NORTH);
+		this.add(menu, BorderLayout.SOUTH);
 		this.add(centerPanel, BorderLayout.CENTER);
 	}
 	

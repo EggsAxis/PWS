@@ -1,4 +1,4 @@
-package com.veullustigpws.pws.ui.roomoptions;
+package com.veullustigpws.pws.ui.appearance;
 
 import java.awt.Color;
 import java.awt.Dimension;
