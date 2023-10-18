@@ -14,6 +14,8 @@ import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
+import com.veullustigpws.pws.resources.fonts.AppFonts;
+import com.veullustigpws.pws.ui.editor.EditorScreen;
 import com.veullustigpws.pws.ui.login.LoginScreen;
 import com.veullustigpws.pws.ui.roomoptions.RoomOptionsScreen;
 
@@ -26,10 +28,12 @@ public class UIFrame extends JFrame {
 	
 	private RoomOptionsScreen roomOptionsScreen;
 	private LoginScreen loginScreen;
-	
+	private JPanel currentPnl;
 
 	public UIFrame() {
 		super();
+		
+		AppFonts.LoadFonts();
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
@@ -56,7 +60,9 @@ public class UIFrame extends JFrame {
 			setScreen(roomOptionsScreen);
 		}
 		else {
-			setScreen(loginScreen);
+		setScreen(loginScreen);
+//			setScreen(new EditorScreen(null));
+			
 		}
 		this.setMinimumSize(new Dimension(800, 500));
 		this.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
@@ -76,9 +82,11 @@ public class UIFrame extends JFrame {
 	}
 	
 	public void setScreen(JPanel panel) {
-		this.getContentPane().removeAll();
 		this.add(panel, BorderLayout.CENTER);
-		this.pack();
+		if (currentPnl != null) this.remove(currentPnl);
+		this.revalidate();
 		this.repaint();
+		
+		this.currentPnl = panel;
 	}
 }

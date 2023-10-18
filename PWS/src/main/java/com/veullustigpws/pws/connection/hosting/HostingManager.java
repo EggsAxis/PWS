@@ -9,6 +9,7 @@ import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.AssignmentOptions;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.listeners.WorkStateListener;
 import com.veullustigpws.pws.ui.FillUpScreen;
@@ -77,7 +78,7 @@ public class HostingManager {
 		requestTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				server.broadcast(Protocol.RequestWork);
+				server.broadcast(new Message(Protocol.RequestWork));
 				Debug.log("Requested ParticipantWorkState");
 			}
 		}, requestTimerDelay, requestTimerDelay);
@@ -101,7 +102,6 @@ public class HostingManager {
 			wsl.changedWorkState(participantWorkStates);
 		}
 		Debug.log(" - Received work state of user " + ID);
-		Debug.log("Received text length = " + pws.getDocument().getLength());
 	}
 	
 	public void returnToMonitorScreen() {

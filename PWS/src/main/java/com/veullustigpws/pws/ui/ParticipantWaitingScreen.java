@@ -27,7 +27,7 @@ public class ParticipantWaitingScreen extends JPanel {
 		
 		
 		leaveBtn = new JButton("Verlaat");
-		leaveBtn.setSize(new Dimension(9999, 300));
+		leaveBtn.setSize(new Dimension(9999, 299));
 		leaveBtn.addActionListener(e -> {
 			manager.leave();
 		});

@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import com.veullustigpws.pws.app.Debug;
+import com.veullustigpws.pws.assignment.AssignmentOptions;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
 import com.veullustigpws.pws.connection.ConnectData;
 import com.veullustigpws.pws.connection.Message;
@@ -110,7 +111,7 @@ public class Client {
 			
 			switch (msg.getDescription()) {
 			case Protocol.StartAssignment:
-				manager.assignmentStarted();
+				manager.assignmentStarted((AssignmentOptions) msg.getContent());
 				break;
 			case Protocol.RequestWork:
 				sendWork();
@@ -137,7 +138,6 @@ public class Client {
 		
 		private void sendWork() {
 			ParticipantWorkState pws = manager.getParticipantWorkState();
-			Debug.log("Sending text length = " + pws.getDocument().getLength());
 			Message work = new Message(Protocol.SendRequestedWork, pws);
 			sendMessage(work);
 		}
@@ -145,6 +145,7 @@ public class Client {
 		private void sendMessage(Message msg) {
 			try {
 				objOut.writeObject(msg);
+				objOut.reset();
 			} catch (IOException e) {
 				Debug.error("Unable to send message to server.");
 				e.printStackTrace();

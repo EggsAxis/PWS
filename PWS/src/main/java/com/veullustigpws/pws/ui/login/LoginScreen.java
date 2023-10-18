@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -16,10 +17,15 @@ import javax.swing.JTextField;
 
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.AppConstants;
+import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
+import com.veullustigpws.pws.resources.fonts.AppFonts;
+import com.veullustigpws.pws.ui.appearance.CustomButtonUI;
+import com.veullustigpws.pws.ui.appearance.DefaultButton;
+import com.veullustigpws.pws.ui.appearance.TestBtn;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
@@ -42,7 +48,6 @@ public class LoginScreen extends JPanel {
 	public LoginScreen() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		
 		initComponents();
 		
 		// DEBUG
@@ -54,7 +59,7 @@ public class LoginScreen extends JPanel {
 	private void initComponents() {
 		
 		centerPnl = new JPanel();
-		centerPnl.setBackground(AppConstants.defaultBackgroundColor);
+		centerPnl.setBackground(ColorPalet.DefaultBackgroundColor);
 		centerPnl.setLayout(new BorderLayout());
 		centerPnl.setMaximumSize(size);
 		centerPnl.setMinimumSize(size);
@@ -75,14 +80,17 @@ public class LoginScreen extends JPanel {
 	private void createButtonPanel() {
 		JButton loginBtn = new JButton("Login");
 		Dimension btnDim = new Dimension(310, 45);
+		loginBtn.setForeground(Color.red); //Doesn't change color for some reason
 		loginBtn.setPreferredSize(btnDim);
 		loginBtn.setMaximumSize(btnDim);
 		loginBtn.setMinimumSize(btnDim);
 		loginBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
 		loginBtn.setFocusable(false);
+		loginBtn.setUI(new DefaultButton(ColorPalet.DefaultButton));
 		loginBtn.addActionListener(e -> {
 			connect();
 		});
+		
 		
 		JPanel bottomPnl = new JPanel();
 		bottomPnl.setLayout(new BoxLayout(bottomPnl, BoxLayout.X_AXIS));
@@ -110,6 +118,7 @@ public class LoginScreen extends JPanel {
 		
 		// Name
 		JLabel nameLbl = new JLabel("Naam");
+		nameLbl.setFont(AppFonts.DefaultFont.deriveFont(Font.PLAIN, 14f));
 		nameTF = new JTextField();
 		initTextField(nameTF);
 		leftPnl.add(nameLbl);
@@ -178,7 +187,6 @@ public class LoginScreen extends JPanel {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.setBorder(BorderFactory.createEmptyBorder(0, indent, 0, 0));
-//		panel.add(Box.createRigidArea(new Dimension(indent, 0)));
 		panel.add(tf);
 		return panel;
 	}

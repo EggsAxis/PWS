@@ -8,6 +8,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import com.veullustigpws.pws.ui.appearance.CheckSlider;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
 public class RoomOptionsPanel extends JPanel {

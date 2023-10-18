@@ -29,8 +29,6 @@ public class Server implements Runnable{
 	private ServerSocket socket;
 	private ExecutorService threadpool;
 	
-
-	
 	
 	public Server(HostingManager manager) {
 		this.manager = manager;
@@ -77,12 +75,12 @@ public class Server implements Runnable{
 	
 	public void startAssignment() {
 		joinable = false;
-		broadcast(Protocol.StartAssignment);
+		broadcast(new Message(Protocol.StartAssignment, manager.getAssignmentOptions()));
 	}
 	
 	
 	
-	public void broadcast(String msg) {
+	public void broadcast(Message msg) {
 		for (ConnectionHandler ch : connections) {
 			ch.sendMessage(msg);
 		}
@@ -150,6 +148,7 @@ public class Server implements Runnable{
 				case Protocol.SendRequestedWork:
 					ParticipantWorkState pws = (ParticipantWorkState) msg.getContent();
 					manager.receivedRequestedWork(pws, ID);
+					
 					break;
 				default: 
 					Debug.error("Unable to read protocol of server input.");
@@ -170,9 +169,18 @@ public class Server implements Runnable{
 			}
 		}
 		
+		public void sendMessage(Message msg) {
+			try {
+				objOut.writeObject(msg);
+				objOut.reset();
+			} catch (IOException e) {
+				Debug.error("Unable to send message.");
+			}
+		}
 		public void sendMessage(String msg) {
 			try {
 				objOut.writeObject(new Message(msg));
+				objOut.reset();
 			} catch (IOException e) {
 				Debug.error("Unable to send message.");
 			}
