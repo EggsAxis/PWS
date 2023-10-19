@@ -41,7 +41,7 @@ public class LoginScreen extends JPanel {
 	
 	
 	public LoginScreen() {
-		// CHagne 2
+		// Test Change
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		initComponents();
