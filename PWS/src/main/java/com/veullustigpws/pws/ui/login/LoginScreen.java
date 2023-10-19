@@ -16,14 +16,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.veullustigpws.pws.app.App;
-import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
-import com.veullustigpws.pws.ui.appearance.CustomButtonUI;
+import com.veullustigpws.pws.ui.appearance.DefaultButtonUI;
+import com.veullustigpws.pws.ui.appearance.RoundPanel;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
@@ -35,7 +35,7 @@ public class LoginScreen extends JPanel {
 	private static final int COMPONENT_PADDING = 5;
 	private static final int TEXTFIELD_INDENT = 10;
 	
-	private JPanel centerPnl;
+	private RoundPanel centerPnl;
 	
 	private JTextField nameTF;
 	private JTextField studentNumberTF;
@@ -45,6 +45,7 @@ public class LoginScreen extends JPanel {
 	
 	public LoginScreen() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setBackground(Color.white);
 		
 		initComponents();
 		
@@ -56,8 +57,8 @@ public class LoginScreen extends JPanel {
 
 	private void initComponents() {
 		
-		centerPnl = new JPanel();
-		centerPnl.setBackground(AppConstants.defaultBackgroundColor);
+		centerPnl = new RoundPanel(90);
+		centerPnl.setBackground(ColorPalet.DefaultBackgroundColor);
 		centerPnl.setLayout(new BorderLayout());
 		centerPnl.setMaximumSize(size);
 		centerPnl.setMinimumSize(size);
@@ -83,10 +84,11 @@ public class LoginScreen extends JPanel {
 		loginBtn.setMinimumSize(btnDim);
 		loginBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
 		loginBtn.setFocusable(false);
-		loginBtn.setUI(new CustomButtonUI(ColorPalet.DefaultBackgroundColor));
+		loginBtn.setUI(new DefaultButtonUI());
 		loginBtn.addActionListener(e -> {
 			connect();
 		});
+		
 		
 		JPanel bottomPnl = new JPanel();
 		bottomPnl.setLayout(new BoxLayout(bottomPnl, BoxLayout.X_AXIS));

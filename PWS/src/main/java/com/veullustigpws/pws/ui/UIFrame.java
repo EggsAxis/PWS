@@ -60,8 +60,8 @@ public class UIFrame extends JFrame {
 			setScreen(roomOptionsScreen);
 		}
 		else {
-//			setScreen(loginScreen);
-			setScreen(new EditorScreen(null));
+			setScreen(loginScreen);
+//			setScreen(new EditorScreen(null));
 			
 		}
 		this.setMinimumSize(new Dimension(800, 500));
