@@ -22,6 +22,6 @@ public class RoundPanel extends JPanel {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		g.setColor(getBackground());
-		g.fillRoundRect(0, 0, getWidth(), getHeight(), roundness, roundness); //test
+		g.fillRoundRect(0, 0, getWidth(), getHeight(), roundness, roundness); 
 	}
 }

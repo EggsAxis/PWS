@@ -1,5 +1,6 @@
 package com.veullustigpws.pws.ui.appearance;
 
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -16,9 +17,9 @@ import com.veullustigpws.pws.resources.fonts.AppFonts;
 
 public class DefaultButtonUI extends BasicButtonUI {
 	
-	private Font font = AppFonts.DefaultFont.deriveFont(Font.PLAIN, 14);
+	private Font font = AppFonts.DefaultFont;
 
-	private static final int roundness = 20;
+	private static final int roundness = 15;
 	
 	@Override
 	public void paint(Graphics graphics, JComponent c) {
@@ -32,7 +33,7 @@ public class DefaultButtonUI extends BasicButtonUI {
 		g.fillRoundRect(0, 0, button.getWidth(), button.getHeight(), roundness, roundness);
 		
 		// Text
-		g.setColor(ColorPalet.DefaultText);
+		g.setColor(ColorPalet.BlackText);
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 		int textX = ((button.getWidth() - fm.stringWidth(button.getText())) / 2);

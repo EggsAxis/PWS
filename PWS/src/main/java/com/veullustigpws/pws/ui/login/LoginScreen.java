@@ -13,7 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.StyledEditorKit.ItalicAction;
+
 import com.veullustigpws.pws.app.App;
+import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
@@ -21,6 +24,7 @@ import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
 import com.veullustigpws.pws.ui.appearance.DefaultButtonUI;
+import com.veullustigpws.pws.ui.appearance.DefaultLabelUI_doesntwork;
 import com.veullustigpws.pws.ui.appearance.RoundPanel;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
@@ -77,6 +81,7 @@ public class LoginScreen extends JPanel {
 	private void createButtonPanel() {
 		JButton loginBtn = new JButton("Login");
 		Dimension btnDim = new Dimension(310, 45);
+		loginBtn.setForeground(ColorPalet.LoginText);
 		loginBtn.setPreferredSize(btnDim);
 		loginBtn.setMaximumSize(btnDim);
 		loginBtn.setMinimumSize(btnDim);
@@ -113,8 +118,9 @@ public class LoginScreen extends JPanel {
 		leftPnl.add(Box.createVerticalGlue());
 		
 		// Name
-		JLabel nameLbl = new JLabel("Naam");
-		nameLbl.setFont(AppFonts.DefaultFont.deriveFont(Font.PLAIN, 14f));
+		JLabel nameLbl = new JLabel("naam");
+		nameLbl.setFont(AppFonts.DefaultFont);
+		nameLbl.setForeground(ColorPalet.LoginText);
 		nameTF = new JTextField();
 		initTextField(nameTF);
 		leftPnl.add(nameLbl);
@@ -123,8 +129,11 @@ public class LoginScreen extends JPanel {
 		
 		addComponentPadding(leftPnl);
 		
+		
 		// Student number
-		JLabel studentNumberLbl = new JLabel("Leerlingnummer");
+		JLabel studentNumberLbl = new JLabel("leerlingnummer");
+		studentNumberLbl.setFont(AppFonts.DefaultFont);
+		studentNumberLbl.setForeground(ColorPalet.LoginText);
 		studentNumberTF = new JTextField();
 		initTextField(studentNumberTF);
 		leftPnl.add(studentNumberLbl);
@@ -134,7 +143,9 @@ public class LoginScreen extends JPanel {
 		addComponentPadding(leftPnl);
 		
 		// password 
-		JLabel passwordLbl = new JLabel("Wachtwoord");
+		JLabel passwordLbl = new JLabel("wachtwoord"); 
+		passwordLbl.setFont(AppFonts.DefaultFont);
+		passwordLbl.setForeground(ColorPalet.LoginText);
 		passwordTF = new JTextField();
 		initTextField(passwordTF);
 		leftPnl.add(passwordLbl);
@@ -155,6 +166,8 @@ public class LoginScreen extends JPanel {
 		
 		// Code
 		JLabel codeLbl = new JLabel("Code");
+		codeLbl.setFont(AppFonts.DefaultFont);
+		codeLbl.setForeground(ColorPalet.LoginText);
 		codeTF = new JTextField();
 		codeTF.addKeyListener(new TextFieldSizeLimiter(codeTF, 11));
 		codeTF.addKeyListener(new TextFieldIntegerInputFilter());
