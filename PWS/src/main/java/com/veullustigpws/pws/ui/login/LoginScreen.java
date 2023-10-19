@@ -220,7 +220,7 @@ public class LoginScreen extends JPanel {
 			}
 		}
 	}
-	
+	// test
 	public void incorrectPassword() {
 		JOptionPane.showMessageDialog(null, "Het wachtwoord is onjuist.", "Error", JOptionPane.OK_OPTION);
 	}
