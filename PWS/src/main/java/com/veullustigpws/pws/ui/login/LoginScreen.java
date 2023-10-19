@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -14,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.app.Debug;
@@ -222,7 +220,7 @@ public class LoginScreen extends JPanel {
 			}
 		}
 	}
-	
+	// test
 	public void incorrectPassword() {
 		JOptionPane.showMessageDialog(null, "Het wachtwoord is onjuist.", "Error", JOptionPane.OK_OPTION);
 	}
