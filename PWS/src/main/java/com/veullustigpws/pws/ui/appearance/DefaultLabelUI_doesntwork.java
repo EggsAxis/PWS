@@ -28,7 +28,7 @@ public class DefaultLabelUI_doesntwork extends JLabel {
 		Graphics2D g = (Graphics2D) graphics;
 		
 		g.setColor(ColorPalet.WhiteText);
-		g.setFont(AppFonts.DefaultFont.deriveFont(Font.PLAIN, 16));
+		g.setFont(AppFonts.DefaultFont);
 	
 	}
 }

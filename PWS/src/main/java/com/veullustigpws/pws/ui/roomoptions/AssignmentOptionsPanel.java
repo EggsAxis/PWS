@@ -12,6 +12,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import com.veullustigpws.pws.app.ColorPalet;
+import com.veullustigpws.pws.resources.fonts.AppFonts;
 import com.veullustigpws.pws.ui.appearance.CheckSlider;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
@@ -30,7 +32,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(width, 700));
 		this.setBorder(BorderFactory.createEmptyBorder(50, 20, 0, 20));
-		
+		this.setBackground(ColorPalet.DefaultBackgroundColor); //background color
 		initComponents();
 		
 		// DEBUG
@@ -64,6 +66,8 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Assignment description
 		JLabel descriptionLbl = new JLabel("Opdrachtbeschrijving");
+		descriptionLbl.setFont(AppFonts.DefaultFont);
+		descriptionLbl.setForeground(ColorPalet.DefaultWhiteColor);
 		descriptionTextArea = new JTextArea();
 		descriptionTextArea.setWrapStyleWord(true);
 		descriptionTextArea.setLineWrap(true);
@@ -80,6 +84,8 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Duration
 		JLabel durationLbl = new JLabel("Lengte (minuten)");
+		durationLbl.setFont(AppFonts.DefaultFont);
+		durationLbl.setForeground(ColorPalet.DefaultWhiteColor);
 		durationTF = new JTextField();
 		durationTF.setTransferHandler(null); // Disables copy-paste
 		durationTF.setMaximumSize(new Dimension(40, 25));
@@ -96,6 +102,8 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Word count
 		JLabel wordCountLbl = new JLabel("Woordendoel");
+		wordCountLbl.setFont(AppFonts.DefaultFont);
+		wordCountLbl.setForeground(ColorPalet.DefaultWhiteColor);
 		wordCountTF = new JTextField();
 		wordCountTF.setTransferHandler(null); // Disables copy-paste
 		wordCountTF.setMaximumSize(new Dimension(40, 25));
@@ -112,6 +120,8 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Time reminder
 		JLabel timeReminderLabel = new JLabel("Tijdsherinnering");
+		timeReminderLabel.setFont(AppFonts.DefaultFont);
+		timeReminderLabel.setForeground(ColorPalet.DefaultWhiteColor);
 		timerReminderSlider = new CheckSlider();
 		timerReminderSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
 		JLabel freqLbl = new JLabel("Frequentie");

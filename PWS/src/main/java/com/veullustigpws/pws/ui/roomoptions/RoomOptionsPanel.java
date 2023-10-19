@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.ui.appearance.CheckSlider;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
@@ -26,6 +27,7 @@ public class RoomOptionsPanel extends JPanel {
 		this.setPreferredSize(new Dimension(width, 700));
 		this.setBorder(BorderFactory.createEmptyBorder(50, 20, 0, 20));
 		initComponents();
+		this.setBackground(ColorPalet.DefaultBackgroundColor); //background color
 		
 		// DEBUG
 		roomNameTF.setText("Test room");
