@@ -1,6 +1,10 @@
 package com.veullustigpws.pws.assignment;
 
-public class AssignmentOptions {
+import java.io.Serializable;
+
+public class AssignmentOptions implements Serializable {
+	private static final long serialVersionUID = -5915536963122121295L;
+	
 	
 	// Assignment options
 	private String assignmentName;

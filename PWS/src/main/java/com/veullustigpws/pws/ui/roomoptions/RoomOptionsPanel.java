@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.ui.appearance.CheckSlider;
+import com.veullustigpws.pws.ui.appearance.WhiteLabel;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
 public class RoomOptionsPanel extends JPanel {
@@ -42,7 +43,7 @@ public class RoomOptionsPanel extends JPanel {
 		this.add(Box.createRigidArea(new Dimension(0, 60)));
 		
 		// Room name
-		JLabel roomNameLbl = new JLabel("Omgevingsnaam");
+		WhiteLabel roomNameLbl = new WhiteLabel("Omgevingsnaam");
 		roomNameTF = new JTextField();
 		roomNameTF.setMaximumSize(new Dimension(200, 30));
 		roomNameTF.setAlignmentX(Component.LEFT_ALIGNMENT);

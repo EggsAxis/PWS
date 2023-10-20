@@ -13,6 +13,7 @@ import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
 import com.veullustigpws.pws.ui.editor.parts.DocumentEditor;
+import com.veullustigpws.pws.ui.editor.parts.EditorInfo;
 import com.veullustigpws.pws.ui.editor.parts.EditorMenu;
 
 public class EditorScreen extends JPanel {
@@ -21,6 +22,7 @@ public class EditorScreen extends JPanel {
 	
 	private DocumentEditor docEditor;
 	private TextEditorManager textEditorManager;
+	private EditorInfo editorInfoPanel;
 	
 	private ParticipantManager manager;
 	
@@ -45,6 +47,7 @@ public class EditorScreen extends JPanel {
 		
 		// Menu
 		EditorMenu menu = new EditorMenu(textEditorManager);
+		editorInfoPanel = new EditorInfo(manager);
 		
 		JScrollPane scrollTextPane = new JScrollPane(docEditor);
 		scrollTextPane.setMaximumSize(new Dimension(1000, 9999));
@@ -59,10 +62,21 @@ public class EditorScreen extends JPanel {
 		
 		// Add together
 		this.add(menu, BorderLayout.SOUTH);
+		this.add(editorInfoPanel, BorderLayout.NORTH);
 		this.add(centerPanel, BorderLayout.CENTER);
 	}
 	
 	public StyledDocument getStyledDocument() {
 		return docEditor.getStyledDocument();
+	}
+	
+	public void setRemainingTime(String time) {
+		editorInfoPanel.setRemainingTime(time);
+	}
+	public void setWordCount(int wordcount) {
+		editorInfoPanel.setWordCount(wordcount);
+	}
+	public void setAssignmentName(String name) {
+		editorInfoPanel.setAssignmentName(name);
 	}
 }

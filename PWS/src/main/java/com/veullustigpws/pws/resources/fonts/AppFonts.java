@@ -18,6 +18,7 @@ public class AppFonts {
 			DefaultFont = Font.createFont(Font.TRUETYPE_FONT, new File(AppFonts.class.getResource("default_font.ttf").getFile()));
 			DefaultFont = DefaultFont.deriveFont(Font.PLAIN, 16);
 			SecondFont = DefaultFont.deriveFont(Font.PLAIN, 12);
+			
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			ge.registerFont(DefaultFont);
 		} catch (FontFormatException | IOException e) {

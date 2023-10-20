@@ -9,10 +9,16 @@ import javax.swing.JPanel;
 public class RoundPanel extends JPanel {
 	private static final long serialVersionUID = 1688344625527908444L;
 	
-	private int roundness;
+	public static final int ALL_EDGES = 0;
+	public static final int BOTTOM_EDGES = 1;
 	
-	public RoundPanel(int roundness) {
+	private int roundness;
+	private int type;
+	
+	
+	public RoundPanel(int roundness, int type) {
 		this.roundness = roundness;
+		this.type = type;
 	}
 	
 	
@@ -22,6 +28,7 @@ public class RoundPanel extends JPanel {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		g.setColor(getBackground());
-		g.fillRoundRect(0, 0, getWidth(), getHeight(), roundness, roundness); 
+		if (type == ALL_EDGES) 			g.fillRoundRect(0, 0, getWidth(), getHeight(), roundness, roundness);
+		else if (type == BOTTOM_EDGES) 	g.fill(ShapeGenerator.createBottomRoundedRect(0, 0, getWidth(), getHeight(), roundness));
 	}
 }

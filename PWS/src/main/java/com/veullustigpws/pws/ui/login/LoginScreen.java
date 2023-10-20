@@ -59,7 +59,7 @@ public class LoginScreen extends JPanel {
 
 	private void initComponents() {
 		
-		centerPnl = new RoundPanel(90);
+		centerPnl = new RoundPanel(90, RoundPanel.ALL_EDGES);
 		centerPnl.setBackground(ColorPalet.DefaultBackgroundColor);
 		centerPnl.setLayout(new BorderLayout());
 		centerPnl.setMaximumSize(size);
@@ -118,7 +118,7 @@ public class LoginScreen extends JPanel {
 		leftPnl.add(Box.createVerticalGlue());
 		
 		// Name
-		JLabel nameLbl = new JLabel("naam");
+		JLabel nameLbl = new JLabel("Naam");
 		nameLbl.setFont(AppFonts.DefaultFont);
 		nameLbl.setForeground(ColorPalet.LoginText);
 		nameTF = new JTextField();
@@ -131,7 +131,7 @@ public class LoginScreen extends JPanel {
 		
 		
 		// Student number
-		JLabel studentNumberLbl = new JLabel("leerlingnummer");
+		JLabel studentNumberLbl = new JLabel("Leerlingnummer");
 		studentNumberLbl.setFont(AppFonts.DefaultFont);
 		studentNumberLbl.setForeground(ColorPalet.LoginText);
 		studentNumberTF = new JTextField();
@@ -143,7 +143,7 @@ public class LoginScreen extends JPanel {
 		addComponentPadding(leftPnl);
 		
 		// password 
-		JLabel passwordLbl = new JLabel("wachtwoord"); 
+		JLabel passwordLbl = new JLabel("Wachtwoord"); 
 		passwordLbl.setFont(AppFonts.DefaultFont);
 		passwordLbl.setForeground(ColorPalet.LoginText);
 		passwordTF = new JTextField();

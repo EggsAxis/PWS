@@ -1,5 +1,8 @@
 package com.veullustigpws.pws.connection.client;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import com.veullustigpws.pws.app.App;
@@ -24,6 +27,7 @@ public class ParticipantManager {
 	private ParticipantData participantData;
 	
 	private AssignmentOptions assignmentOptions;
+	private long startTime;
 	
 	public ParticipantManager(ParticipantConnectData connectData, LoginScreen loginScreen) throws WrongConnectionDataException {
 		this.loginScreen = loginScreen;
@@ -41,6 +45,31 @@ public class ParticipantManager {
 		App.Window.setScreen(waitingScreen);
 	}
 	
+	public void assignmentStarted(AssignmentOptions assignmentOptions) {
+		this.assignmentOptions = assignmentOptions;
+		App.Window.setScreen(editorScreen);
+		
+		startTime = System.currentTimeMillis();
+		infoUpdateTimer();
+		editorScreen.setAssignmentName(assignmentOptions.getAssignmentName());
+		
+		Debug.log("Assignment has started.");
+	}
+	
+	private void infoUpdateTimer() {
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				int wordCount = getWordCount();
+				
+				editorScreen.setWordCount(wordCount);
+				editorScreen.setRemainingTime(getRemainingTime());
+			}
+		}, 0, 1000);
+		
+	}
+
 	public void startClient(ParticipantConnectData participantConnectData) throws WrongConnectionDataException {
 		try {
 			client = new Client(this);
@@ -53,6 +82,15 @@ public class ParticipantManager {
 	
 	public ParticipantWorkState getParticipantWorkState() {
 		StyledDocument doc = editorScreen.getStyledDocument();
+		int wordCount = getWordCount();
+		
+		ParticipantWorkState pws = new ParticipantWorkState(participantData, doc, wordCount);
+		Debug.log("Sent ParticipantWorkState");
+		return pws;
+	}
+	
+	public int getWordCount() {
+		StyledDocument doc = editorScreen.getStyledDocument();
 		
 		// Get word count
 		String txt = "";
@@ -61,11 +99,8 @@ public class ParticipantManager {
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-		int wordCount = StringUtilities.getWordCount(txt);
 		
-		ParticipantWorkState pws = new ParticipantWorkState(participantData, doc, wordCount);
-		Debug.log("Sent ParticipantWorkState");
-		return pws;
+		return StringUtilities.getWordCount(txt);
 	}
 	
 	public void leave() {
@@ -86,12 +121,17 @@ public class ParticipantManager {
 	}
 	
 	
-	public void assignmentStarted(AssignmentOptions assignmentOptions) {
-		this.assignmentOptions = assignmentOptions;
-		App.Window.setScreen(editorScreen);
-		Debug.log("Assignment has started.");
-	}
 	
+	public String getRemainingTime() {
+		long currentTime = System.currentTimeMillis();
+		long timePassed = (currentTime - startTime)/1000; // In seconds
+		long timeRemaining = assignmentOptions.getAssignmentDuration() * 60 - timePassed;
+		String timeStr = (timeRemaining/60/60) + ":" + (timeRemaining/60) + ":" + (timeRemaining%60);
+		return timeStr;
+	}
+	public AssignmentOptions getAssignmentOptions() {
+		return assignmentOptions;
+	}
 	// Setters
 	public ParticipantData getParticipantData() {
 		return participantData;

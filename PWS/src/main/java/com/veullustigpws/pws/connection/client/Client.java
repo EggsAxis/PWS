@@ -104,6 +104,7 @@ public class Client {
 				}
 			} catch (IOException | ClassNotFoundException e) {
 				Debug.error("Unable to receive message from server.");
+				e.printStackTrace();
 			}
 		}
 		
