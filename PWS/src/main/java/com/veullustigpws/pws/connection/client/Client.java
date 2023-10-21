@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.AssignmentOptions;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
@@ -114,6 +113,10 @@ public class Client {
 			case Protocol.StartAssignment:
 				manager.assignmentStarted((AssignmentOptions) msg.getContent());
 				break;
+			case Protocol.PausedAssignment:
+				long pauseDuration = (long) msg.getContent();
+				manager.assignmentPaused(pauseDuration);
+				break;
 			case Protocol.RequestWork:
 				sendWork();
 				break;
@@ -124,6 +127,7 @@ public class Client {
 				manager.incorrectPassword();
 				shutdown();
 				break;
+				
 			default:
 				Debug.error("Unknown server input.");
 			}

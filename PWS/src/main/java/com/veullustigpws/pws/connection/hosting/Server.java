@@ -11,7 +11,6 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
@@ -21,18 +20,16 @@ import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.utils.JoinCodeGenerator;
 
 public class Server implements Runnable{
-	
-	private boolean joinable;
 	private HostingManager manager;
 	
 	private ArrayList<ConnectionHandler> connections;
 	private ServerSocket socket;
 	private ExecutorService threadpool;
 	
+	private boolean assignmentStarted = false;
 	
 	public Server(HostingManager manager) {
 		this.manager = manager;
-		joinable = true;
 		connections = new ArrayList<>();
 		
 		Thread thread = new Thread(this);
@@ -60,7 +57,7 @@ public class Server implements Runnable{
 			
 			// Accept all clients
 			threadpool = Executors.newCachedThreadPool();
-			while (joinable) {
+			while (true) {
 				Socket client = socket.accept();
 				ConnectionHandler handler = new ConnectionHandler(client);
 				connections.add(handler);
@@ -74,10 +71,9 @@ public class Server implements Runnable{
 	}
 	
 	public void startAssignment() {
-		joinable = false;
+		assignmentStarted = true;
 		broadcast(new Message(Protocol.StartAssignment, manager.getAssignmentOptions()));
 	}
-	
 	
 	
 	public void broadcast(Message msg) {
@@ -140,6 +136,12 @@ public class Server implements Runnable{
 					ParticipantData pd = (ParticipantData) msg.getContent();
 					pd.setID(ID);
 					manager.participantEntered(pd);
+					
+					// Start their session if the assignment had already started
+					if (assignmentStarted) {
+						manager.updateRunningTime();
+						sendMessage(new Message(Protocol.StartAssignment, manager.getAssignmentOptions()));
+					}
 					break;
 				case Protocol.ParticipantLeaves:
 					manager.participantLeft(ID);

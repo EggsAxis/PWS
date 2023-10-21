@@ -1,4 +1,4 @@
-package com.veullustigpws.pws.ui.appearance;
+package com.veullustigpws.pws.ui.components;
 
 import javax.swing.JLabel;
 

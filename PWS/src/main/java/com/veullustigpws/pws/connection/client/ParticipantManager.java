@@ -2,8 +2,6 @@ package com.veullustigpws.pws.connection.client;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
@@ -15,7 +13,7 @@ import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.ui.ParticipantWaitingScreen;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
 import com.veullustigpws.pws.ui.login.LoginScreen;
-import com.veullustigpws.pws.utils.StringUtilities;
+import com.veullustigpws.pws.utils.AssignmentUtilities;
 
 public class ParticipantManager {
 	
@@ -28,6 +26,7 @@ public class ParticipantManager {
 	
 	private AssignmentOptions assignmentOptions;
 	private long startTime;
+	private boolean paused = false;
 	
 	public ParticipantManager(ParticipantConnectData connectData, LoginScreen loginScreen) throws WrongConnectionDataException {
 		this.loginScreen = loginScreen;
@@ -47,13 +46,24 @@ public class ParticipantManager {
 	
 	public void assignmentStarted(AssignmentOptions assignmentOptions) {
 		this.assignmentOptions = assignmentOptions;
-		App.Window.setScreen(editorScreen);
-		
-		startTime = System.currentTimeMillis();
-		infoUpdateTimer();
+		startTime = System.currentTimeMillis() - assignmentOptions.getRunningTime();
 		editorScreen.setAssignmentName(assignmentOptions.getAssignmentName());
 		
+		infoUpdateTimer();
+		App.Window.setScreen(editorScreen);
 		Debug.log("Assignment has started.");
+	}
+	
+	public void assignmentPaused(long pauseDuration) {
+		paused = !paused;
+		editorScreen.setPaused(paused);
+		
+		if (paused) {
+			Debug.log("Assignment was paused.");
+		} else {
+			startTime += pauseDuration;
+			Debug.log("Assignment was resumed.");
+		}
 	}
 	
 	private void infoUpdateTimer() {
@@ -61,6 +71,7 @@ public class ParticipantManager {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
+				if (paused) return;
 				int wordCount = getWordCount();
 				
 				editorScreen.setWordCount(wordCount);
@@ -91,16 +102,7 @@ public class ParticipantManager {
 	
 	public int getWordCount() {
 		StyledDocument doc = editorScreen.getStyledDocument();
-		
-		// Get word count
-		String txt = "";
-		try {
-			txt = doc.getText(0, doc.getLength());
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
-		
-		return StringUtilities.getWordCount(txt);
+		return AssignmentUtilities.getWordCount(doc);
 	}
 	
 	public void leave() {
@@ -123,11 +125,7 @@ public class ParticipantManager {
 	
 	
 	public String getRemainingTime() {
-		long currentTime = System.currentTimeMillis();
-		long timePassed = (currentTime - startTime)/1000; // In seconds
-		long timeRemaining = assignmentOptions.getAssignmentDuration() * 60 - timePassed;
-		String timeStr = (timeRemaining/60/60) + ":" + (timeRemaining/60) + ":" + (timeRemaining%60);
-		return timeStr;
+		return AssignmentUtilities.getRemainingTime(startTime, assignmentOptions.getAssignmentDuration());
 	}
 	public AssignmentOptions getAssignmentOptions() {
 		return assignmentOptions;

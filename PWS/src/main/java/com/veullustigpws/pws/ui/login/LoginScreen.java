@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -13,10 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.text.StyledEditorKit.ItalicAction;
-
 import com.veullustigpws.pws.app.App;
-import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
@@ -24,8 +20,7 @@ import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
 import com.veullustigpws.pws.ui.appearance.DefaultButtonUI;
-import com.veullustigpws.pws.ui.appearance.DefaultLabelUI_doesntwork;
-import com.veullustigpws.pws.ui.appearance.RoundPanel;
+import com.veullustigpws.pws.ui.components.RoundPanel;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
@@ -59,7 +54,7 @@ public class LoginScreen extends JPanel {
 
 	private void initComponents() {
 		
-		centerPnl = new RoundPanel(90, RoundPanel.ALL_EDGES);
+		centerPnl = new RoundPanel(90, RoundPanel.ALL_CORNERS);
 		centerPnl.setBackground(ColorPalet.DefaultBackgroundColor);
 		centerPnl.setLayout(new BorderLayout());
 		centerPnl.setMaximumSize(size);

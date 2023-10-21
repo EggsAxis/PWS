@@ -1,25 +1,24 @@
 package com.veullustigpws.pws.ui.editor.parts;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
 import javax.swing.text.StyledEditorKit;
 import com.veullustigpws.pws.app.AppConstants;
+import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.listeners.EditorMenuListener;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
+import com.veullustigpws.pws.ui.appearance.DefaultButtonUI;
+import com.veullustigpws.pws.ui.components.RoundPanel;
+import com.veullustigpws.pws.ui.components.TextDecorationButton;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 
-public class EditorMenu extends JScrollPane {
+public class EditorMenu extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private EditorMenuListener menuListener;
@@ -28,111 +27,89 @@ public class EditorMenu extends JScrollPane {
 	private JPanel inner;
 	
 	private final int padding = 7;
+	
+	private TextDecorationButton boldBtn;
+	private TextDecorationButton italicBtn;
+	private TextDecorationButton underlineBtn;
+	private JTextField fontSizeTF;
 
 	public EditorMenu(TextEditorManager textEditorManager) {
 		this.textEditorManager = textEditorManager;
 		menuListener = new EditorMenuListener(textEditorManager);
 		
-		Dimension dim = new Dimension(800, 90);
-		this.setMaximumSize(dim);
-		this.setMinimumSize(dim);
-		this.setPreferredSize(dim);
-		
-		this.setBackground(new Color(60, 62, 67));
-		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-
+		this.setMaximumSize(new Dimension(9999, 90));
+		this.setOpaque(false);
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		
 		initComponents();
 	}
 
 	private void initComponents() {
-		inner = new JPanel();
+		inner = new RoundPanel(40, RoundPanel.TOP_CORNERS);
 		inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
 		inner.setFocusable(true);
+		inner.setBackground(ColorPalet.DefaultBackgroundColor);
+		inner.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
 		
-		Dimension dim = new Dimension(500, 90);
+		Dimension dim = new Dimension(500, 70);
 		inner.setMaximumSize(dim);
 		inner.setMinimumSize(dim);
 		inner.setPreferredSize(dim);
 		
-		inner.add(Box.createRigidArea(new Dimension(padding, 0)));
-		initFontsizePanel();
+		initFontsizeTextField();
 		inner.add(Box.createRigidArea(new Dimension(padding, 0)));
 		initTextDecorationPanel();
-		inner.add(Box.createRigidArea(new Dimension(padding, 0)));
 		
-		inner.add(Box.createGlue());
+		inner.add(Box.createHorizontalGlue());
 		initHandinButton();
-		inner.add(Box.createRigidArea(new Dimension(2*padding, 0)));
 		
-		this.setViewportView(inner);
+		this.add(Box.createHorizontalGlue());
+		this.add(inner);
+		this.add(Box.createHorizontalGlue());
 	}
 	
 	private void initHandinButton() {
 		JButton handinBtn = new JButton("Inleveren");
 		handinBtn.setFocusable(false);
 		setComponentSize(handinBtn, new Dimension(110, 35));
+		handinBtn.setUI(new DefaultButtonUI());
 		
 		inner.add(handinBtn);
 	}
 
-	private void initFontsizePanel() {
-		JPanel fontsizePanel = new JPanel();
-		fontsizePanel.setFocusable(true);
-		fontsizePanel.setLayout(new BorderLayout());
-		setComponentSize(fontsizePanel, new Dimension(100, 55));
+	private void initFontsizeTextField() {
 		
-		TitledBorder title = BorderFactory.createTitledBorder("Lettergrootte");
-		title.setTitleFont(AppConstants.jPanelTitleFont);
-		fontsizePanel.setBorder(title);
-		
-		JTextField fontSizeTF = new JTextField();
+		fontSizeTF = new JTextField();
 		fontSizeTF.setText("12");
 		fontSizeTF.setFont(AppConstants.textFieldFont);
 		fontSizeTF.setHorizontalAlignment(JTextField.RIGHT);
 		fontSizeTF.addKeyListener(new TextFieldIntegerInputFilter());
 		
 		fontSizeTF.addActionListener(menuListener.new FontSizeListener(fontSizeTF));
+		setComponentSize(fontSizeTF, new Dimension(60, 30));
 		
-		
-		fontsizePanel.add(fontSizeTF, BorderLayout.CENTER);
-		inner.add(fontsizePanel);
+		inner.add(fontSizeTF);
 	}
 	
 	private void initTextDecorationPanel() {
 		JPanel decPanel = new JPanel();
-		decPanel.setMaximumSize(new Dimension(105, 55));
-		decPanel.setFocusable(true);
+		decPanel.setOpaque(false);
 		decPanel.setLayout(new BoxLayout(decPanel, BoxLayout.X_AXIS));
 		
-		TitledBorder title = BorderFactory.createTitledBorder("Decoratie");
-		title.setTitleFont(AppConstants.jPanelTitleFont);
-		decPanel.setBorder(title);
-		
-		JButton boldBtn = new JButton("B");
-		JButton italicBtn = new JButton("I");
-		JButton underlineBtn = new JButton("U");
-		
 		Dimension btnDim = new Dimension(30, 30);
-		setComponentSize(boldBtn, btnDim);
-		setComponentSize(italicBtn, btnDim);
-		setComponentSize(underlineBtn, btnDim);
-		
-		boldBtn.setMargin(new Insets(0,0,0,0));
-		italicBtn.setMargin(new Insets(0,0,0,0));
-		underlineBtn.setMargin(new Insets(0,0,0,0));
-		
-		boldBtn.setFocusable(false);
-		italicBtn.setFocusable(false);
-		underlineBtn.setFocusable(false);
+		boldBtn = new TextDecorationButton(TextDecorationButton.BOLD, btnDim);
+		italicBtn = new TextDecorationButton(TextDecorationButton.ITALIC, btnDim);
+		underlineBtn = new TextDecorationButton(TextDecorationButton.UNDERLINE, btnDim);
 		
 		boldBtn.addActionListener(new StyledEditorKit.BoldAction());
 		italicBtn.addActionListener(new StyledEditorKit.ItalicAction());
 		underlineBtn.addActionListener(new StyledEditorKit.UnderlineAction());
 		
+		int btnPadding = 4;
 		decPanel.add(boldBtn);
+		decPanel.add(Box.createRigidArea(new Dimension(btnPadding, 0)));
 		decPanel.add(italicBtn);
+		decPanel.add(Box.createRigidArea(new Dimension(btnPadding, 0)));
 		decPanel.add(underlineBtn);
 		
 		inner.add(decPanel);
@@ -143,6 +120,13 @@ public class EditorMenu extends JScrollPane {
 		c.setPreferredSize(size);
 		c.setMaximumSize(size);
 		c.setMinimumSize(size);
+	}
+	
+	public void setEnabled(boolean enabled) {
+		underlineBtn.setEnabled(enabled);
+		italicBtn.setEnabled(enabled);
+		boldBtn.setEnabled(enabled);
+		fontSizeTF.setEditable(enabled);
 	}
 	
 	

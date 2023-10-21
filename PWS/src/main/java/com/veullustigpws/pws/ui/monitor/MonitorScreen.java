@@ -1,16 +1,18 @@
 package com.veullustigpws.pws.ui.monitor;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import com.veullustigpws.pws.app.AppConstants;
+import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
+import com.veullustigpws.pws.ui.components.RoundButton;
+import com.veullustigpws.pws.ui.components.RoundPanel;
 
 public class MonitorScreen extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -18,7 +20,8 @@ public class MonitorScreen extends JPanel {
 	private HostingManager manager;
 	
 	
-	private JLabel timeLabel;
+	private JLabel timeLbl;
+	private JLabel codeLbl;
 	private ParticipantListPanel partsPanel;
 	
 	public MonitorScreen(HostingManager manager) {
@@ -37,36 +40,56 @@ public class MonitorScreen extends JPanel {
 		// Participants panel
 		partsPanel = new ParticipantListPanel(manager);
 		
-		// Bottom menu
-		JPanel bottomMenu = new JPanel();
-		bottomMenu.setLayout(new BoxLayout(bottomMenu, BoxLayout.X_AXIS));
-		bottomMenu.setPreferredSize(new Dimension(9999, 70));
-		bottomMenu.setBackground(AppConstants.defaultBackgroundColor);
-		bottomMenu.setBorder(BorderFactory.createEmptyBorder(5, 40, 10, 40));
+		// Side menu
+		JPanel topMenu = new JPanel();
+		topMenu.setLayout(new BoxLayout(topMenu, BoxLayout.X_AXIS));
+		topMenu.setOpaque(false);
 		
-		// Time label
-		timeLabel = new JLabel("Resterend: 00:00");
-		timeLabel.setFont(new Font("", Font.PLAIN, 20));
+		RoundPanel inner = new RoundPanel(30, RoundPanel.BOTTOM_CORNERS);
+		inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
+		inner.setBackground(ColorPalet.DefaultBackgroundColor);
+		inner.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 40));
+		Dimension innerDim = new Dimension(600, 60);
+		inner.setPreferredSize(innerDim);
+		inner.setMaximumSize(innerDim);
+		inner.setMinimumSize(innerDim);
+		
 		
 		// Buttons
-		Font btnFont = new Font("", Font.BOLD, 18);
-		JButton forceStopBtn = new JButton("Beëindig");
-		JButton pauseBtn = new JButton("Pauzeer");
-		forceStopBtn.setFocusable(false);
-		pauseBtn.setFocusable(false);
-		forceStopBtn.setFont(btnFont);
-		pauseBtn.setFont(btnFont);
+		RoundButton pauseBtn = new RoundButton(16, RoundButton.PLAY_PAUSE);
+		RoundButton stopBtn = new RoundButton(16, RoundButton.STOP);
+		pauseBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
+		stopBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
+		pauseBtn.addActionListener(e -> {
+			manager.pauseAssignment();
+		});
 		
+		// labels
+		timeLbl = new JLabel();
+		codeLbl = new JLabel();
 		
-		bottomMenu.add(timeLabel);
-		bottomMenu.add(Box.createHorizontalGlue());
-		bottomMenu.add(pauseBtn);
-		bottomMenu.add(Box.createHorizontalGlue());
-		bottomMenu.add(forceStopBtn);
+		inner.add(pauseBtn);
+		inner.add(Box.createRigidArea(new Dimension(20, 0)));
+		inner.add(stopBtn);
+		inner.add(Box.createHorizontalGlue());
+		inner.add(timeLbl);
+		inner.add(Box.createHorizontalGlue());
+		inner.add(codeLbl);
+		
+		topMenu.add(Box.createHorizontalGlue());
+		topMenu.add(inner);
+		topMenu.add(Box.createHorizontalGlue());
 		
 		// Add together
 		this.add(partsPanel, BorderLayout.CENTER);
-		this.add(bottomMenu, BorderLayout.SOUTH);
+		this.add(topMenu, BorderLayout.NORTH);
+	}
+	
+	public void setTime(String time) {
+		timeLbl.setText(time);
+	}
+	public void setCode(String code) {
+		codeLbl.setText(code);
 	}
 	
 	public void refreshParticipants() {

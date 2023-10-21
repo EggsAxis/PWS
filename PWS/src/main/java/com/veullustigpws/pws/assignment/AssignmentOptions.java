@@ -18,6 +18,7 @@ public class AssignmentOptions implements Serializable {
 	private String roomName;
 	private String password;
 	private boolean detectionEnabled;
+	private long runningTime;
 	
 	// Getters and setters
 	public String getAssignmentName() {
@@ -73,6 +74,12 @@ public class AssignmentOptions implements Serializable {
 	}
 	public void setDetectionEnabled(boolean detectionEnabled) {
 		this.detectionEnabled = detectionEnabled;
+	}
+	public void setRunningTime(long runningTime) {
+		this.runningTime = runningTime;
+	}
+	public long getRunningTime() {
+		return runningTime;
 	}
 	
 	

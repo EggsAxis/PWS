@@ -9,6 +9,7 @@ public class Protocol {
 	public static final String StartAssignment = "sa";
 	public static final String RequestWork = "rw";
 	public static final String SendRequestedWork = "sw";
+	public static final String PausedAssignment = "pa";
 	
 	public static final String SendPassword = "sp";
 	public static final String IncorrectPassword = "wp";

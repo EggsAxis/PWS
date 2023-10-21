@@ -2,10 +2,9 @@ package com.veullustigpws.pws.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GraphicsDevice;
 import java.awt.Toolkit;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import com.veullustigpws.pws.app.App;
@@ -15,7 +14,6 @@ import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
-import com.veullustigpws.pws.ui.editor.EditorScreen;
 import com.veullustigpws.pws.ui.login.LoginScreen;
 import com.veullustigpws.pws.ui.roomoptions.RoomOptionsScreen;
 
@@ -28,7 +26,7 @@ public class UIFrame extends JFrame {
 	
 	private RoomOptionsScreen roomOptionsScreen;
 	private LoginScreen loginScreen;
-	private JPanel currentPnl;
+	private JComponent currentPnl;
 
 	public UIFrame() {
 		super();
@@ -81,7 +79,7 @@ public class UIFrame extends JFrame {
 		participantManager = new ParticipantManager(participantConnectData, loginScreen);
 	}
 	
-	public void setScreen(JPanel panel) {
+	public void setScreen(JComponent panel) {
 		this.add(panel, BorderLayout.CENTER);
 		if (currentPnl != null) this.remove(currentPnl);
 		this.revalidate();
@@ -89,4 +87,5 @@ public class UIFrame extends JFrame {
 		
 		this.currentPnl = panel;
 	}
+
 }

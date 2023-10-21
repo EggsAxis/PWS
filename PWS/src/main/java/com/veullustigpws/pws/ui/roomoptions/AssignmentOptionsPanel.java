@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
-import com.veullustigpws.pws.ui.appearance.CheckSlider;
+import com.veullustigpws.pws.ui.components.CheckSlider;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 

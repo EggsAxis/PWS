@@ -15,6 +15,7 @@ import com.veullustigpws.pws.listeners.WorkStateListener;
 import com.veullustigpws.pws.ui.FillUpScreen;
 import com.veullustigpws.pws.ui.monitor.MonitorScreen;
 import com.veullustigpws.pws.ui.monitor.ViewWorkScreen;
+import com.veullustigpws.pws.utils.AssignmentUtilities;
 
 public class HostingManager {
 	
@@ -32,9 +33,13 @@ public class HostingManager {
 	private Server server;
 	private String serverCode;
 	
+	private boolean paused = false;
+	private long pauseTime;
+	
 	// Timer
 	private Timer requestTimer;
 	private static final long requestTimerDelay = 5*1000;
+	private long startTime;
 	
 	// Listeners
 	private ArrayList<WorkStateListener> workStateListeners = new ArrayList<>();
@@ -64,15 +69,31 @@ public class HostingManager {
 	}
 	
 	public void startAssignment() {
-		server.startAssignment();
 		App.Window.setScreen(monitorScreen);
 		monitorScreen.refreshParticipants();
-		Debug.log("Started assignment.");
+		monitorScreen.setCode(serverCode);
 		
-		// Start request timer
+		startTime = System.currentTimeMillis();
+		assignmentOptions.setRunningTime(0);
+		server.startAssignment();
+
+		// Start timers
 		startRequestTimer();
+		startTimeTimer();
+		
+		Debug.log("Started assignment.");
 	}
 	
+	private void startTimeTimer() {
+		Timer timeTimer = new Timer();
+		timeTimer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				if (paused) return;
+				monitorScreen.setTime(AssignmentUtilities.getRemainingTime(startTime, assignmentOptions.getAssignmentDuration()));
+			}
+		}, 1000, 1000);
+	}
 	private void startRequestTimer() {
 		requestTimer = new Timer();
 		requestTimer.scheduleAtFixedRate(new TimerTask() {
@@ -84,6 +105,21 @@ public class HostingManager {
 		}, requestTimerDelay, requestTimerDelay);
 	}
 	
+	public void pauseAssignment() {
+		paused = !paused;
+		
+		if (paused) {
+			pauseTime = System.currentTimeMillis();
+			server.broadcast(new Message(Protocol.PausedAssignment, -1L));
+		} else {
+			long pauseDuration = System.currentTimeMillis() - pauseTime;
+			startTime += pauseDuration;
+			server.broadcast(new Message(Protocol.PausedAssignment, pauseDuration));
+		}
+		
+		if (paused) Debug.log("Paused the assignment.");
+		else 		Debug.log("Resumed the assignment.");
+	}
 	
 	public void viewWork(int participantID) {
 		if (!participantWorkStates.containsKey(participantID)) {
@@ -109,6 +145,10 @@ public class HostingManager {
 	}
 	public void openFillUpScreen() {
 		App.Window.setScreen(fillUpScreen);
+	}
+	
+	public void updateRunningTime() {
+		assignmentOptions.setRunningTime(System.currentTimeMillis() - startTime);
 	}
 	
 	
