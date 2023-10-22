@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.assignment.AssignmentOptions;
 import com.veullustigpws.pws.assignment.RoomOptionsValidator;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
