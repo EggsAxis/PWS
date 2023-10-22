@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.text.StyledDocument;
 import com.veullustigpws.pws.app.AppConstants;
+import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
 import com.veullustigpws.pws.ui.editor.parts.DocumentEditor;
@@ -55,7 +56,7 @@ public class EditorScreen extends JPanel {
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 		centerPanel.add(scrollTextPane);
 		centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 120, 30, 120));
-		centerPanel.setBackground(AppConstants.defaultBackgroundColor);
+		centerPanel.setBackground(ColorPalet.DefaultBackgroundColor);
 		
 		// Add together
 		this.add(menu, BorderLayout.SOUTH);

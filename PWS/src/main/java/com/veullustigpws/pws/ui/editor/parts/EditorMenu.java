@@ -16,6 +16,7 @@ import javax.swing.text.StyledEditorKit;
 import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.listeners.EditorMenuListener;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
+import com.veullustigpws.pws.ui.appearance.GreenDefaultButtonUI;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 
 public class EditorMenu extends JScrollPane {
@@ -33,7 +34,6 @@ public class EditorMenu extends JScrollPane {
 		menuListener = new EditorMenuListener(textEditorManager);
 		
 		this.setPreferredSize(new Dimension(9999, 90));
-		this.setBackground(new Color(60, 62, 67));
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
@@ -45,6 +45,7 @@ public class EditorMenu extends JScrollPane {
 		inner = new JPanel();
 		inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
 		inner.setFocusable(true);
+		inner.setBackground(new Color(60,62,67));
 		
 		inner.add(Box.createRigidArea(new Dimension(padding, 0)));
 		initFontsizePanel();
@@ -60,6 +61,7 @@ public class EditorMenu extends JScrollPane {
 	
 	private void initHandinButton() {
 		JButton handinBtn = new JButton("Inleveren");
+		handinBtn.setUI(new GreenDefaultButtonUI());
 		handinBtn.setFocusable(false);
 		
 		inner.add(handinBtn);

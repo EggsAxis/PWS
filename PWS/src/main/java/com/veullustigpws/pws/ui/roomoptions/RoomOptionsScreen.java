@@ -11,9 +11,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.assignment.AssignmentOptions;
 import com.veullustigpws.pws.assignment.RoomOptionsValidator;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
+import com.veullustigpws.pws.ui.appearance.BlueDefaultButtonUI;
+import com.veullustigpws.pws.ui.appearance.RedDefaultButtonUI;
 
 public class RoomOptionsScreen extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -35,10 +38,18 @@ public class RoomOptionsScreen extends JPanel {
 	
 	private void initComponents() {
 		// Done & Cancel buttons
+		
+		//Done button
 		JButton doneBtn = new JButton("Creëer");
-		JButton cancelBtn = new JButton("Annuleer");
+		doneBtn.setUI(new BlueDefaultButtonUI());
 		doneBtn.setFocusable(false);
+		
+		//Cancel button
+		JButton cancelBtn = new JButton("Annuleer");
+		cancelBtn.setUI(new RedDefaultButtonUI());
 		cancelBtn.setFocusable(false);
+		
+		//Done & Cancel sizes
 		Dimension btnDim = new Dimension(100, 35);
 		doneBtn.setPreferredSize(btnDim);
 		cancelBtn.setPreferredSize(btnDim);

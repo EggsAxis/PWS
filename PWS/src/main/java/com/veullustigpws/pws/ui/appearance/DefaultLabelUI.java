@@ -14,7 +14,7 @@ import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
 
-public class DefaultLabelUI_doesntwork extends JLabel {
+public class DefaultLabelUI extends JLabel {
 
 	/**
 	 * 
@@ -23,13 +23,12 @@ public class DefaultLabelUI_doesntwork extends JLabel {
 	
 //	private Font font = AppFonts.DefaultFont.deriveFont(Font.PLAIN , 16); 
 	
-	@Override
-	public void paintComponent(Graphics graphics) {
-		Graphics2D g = (Graphics2D) graphics;
-		
-		g.setColor(ColorPalet.WhiteText);
-		g.setFont(AppFonts.DefaultFont);
+	public DefaultLabelUI(String string){ 
+		this.setText(string);
+		this.setForeground(getForeground());
+		this.setFont(AppFonts.DefaultFont);
 	
+		
 	}
 }
 

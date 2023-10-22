@@ -14,7 +14,9 @@ import javax.swing.JTextField;
 
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
+import com.veullustigpws.pws.ui.appearance.BigTextLabelUI;
 import com.veullustigpws.pws.ui.appearance.CheckSlider;
+import com.veullustigpws.pws.ui.appearance.DefaultLabelUI;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
@@ -44,13 +46,15 @@ public class AssignmentOptionsPanel extends JPanel {
 	
 	private void initComponents() {
 		// Title
-		JLabel title = new JLabel("Opdracht");
+		JLabel title = new BigTextLabelUI("Opdracht");
+		title.setForeground(ColorPalet.DefaultWhiteColor);
 		this.add(title);
 		
 		this.add(Box.createRigidArea(new Dimension(0, 60)));
 		
 		// Room name
-		JLabel assignmentNameLbl = new JLabel("Naam opdracht");
+		JLabel assignmentNameLbl = new DefaultLabelUI("Naam opdracht");
+		assignmentNameLbl.setForeground(ColorPalet.DefaultWhiteColor);
 		assignmentNameTF = new JTextField();
 		assignmentNameTF.setTransferHandler(null); // Disables copy-paste
 		assignmentNameTF.setMaximumSize(new Dimension(200, 30));
@@ -65,8 +69,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		
 		// Assignment description
-		JLabel descriptionLbl = new JLabel("Opdrachtbeschrijving");
-		descriptionLbl.setFont(AppFonts.DefaultFont);
+		JLabel descriptionLbl = new DefaultLabelUI("Opdrachtbeschrijving");
 		descriptionLbl.setForeground(ColorPalet.DefaultWhiteColor);
 		descriptionTextArea = new JTextArea();
 		descriptionTextArea.setWrapStyleWord(true);
@@ -83,8 +86,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		
 		// Duration
-		JLabel durationLbl = new JLabel("Lengte (minuten)");
-		durationLbl.setFont(AppFonts.DefaultFont);
+		JLabel durationLbl = new DefaultLabelUI("Lengte (minuten)");
 		durationLbl.setForeground(ColorPalet.DefaultWhiteColor);
 		durationTF = new JTextField();
 		durationTF.setTransferHandler(null); // Disables copy-paste
@@ -101,8 +103,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		
 		// Word count
-		JLabel wordCountLbl = new JLabel("Woordendoel");
-		wordCountLbl.setFont(AppFonts.DefaultFont);
+		JLabel wordCountLbl = new DefaultLabelUI("Woordendoel");
 		wordCountLbl.setForeground(ColorPalet.DefaultWhiteColor);
 		wordCountTF = new JTextField();
 		wordCountTF.setTransferHandler(null); // Disables copy-paste
@@ -119,12 +120,13 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		
 		// Time reminder
-		JLabel timeReminderLabel = new JLabel("Tijdsherinnering");
-		timeReminderLabel.setFont(AppFonts.DefaultFont);
+		JLabel timeReminderLabel = new DefaultLabelUI("Tijdsherinnering");
 		timeReminderLabel.setForeground(ColorPalet.DefaultWhiteColor);
 		timerReminderSlider = new CheckSlider();
 		timerReminderSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
-		JLabel freqLbl = new JLabel("Frequentie");
+		
+		JLabel freqLbl = new DefaultLabelUI("Frequentie");
+		freqLbl.setForeground(ColorPalet.WhiteText);
 		Integer[] options = {5, 10, 15, 30};
 		reminderFreqCB = new JComboBox<Integer>(options);
 		reminderFreqCB.setMaximumSize(new Dimension(40, 25));
