@@ -1,7 +1,6 @@
 package com.veullustigpws.pws.ui.login;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
@@ -18,9 +17,10 @@ import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
-import com.veullustigpws.pws.resources.fonts.AppFonts;
-import com.veullustigpws.pws.ui.appearance.DefaultButtonUI;
+import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
 import com.veullustigpws.pws.ui.components.RoundPanel;
+import com.veullustigpws.pws.ui.components.WhiteLabel;
+import com.veullustigpws.pws.utils.GUIUtils;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
@@ -42,7 +42,7 @@ public class LoginScreen extends JPanel {
 	
 	public LoginScreen() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBackground(Color.white);
+		this.setBackground(ColorPalet.LightBackgroundColor);
 		
 		initComponents();
 		
@@ -55,11 +55,9 @@ public class LoginScreen extends JPanel {
 	private void initComponents() {
 		
 		centerPnl = new RoundPanel(90, RoundPanel.ALL_CORNERS);
-		centerPnl.setBackground(ColorPalet.DefaultBackgroundColor);
+		centerPnl.setBackground(ColorPalet.DarkBackgroundColor);
 		centerPnl.setLayout(new BorderLayout());
-		centerPnl.setMaximumSize(size);
-		centerPnl.setMinimumSize(size);
-		centerPnl.setPreferredSize(size);
+		GUIUtils.setComponentSize(centerPnl, size);
 		centerPnl.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		centerPnl.add(Box.createRigidArea(new Dimension(10, 0)), BorderLayout.CENTER);
@@ -76,13 +74,12 @@ public class LoginScreen extends JPanel {
 	private void createButtonPanel() {
 		JButton loginBtn = new JButton("Login");
 		Dimension btnDim = new Dimension(310, 45);
-		loginBtn.setForeground(ColorPalet.LoginText);
 		loginBtn.setPreferredSize(btnDim);
 		loginBtn.setMaximumSize(btnDim);
 		loginBtn.setMinimumSize(btnDim);
 		loginBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
 		loginBtn.setFocusable(false);
-		loginBtn.setUI(new DefaultButtonUI());
+		loginBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton));
 		loginBtn.addActionListener(e -> {
 			connect();
 		});
@@ -113,9 +110,7 @@ public class LoginScreen extends JPanel {
 		leftPnl.add(Box.createVerticalGlue());
 		
 		// Name
-		JLabel nameLbl = new JLabel("Naam");
-		nameLbl.setFont(AppFonts.DefaultFont);
-		nameLbl.setForeground(ColorPalet.LoginText);
+		JLabel nameLbl = new WhiteLabel("Naam");
 		nameTF = new JTextField();
 		initTextField(nameTF);
 		leftPnl.add(nameLbl);
@@ -126,9 +121,7 @@ public class LoginScreen extends JPanel {
 		
 		
 		// Student number
-		JLabel studentNumberLbl = new JLabel("Leerlingnummer");
-		studentNumberLbl.setFont(AppFonts.DefaultFont);
-		studentNumberLbl.setForeground(ColorPalet.LoginText);
+		JLabel studentNumberLbl = new WhiteLabel("Leerlingnummer");
 		studentNumberTF = new JTextField();
 		initTextField(studentNumberTF);
 		leftPnl.add(studentNumberLbl);
@@ -138,9 +131,7 @@ public class LoginScreen extends JPanel {
 		addComponentPadding(leftPnl);
 		
 		// password 
-		JLabel passwordLbl = new JLabel("Wachtwoord"); 
-		passwordLbl.setFont(AppFonts.DefaultFont);
-		passwordLbl.setForeground(ColorPalet.LoginText);
+		JLabel passwordLbl = new WhiteLabel("Wachtwoord");
 		passwordTF = new JTextField();
 		initTextField(passwordTF);
 		leftPnl.add(passwordLbl);
@@ -160,9 +151,7 @@ public class LoginScreen extends JPanel {
 		rightPnl.add(Box.createVerticalGlue());
 		
 		// Code
-		JLabel codeLbl = new JLabel("Code");
-		codeLbl.setFont(AppFonts.DefaultFont);
-		codeLbl.setForeground(ColorPalet.LoginText);
+		JLabel codeLbl = new WhiteLabel("Code");
 		codeTF = new JTextField();
 		codeTF.addKeyListener(new TextFieldSizeLimiter(codeTF, 11));
 		codeTF.addKeyListener(new TextFieldIntegerInputFilter());

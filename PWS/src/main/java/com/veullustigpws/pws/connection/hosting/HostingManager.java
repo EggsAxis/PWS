@@ -59,12 +59,14 @@ public class HostingManager {
 	// EVENTS
 	void participantEntered(ParticipantData pd) {
 		participants.add(pd);
+		monitorScreen.refreshParticipants();
 		Debug.log(pd.getName() + " entered.");
 	}
 	
 	void participantLeft(int ID) {
 		ParticipantData pd = getParticipantDataByID(ID);
 		participants.remove(pd);
+		monitorScreen.refreshParticipants();
 		Debug.log(pd.getName() + " left.");
 	}
 	
@@ -126,7 +128,6 @@ public class HostingManager {
 			Debug.error("Does not contain work of user ID " + participantID);
 			return;
 		}
-		viewWorkScreen.shown = true;
 		viewWorkScreen.setParticipantWorkState(participantWorkStates.get(participantID));
 		App.Window.setScreen(viewWorkScreen);
 	}
@@ -150,7 +151,6 @@ public class HostingManager {
 	public void updateRunningTime() {
 		assignmentOptions.setRunningTime(System.currentTimeMillis() - startTime);
 	}
-	
 	
 	public void addWorkStateListener(WorkStateListener wsl) {
 		workStateListeners.add(wsl);

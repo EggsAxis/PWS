@@ -1,19 +1,22 @@
 package com.veullustigpws.pws.ui.monitor;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.listeners.WorkStateListener;
+import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
+import com.veullustigpws.pws.ui.components.WhiteLabel;
+import com.veullustigpws.pws.utils.GUIUtils;
 
 public class ParticipantPanel extends JPanel implements WorkStateListener {
 
@@ -26,7 +29,7 @@ public class ParticipantPanel extends JPanel implements WorkStateListener {
 	// User data
 	private String name;
 	private int wordCount;
-	private JLabel wordCountLabel;
+	private WhiteLabel wordCountLabel;
 	private int ID;
 	
 	
@@ -44,47 +47,48 @@ public class ParticipantPanel extends JPanel implements WorkStateListener {
 	}
 	
 	private void initComponents() {
-		Font font = new Font("", Font.PLAIN, 16);
 		
 		// Name Label
-		JLabel nameLabel = new JLabel();
-		nameLabel.setFont(font);
-		nameLabel.setText(name);
+		WhiteLabel nameLabel = new WhiteLabel(name);
 		
 		// Wordcount label
-		wordCountLabel = new JLabel();
-		wordCountLabel.setFont(font);
-		wordCountLabel.setText(wordCount + " woorden");
+		wordCountLabel = new WhiteLabel(wordCount + " woorden");
 		
 		// Buttons
 		JButton spectateBtn = new JButton("Bekijk");
 		JButton kickBtn = new JButton("Verwijder");
 		spectateBtn.setFocusable(false);
 		kickBtn.setFocusable(false);
-		spectateBtn.setFont(font);
-		kickBtn.setFont(font);
+		spectateBtn.setUI(new ColoredButtonUI(ColorPalet.BlueButton));
+		kickBtn.setUI(new ColoredButtonUI(ColorPalet.RedButton));
+		
+		Dimension dim = new Dimension(100, 32);
+		GUIUtils.setComponentSize(spectateBtn, dim);
+		GUIUtils.setComponentSize(kickBtn, dim);
 		
 		spectateBtn.addActionListener(e -> {
 			manager.viewWork(ID);
 		});
 		
 		// Add together
-		this.add(Box.createRigidArea(new Dimension(12, 0)));
+		this.add(Box.createRigidArea(new Dimension(18, 0)));
 		this.add(nameLabel);
 		this.add(Box.createHorizontalGlue());
 		this.add(wordCountLabel);
-		this.add(Box.createRigidArea(new Dimension(10, 0)));
+		this.add(Box.createRigidArea(new Dimension(24, 0)));
 		this.add(spectateBtn);
-		this.add(Box.createRigidArea(new Dimension(10, 0)));
-		this.add(kickBtn);
 		this.add(Box.createRigidArea(new Dimension(12, 0)));
+		this.add(kickBtn);
+		this.add(Box.createRigidArea(new Dimension(18, 0)));
 	}
 	
 	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
+	public void paintComponent(Graphics graphics) {
+		super.paintComponent(graphics);
+		Graphics2D g = (Graphics2D) graphics;
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		g.setColor(new Color(191, 189, 189));
+		g.setColor(ColorPalet.DarkBackgroundColor);
 		g.fillRoundRect(borderX, borderY, getWidth() - 2*borderX, getHeight() - 2*borderY, 10, 10);
 	}
 

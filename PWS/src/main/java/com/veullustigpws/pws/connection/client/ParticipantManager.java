@@ -10,9 +10,9 @@ import com.veullustigpws.pws.assignment.ParticipantData;
 import com.veullustigpws.pws.assignment.ParticipantWorkState;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
-import com.veullustigpws.pws.ui.ParticipantWaitingScreen;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
 import com.veullustigpws.pws.ui.login.LoginScreen;
+import com.veullustigpws.pws.ui.login.ParticipantWaitingScreen;
 import com.veullustigpws.pws.utils.AssignmentUtilities;
 
 public class ParticipantManager {
@@ -96,7 +96,6 @@ public class ParticipantManager {
 		int wordCount = getWordCount();
 		
 		ParticipantWorkState pws = new ParticipantWorkState(participantData, doc, wordCount);
-		Debug.log("Sent ParticipantWorkState");
 		return pws;
 	}
 	

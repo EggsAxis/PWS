@@ -10,10 +10,11 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
+import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.assignment.AssignmentOptions;
 import com.veullustigpws.pws.assignment.RoomOptionsValidator;
-import com.veullustigpws.pws.connection.hosting.HostingManager;
+import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
+import com.veullustigpws.pws.ui.components.RoundPanel;
 
 public class RoomOptionsScreen extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -28,6 +29,7 @@ public class RoomOptionsScreen extends JPanel {
 	
 	public RoomOptionsScreen() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setBackground(ColorPalet.LightBackgroundColor);
 		
 		initComponents();
 	}
@@ -47,6 +49,9 @@ public class RoomOptionsScreen extends JPanel {
 		doneBtn.setMaximumSize(btnDim);
 		cancelBtn.setMaximumSize(btnDim);
 		
+		doneBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton));
+		cancelBtn.setUI(new ColoredButtonUI(ColorPalet.RedButton));
+		
 		doneBtn.addActionListener(e -> {
 			submit();
 		});
@@ -54,8 +59,9 @@ public class RoomOptionsScreen extends JPanel {
 		// Bottom button panel
 		JPanel btnPnl = new JPanel();
 		btnPnl.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 60));
+		btnPnl.setOpaque(false);
 		btnPnl.setLayout(new BoxLayout(btnPnl, BoxLayout.X_AXIS));
-		btnPnl.setMaximumSize(new Dimension(WIDTH, 200));
+		btnPnl.setMaximumSize(new Dimension(9999, 200));
 		btnPnl.add(Box.createHorizontalGlue());
 		btnPnl.add(doneBtn);
 		btnPnl.add(Box.createRigidArea(new Dimension(30, 0)));
@@ -66,13 +72,18 @@ public class RoomOptionsScreen extends JPanel {
 		roomPnl = new RoomOptionsPanel(WIDTH/2);
 		
 		// Center panel
-		JPanel centerPnl = new JPanel();
+		RoundPanel centerPnl = new RoundPanel(50, RoundPanel.ALL_CORNERS);
+		centerPnl.setBackground(ColorPalet.DarkBackgroundColor);
 		centerPnl.setLayout(new BorderLayout());
 		centerPnl.add(Box.createRigidArea(new Dimension(10, 0)), BorderLayout.CENTER);
 		centerPnl.add(assignmentPnl, BorderLayout.WEST);
 		centerPnl.add(roomPnl, BorderLayout.EAST);
 		centerPnl.add(btnPnl, BorderLayout.SOUTH);
 		
+		Dimension maxDim = new Dimension(WIDTH, 780);
+		centerPnl.setPreferredSize(maxDim);
+		centerPnl.setMaximumSize(maxDim);
+		centerPnl.setMinimumSize(maxDim);
 		
 		// Put center panel into a scroll pane
 		JScrollPane scrollPane = new JScrollPane(centerPnl);
@@ -83,7 +94,9 @@ public class RoomOptionsScreen extends JPanel {
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		
 		
+		this.add(Box.createVerticalGlue());
 		this.add(scrollPane);
+		this.add(Box.createVerticalGlue());
 	}
 	
 	private void submit() {

@@ -8,11 +8,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.ui.components.RoundButton;
 import com.veullustigpws.pws.ui.components.RoundPanel;
+import com.veullustigpws.pws.ui.components.WhiteLabel;
 
 public class MonitorScreen extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class MonitorScreen extends JPanel {
 		
 		this.setFocusable(true);
 		this.setLayout(new BorderLayout());
-		this.setBackground(AppConstants.defaultBackgroundColor);
+		this.setBackground(ColorPalet.LightBackgroundColor);
 		
 		
 		initComponents();
@@ -40,14 +40,14 @@ public class MonitorScreen extends JPanel {
 		// Participants panel
 		partsPanel = new ParticipantListPanel(manager);
 		
-		// Side menu
+		// Top menu
 		JPanel topMenu = new JPanel();
 		topMenu.setLayout(new BoxLayout(topMenu, BoxLayout.X_AXIS));
 		topMenu.setOpaque(false);
 		
 		RoundPanel inner = new RoundPanel(30, RoundPanel.BOTTOM_CORNERS);
 		inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
-		inner.setBackground(ColorPalet.DefaultBackgroundColor);
+		inner.setBackground(ColorPalet.DarkBackgroundColor);
 		inner.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 40));
 		Dimension innerDim = new Dimension(600, 60);
 		inner.setPreferredSize(innerDim);
@@ -65,8 +65,8 @@ public class MonitorScreen extends JPanel {
 		});
 		
 		// labels
-		timeLbl = new JLabel();
-		codeLbl = new JLabel();
+		timeLbl = new WhiteLabel("");
+		codeLbl = new WhiteLabel("");
 		
 		inner.add(pauseBtn);
 		inner.add(Box.createRigidArea(new Dimension(20, 0)));

@@ -23,7 +23,7 @@ public class AssignmentUtilities {
 	
 	public static String getRemainingTime(long start, int duration) {
 		long currentTime = System.currentTimeMillis();
-		long timePassed = (System.currentTimeMillis() - start)/1000; // In seconds
+		long timePassed = (currentTime - start)/1000; // In seconds
 		long timeRemaining = duration * 60 - timePassed;
 		
 		String hours = (timeRemaining/60/60) + "";

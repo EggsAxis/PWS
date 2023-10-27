@@ -8,8 +8,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.ui.components.CheckSlider;
 import com.veullustigpws.pws.ui.components.WhiteLabel;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
@@ -27,8 +25,9 @@ public class RoomOptionsPanel extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(width, 700));
 		this.setBorder(BorderFactory.createEmptyBorder(50, 20, 0, 20));
+		this.setOpaque(false);
 		initComponents();
-		this.setBackground(ColorPalet.DefaultBackgroundColor); //background color
+		
 		
 		// DEBUG
 		roomNameTF.setText("Test room");
@@ -37,7 +36,7 @@ public class RoomOptionsPanel extends JPanel {
 
 	private void initComponents() {
 		// Title
-		JLabel title = new JLabel("Digitale Omgeving");
+		JLabel title = new WhiteLabel("Digitale Omgeving", true);
 		this.add(title);
 		
 		this.add(Box.createRigidArea(new Dimension(0, 60)));
@@ -57,7 +56,7 @@ public class RoomOptionsPanel extends JPanel {
 		
 		
 		// Password
-		JLabel passwordLbl = new JLabel("Wachtwoord");
+		JLabel passwordLbl = new WhiteLabel("Wachtwoord");
 		passwordTF = new JTextField();
 		passwordTF.setMaximumSize(new Dimension(200, 30));
 		passwordTF.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -71,7 +70,7 @@ public class RoomOptionsPanel extends JPanel {
 		
 		
 		// Fraud detection
-		JLabel fraudDetectionLbl = new JLabel("Fraudedetectie");
+		JLabel fraudDetectionLbl = new WhiteLabel("Fraudedetectie");
 		fraudDetectionSlider = new CheckSlider();
 		fraudDetectionSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.add(fraudDetectionLbl);

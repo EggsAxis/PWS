@@ -38,7 +38,7 @@ public class EditorInfo extends JPanel {
 		inner.setMaximumSize(dim);
 		inner.setMinimumSize(dim);
 		inner.setPreferredSize(dim);
-		inner.setBackground(ColorPalet.DefaultBackgroundColor);
+		inner.setBackground(ColorPalet.DarkBackgroundColor);
 		inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
 		inner.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 40));
 		

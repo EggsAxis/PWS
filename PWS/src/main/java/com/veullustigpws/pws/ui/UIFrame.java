@@ -15,6 +15,7 @@ import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
 import com.veullustigpws.pws.ui.login.LoginScreen;
+import com.veullustigpws.pws.ui.login.ParticipantWaitingScreen;
 import com.veullustigpws.pws.ui.roomoptions.RoomOptionsScreen;
 
 public class UIFrame extends JFrame {
@@ -58,9 +59,8 @@ public class UIFrame extends JFrame {
 			setScreen(roomOptionsScreen);
 		}
 		else {
-			setScreen(loginScreen);
-//			setScreen(new EditorScreen(null));
-			
+//			setScreen(loginScreen);
+			setScreen(new ParticipantWaitingScreen(null));
 		}
 		this.setMinimumSize(new Dimension(800, 500));
 		this.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());

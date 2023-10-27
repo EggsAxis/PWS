@@ -9,11 +9,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.StyledEditorKit;
-import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.listeners.EditorMenuListener;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
-import com.veullustigpws.pws.ui.appearance.DefaultButtonUI;
+import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
 import com.veullustigpws.pws.ui.components.RoundPanel;
 import com.veullustigpws.pws.ui.components.TextDecorationButton;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
@@ -48,7 +47,7 @@ public class EditorMenu extends JPanel {
 		inner = new RoundPanel(40, RoundPanel.TOP_CORNERS);
 		inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
 		inner.setFocusable(true);
-		inner.setBackground(ColorPalet.DefaultBackgroundColor);
+		inner.setBackground(ColorPalet.DarkBackgroundColor);
 		inner.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
 		
 		Dimension dim = new Dimension(500, 70);
@@ -72,7 +71,7 @@ public class EditorMenu extends JPanel {
 		JButton handinBtn = new JButton("Inleveren");
 		handinBtn.setFocusable(false);
 		setComponentSize(handinBtn, new Dimension(110, 35));
-		handinBtn.setUI(new DefaultButtonUI());
+		handinBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton));
 		
 		inner.add(handinBtn);
 	}
@@ -81,7 +80,6 @@ public class EditorMenu extends JPanel {
 		
 		fontSizeTF = new JTextField();
 		fontSizeTF.setText("12");
-		fontSizeTF.setFont(AppConstants.textFieldFont);
 		fontSizeTF.setHorizontalAlignment(JTextField.RIGHT);
 		fontSizeTF.addKeyListener(new TextFieldIntegerInputFilter());
 		

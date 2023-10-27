@@ -17,12 +17,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.text.StyledDocument;
-import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
 import com.veullustigpws.pws.ui.components.RoundPanel;
+import com.veullustigpws.pws.ui.components.WhiteLabel;
 import com.veullustigpws.pws.ui.editor.parts.DocumentEditor;
 import com.veullustigpws.pws.ui.editor.parts.EditorInfo;
 import com.veullustigpws.pws.ui.editor.parts.EditorMenu;
@@ -58,21 +58,20 @@ public class EditorScreen extends JLayeredPane implements ComponentListener {
 		
 		pausedScene = new JPanel();
 		pausedScene.setLayout(new BoxLayout(pausedScene, BoxLayout.X_AXIS));
-		Color c = ColorPalet.DefaultBackgroundColor;
+		Color c = ColorPalet.DarkBackgroundColor;
 		pausedScene.setBackground(new Color(c.getRed(), c.getGreen(), c.getBlue(), 100));
 		
 		RoundPanel centerPnl = new RoundPanel(30, RoundPanel.ALL_CORNERS);
 		centerPnl.setLayout(new GridBagLayout());
-		centerPnl.setBackground(ColorPalet.DefaultBackgroundColor);
+		centerPnl.setBackground(ColorPalet.DarkBackgroundColor);
 		centerPnl.setAlignmentY(Component.CENTER_ALIGNMENT);
 		Dimension centerSize = new Dimension(300, 100);
 		centerPnl.setPreferredSize(centerSize);
 		centerPnl.setMaximumSize(centerSize);
 		centerPnl.setMinimumSize(centerSize);
 		
-		JLabel lbl = new JLabel();
+		JLabel lbl = new WhiteLabel("");
 		lbl.setFont(AppFonts.DefaultFont.deriveFont(Font.PLAIN, 17));
-		lbl.setForeground(ColorPalet.WhiteText);
 		lbl.setText("<html><p style='text-align: center;'>Opdracht is gepauzeerd.<br>Wacht tot je host hem weer start.</p></html>");
 		
 		centerPnl.add(lbl);
@@ -87,7 +86,7 @@ public class EditorScreen extends JLayeredPane implements ComponentListener {
 		unpausedScene = new JPanel();
 		unpausedScene.setFocusable(true);
 		unpausedScene.setLayout(new BorderLayout());
-		unpausedScene.setBackground(AppConstants.defaultBackgroundColor);
+		unpausedScene.setBackground(ColorPalet.LightBackgroundColor);
 		
 		// Document editor
 		docEditor = new DocumentEditor();
@@ -108,7 +107,7 @@ public class EditorScreen extends JLayeredPane implements ComponentListener {
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 		centerPanel.add(scrollTextPane);
 		centerPanel.setBorder(BorderFactory.createEmptyBorder(15, 120, 10, 120));
-		centerPanel.setBackground(AppConstants.defaultBackgroundColor);
+		centerPanel.setBackground(ColorPalet.LightBackgroundColor);
 		
 		// Add together
 		unpausedScene.add(editorMenu, BorderLayout.SOUTH);
