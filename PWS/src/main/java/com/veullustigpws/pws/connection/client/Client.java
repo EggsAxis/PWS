@@ -32,6 +32,7 @@ public class Client {
 	}
 	
 	public void connect(ParticipantConnectData participantConnectData) throws WrongConnectionDataException {
+		
 		ConnectData connectData = null;
 		try {
 			connectData = JoinCodeGenerator.codeToIP(participantConnectData.getCode(), InetAddress.getLocalHost().getHostAddress());
@@ -44,10 +45,10 @@ public class Client {
 		
 		try {
 			client = new Socket(connectData.getIp(), connectData.getPort());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new WrongConnectionDataException(WrongConnectionDataException.INVALID_CODE);
 		}
-		
+		System.out.println("Invalid code");
 		initClient();
 	}
 	
@@ -103,7 +104,6 @@ public class Client {
 				}
 			} catch (IOException | ClassNotFoundException e) {
 				Debug.error("Unable to receive message from server.");
-				e.printStackTrace();
 			}
 		}
 		
@@ -121,20 +121,26 @@ public class Client {
 				sendWork();
 				break;
 			case Protocol.CorrectPassword:
-				joinedRoom();
+				int ID = (int) msg.getContent();
+				joinedRoom(ID);
 				break;
 			case Protocol.IncorrectPassword:
 				manager.incorrectPassword();
 				shutdown();
 				break;
-				
+			case Protocol.KickUser:
+				String reason = (String) msg.getContent();
+				manager.participantKicked(reason);
+				shutdown();
+				break;
 			default:
 				Debug.error("Unknown server input.");
 			}
 		}
 		
-		private void joinedRoom() {
-			manager.joinedRoom();
+		private void joinedRoom(int ID) {
+			manager.joinedRoom(ID);
+			
 			
 			// Send ParticipantData
 			Message pdMsg = new Message(Protocol.SendParticipantData, manager.getParticipantData());

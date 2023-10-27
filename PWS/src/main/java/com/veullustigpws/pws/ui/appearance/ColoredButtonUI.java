@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.AbstractButton;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.plaf.basic.BasicButtonUI;
 import com.veullustigpws.pws.app.ColorPalet;
@@ -20,17 +21,19 @@ public class ColoredButtonUI extends BasicButtonUI {
 	private Color backgroundColor;
 	private Color textColor = Color.WHITE;
 	
-	public ColoredButtonUI(Color backgroundColor) {
+	public ColoredButtonUI(Color backgroundColor, JButton btn) {
 		this.backgroundColor = backgroundColor;
 		
 		if (backgroundColor == ColorPalet.GreenButton) {
 			textColor = ColorPalet.BlackText;
 		}
+		
+		btn.setOpaque(false);
+		btn.addMouseListener(new HandCursorListener(btn));
 	}
 	
 	@Override
 	public void paint(Graphics graphics, JComponent c) {
-		c.setOpaque(false);
 		AbstractButton button = (AbstractButton) c;
 		Graphics2D g = (Graphics2D) graphics;
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

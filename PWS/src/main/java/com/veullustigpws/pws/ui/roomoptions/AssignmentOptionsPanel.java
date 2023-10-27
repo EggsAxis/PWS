@@ -123,7 +123,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		this.add(timeReminderLabel);
 		addLabelPadding();
 		this.add(timerReminderSlider);
-		addLabelPadding();
+		addComponentPadding();
 		this.add(freqLbl);
 		addLabelPadding();
 		this.add(reminderFreqCB);

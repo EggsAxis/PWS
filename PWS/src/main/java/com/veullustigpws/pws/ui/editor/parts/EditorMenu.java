@@ -5,7 +5,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.StyledEditorKit;
@@ -15,6 +14,7 @@ import com.veullustigpws.pws.texteditor.TextEditorManager;
 import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
 import com.veullustigpws.pws.ui.components.RoundPanel;
 import com.veullustigpws.pws.ui.components.TextDecorationButton;
+import com.veullustigpws.pws.utils.GUIUtils;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 
 public class EditorMenu extends JPanel {
@@ -24,7 +24,6 @@ public class EditorMenu extends JPanel {
 	private TextEditorManager textEditorManager;
 	
 	private JPanel inner;
-	
 	private final int padding = 7;
 	
 	private TextDecorationButton boldBtn;
@@ -33,6 +32,8 @@ public class EditorMenu extends JPanel {
 	private JTextField fontSizeTF;
 
 	public EditorMenu(TextEditorManager textEditorManager) {
+		
+		
 		this.textEditorManager = textEditorManager;
 		menuListener = new EditorMenuListener(textEditorManager);
 		
@@ -70,8 +71,8 @@ public class EditorMenu extends JPanel {
 	private void initHandinButton() {
 		JButton handinBtn = new JButton("Inleveren");
 		handinBtn.setFocusable(false);
-		setComponentSize(handinBtn, new Dimension(110, 35));
-		handinBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton));
+		GUIUtils.setComponentSize(handinBtn, new Dimension(110, 35));
+		handinBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton, handinBtn));
 		
 		inner.add(handinBtn);
 	}
@@ -84,7 +85,7 @@ public class EditorMenu extends JPanel {
 		fontSizeTF.addKeyListener(new TextFieldIntegerInputFilter());
 		
 		fontSizeTF.addActionListener(menuListener.new FontSizeListener(fontSizeTF));
-		setComponentSize(fontSizeTF, new Dimension(60, 30));
+		GUIUtils.setComponentSize(fontSizeTF, new Dimension(60, 30));
 		
 		inner.add(fontSizeTF);
 	}
@@ -113,21 +114,11 @@ public class EditorMenu extends JPanel {
 		inner.add(decPanel);
 	}
 	
-	
-	private void setComponentSize(JComponent c, Dimension size) {
-		c.setPreferredSize(size);
-		c.setMaximumSize(size);
-		c.setMinimumSize(size);
-	}
-	
 	public void setEnabled(boolean enabled) {
 		underlineBtn.setEnabled(enabled);
 		italicBtn.setEnabled(enabled);
 		boldBtn.setEnabled(enabled);
 		fontSizeTF.setEditable(enabled);
-	}
-	
-	
-	
+	}	
 }
 

@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.assignment.AssignmentOptions;
 import com.veullustigpws.pws.assignment.RoomOptionsValidator;
@@ -49,11 +50,14 @@ public class RoomOptionsScreen extends JPanel {
 		doneBtn.setMaximumSize(btnDim);
 		cancelBtn.setMaximumSize(btnDim);
 		
-		doneBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton));
-		cancelBtn.setUI(new ColoredButtonUI(ColorPalet.RedButton));
+		doneBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton, doneBtn));
+		cancelBtn.setUI(new ColoredButtonUI(ColorPalet.RedButton, cancelBtn));
 		
 		doneBtn.addActionListener(e -> {
 			submit();
+		});
+		cancelBtn.addActionListener(e -> {
+			App.Window.setStartScreen();
 		});
 		
 		// Bottom button panel
@@ -100,22 +104,32 @@ public class RoomOptionsScreen extends JPanel {
 	}
 	
 	private void submit() {
-		AssignmentOptions options = new AssignmentOptions();
+		Thread submitThread = new Thread() {
+			public void run() {
+				AssignmentOptions options = new AssignmentOptions();
+				
+				options.setAssignmentName(assignmentPnl.getAssignmentName());
+				options.setAssignmentDescription(assignmentPnl.getAssignmentDescription());
+				options.setAssignmentDuration(assignmentPnl.getAssignmentDuration());
+				options.setWordCount(assignmentPnl.getWordCount());
+				options.setSendTimeReminder(assignmentPnl.getSendTimeReminder());
+				options.setTimeReminderFrequency(assignmentPnl.getTimeReminderFrequency());
+				
+				options.setRoomName(roomPnl.getRoomName());
+				options.setPassword(roomPnl.getRoomPassword());
+				options.setDetectionEnabled(roomPnl.getDetectionEnabled());
+				
+				boolean correctInput = RoomOptionsValidator.ValidateSubmission(options);
+				
+				
+				if (!correctInput) {
+					JOptionPane.showMessageDialog(null, "Vul alle velden in.", "Error", JOptionPane.OK_OPTION);
+				} else {
+					App.Manager.startRoom(options);
+				}
+			}
+		};
+		submitThread.start();
 		
-		options.setAssignmentName(assignmentPnl.getAssignmentName());
-		options.setAssignmentDescription(assignmentPnl.getAssignmentDescription());
-		options.setAssignmentDuration(assignmentPnl.getAssignmentDuration());
-		options.setWordCount(assignmentPnl.getWordCount());
-		options.setSendTimeReminder(assignmentPnl.getSendTimeReminder());
-		options.setTimeReminderFrequency(assignmentPnl.getTimeReminderFrequency());
-		
-		options.setRoomName(roomPnl.getRoomName());
-		options.setPassword(roomPnl.getRoomPassword());
-		options.setDetectionEnabled(roomPnl.getDetectionEnabled());
-		
-		boolean correctInput = RoomOptionsValidator.ValidateSubmission(options);
-		if (!correctInput) {
-			JOptionPane.showMessageDialog(null, "Vul alle velden in.", "Error", JOptionPane.OK_OPTION);
-		}
 	}
 }

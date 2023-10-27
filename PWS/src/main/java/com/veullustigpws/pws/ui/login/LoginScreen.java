@@ -27,7 +27,7 @@ import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 public class LoginScreen extends JPanel {
 	private static final long serialVersionUID = -3094851789506996929L;
 
-	public static final Dimension size = new Dimension(650, 410);
+	public static final Dimension size = new Dimension(650, 420);
 	private static final int LABEL_PADDING = 8;
 	private static final int COMPONENT_PADDING = 5;
 	private static final int TEXTFIELD_INDENT = 10;
@@ -72,18 +72,31 @@ public class LoginScreen extends JPanel {
 	}
 	
 	private void createButtonPanel() {
+		
+		// TOP
+		JButton cancelBtn = new JButton("<");
+		GUIUtils.setComponentSize(cancelBtn, new Dimension(40, 40));
+		cancelBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+		cancelBtn.setUI(new ColoredButtonUI(ColorPalet.BlueButton, cancelBtn));
+		cancelBtn.addActionListener(e -> {
+			App.Window.setStartScreen();
+		});
+		
+		JPanel topPnl = new JPanel();
+		topPnl.setOpaque(false);
+		topPnl.setLayout(new BoxLayout(topPnl, BoxLayout.X_AXIS));
+		topPnl.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 10));
+		topPnl.add(cancelBtn);
+		topPnl.add(Box.createHorizontalGlue());
+		
+		// BOTTOM
 		JButton loginBtn = new JButton("Login");
-		Dimension btnDim = new Dimension(310, 45);
-		loginBtn.setPreferredSize(btnDim);
-		loginBtn.setMaximumSize(btnDim);
-		loginBtn.setMinimumSize(btnDim);
+		GUIUtils.setComponentSize(loginBtn, new Dimension(310, 45));
 		loginBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
-		loginBtn.setFocusable(false);
-		loginBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton));
+		loginBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton, loginBtn));
 		loginBtn.addActionListener(e -> {
 			connect();
 		});
-		
 		
 		JPanel bottomPnl = new JPanel();
 		bottomPnl.setLayout(new BoxLayout(bottomPnl, BoxLayout.X_AXIS));
@@ -91,12 +104,9 @@ public class LoginScreen extends JPanel {
 		bottomPnl.add(loginBtn);
 		bottomPnl.add(Box.createHorizontalGlue());
 		bottomPnl.setOpaque(false);
+		GUIUtils.setComponentSize(bottomPnl, new Dimension(size.width, 130));
 		
-		Dimension dim = new Dimension(size.width, 130);
-		bottomPnl.setMaximumSize(dim);
-		bottomPnl.setMinimumSize(dim);
-		bottomPnl.setPreferredSize(dim);
-		
+		centerPnl.add(topPnl, BorderLayout.NORTH);
 		centerPnl.add(bottomPnl, BorderLayout.SOUTH);
 	}
 	
@@ -104,7 +114,7 @@ public class LoginScreen extends JPanel {
 		JPanel leftPnl = new JPanel();
 		leftPnl.setLayout(new BoxLayout(leftPnl, BoxLayout.Y_AXIS));
 		leftPnl.setPreferredSize(new Dimension(size.width/2 -5, 400));
-		leftPnl.setBorder(BorderFactory.createEmptyBorder(20, 100, 20, 0));
+		leftPnl.setBorder(BorderFactory.createEmptyBorder(0, 100, 20, 0));
 		leftPnl.setOpaque(false);
 		
 		leftPnl.add(Box.createVerticalGlue());
@@ -193,31 +203,38 @@ public class LoginScreen extends JPanel {
 	}
 	
 	private void connect() {
-		ParticipantData participantData = new ParticipantData(nameTF.getText(), studentNumberTF.getText());
-		ParticipantConnectData data = new ParticipantConnectData();
-		data.setCode(codeTF.getText());
-		data.setPassword(passwordTF.getText());
-		data.setParticipantData(participantData);
-		
-		try {
-			App.Window.connectToRoom(data, this);
-		} catch (WrongConnectionDataException e) {
-			Debug.error("Unable to connect to room.");
-			
-			switch (e.getType()) {
-			case WrongConnectionDataException.INVALID_CODE:
-				JOptionPane.showMessageDialog(null, "Geen room gevonden met code" + data.getCode() + ".", "Error", JOptionPane.OK_OPTION);
-				break;
-			case WrongConnectionDataException.WRONG_CODE_FORMAT: 
-				JOptionPane.showMessageDialog(null, "Code moet 11 tekens lang zijn.", "Error", JOptionPane.OK_OPTION);
-				break;
-			case WrongConnectionDataException.UNKNOWN_HOST: 
-				JOptionPane.showMessageDialog(null, "Laden van het lokale adres mislukt.", "Error", JOptionPane.OK_OPTION);
-				break;
+		Thread connectThread = new Thread() {
+			public void run() {
+				ParticipantData participantData = new ParticipantData(nameTF.getText(), studentNumberTF.getText());
+				ParticipantConnectData data = new ParticipantConnectData();
+				data.setCode(codeTF.getText());
+				data.setPassword(passwordTF.getText());
+				data.setParticipantData(participantData);
+				
+				try {
+					App.Manager.connectToRoom(data);
+				} catch (WrongConnectionDataException e) {
+					Debug.error("Unable to connect to room.");
+					
+					switch (e.getType()) {
+					case WrongConnectionDataException.INVALID_CODE:
+						JOptionPane.showMessageDialog(null, "Geen room gevonden met code" + data.getCode() + ".", "Error", JOptionPane.OK_OPTION);
+						break;
+					case WrongConnectionDataException.WRONG_CODE_FORMAT: 
+						JOptionPane.showMessageDialog(null, "Code moet 11 tekens lang zijn.", "Error", JOptionPane.OK_OPTION);
+						break;
+					case WrongConnectionDataException.UNKNOWN_HOST: 
+						JOptionPane.showMessageDialog(null, "Laden van het lokale adres mislukt.", "Error", JOptionPane.OK_OPTION);
+						break;
+					}
+				}
 			}
-		}
+		};
+		connectThread.run();
+		
 	}
-	// test
+	
+	
 	public void incorrectPassword() {
 		JOptionPane.showMessageDialog(null, "Het wachtwoord is onjuist.", "Error", JOptionPane.OK_OPTION);
 	}

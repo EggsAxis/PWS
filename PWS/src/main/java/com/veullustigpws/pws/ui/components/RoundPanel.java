@@ -15,7 +15,6 @@ public class RoundPanel extends JPanel {
 	private int roundness;
 	private int type;
 	
-	
 	public RoundPanel(int roundness, int type) {
 		this.roundness = roundness;
 		this.type = type;

@@ -94,7 +94,7 @@ public class EditorScreen extends JLayeredPane implements ComponentListener {
 		// Text editor manager
 		textEditorManager = new TextEditorManager(docEditor);
 		
-		// Menu
+		// Menus
 		editorMenu = new EditorMenu(textEditorManager);
 		editorInfoPanel = new EditorInfo(manager);
 		

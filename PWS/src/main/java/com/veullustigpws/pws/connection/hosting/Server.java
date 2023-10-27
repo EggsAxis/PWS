@@ -52,7 +52,6 @@ public class Server implements Runnable{
 			Debug.log(" > Port: " + port);
 			Debug.log(" > Code: " + code);
 			
-			
 			manager.setServerCode(code);
 			
 			// Accept all clients
@@ -65,7 +64,7 @@ public class Server implements Runnable{
 				handler.setFuture(future);
 			}
 		} catch (IOException e) {
-			shutdown();
+			shutdown("An unexpected error occured on the server.");
 		}
 		
 	}
@@ -82,12 +81,26 @@ public class Server implements Runnable{
 		}
 	}
 	
-	public void shutdown() {
+	public void kickUser(int ID, String reason) {
+		for (ConnectionHandler ch : connections) {
+			if (ch.getID() != ID) continue;
+			ch.sendMessage(new Message(Protocol.KickUser, reason));
+			ch.shutdown();
+			
+			connections.remove(ch);
+			return;
+		}
+	}
+	
+	public void shutdown(String reason) {
 		if (socket.isClosed()) return;
 		try {
 			socket.close();
-			for (ConnectionHandler ch : connections) 
+			for (ConnectionHandler ch : connections) {
+				ch.sendMessage(new Message(Protocol.KickUser, reason));
 				ch.shutdown();
+			}
+			socket.close();
 		} catch (IOException e) {
 			// Cannot handle
 		}
@@ -156,14 +169,15 @@ public class Server implements Runnable{
 					Debug.error("Unable to read protocol of server input.");
 				}
 			} catch (Exception e) {
-				Debug.error("Unable to read protocol of server input.");
+				Debug.error("An error occured when reading server input.");
+				e.printStackTrace();
 			}
 			
 		}
 		
 		private void managePassword(String password) {
 			if (manager.getAssignmentOptions().getPassword().equals(password)) {
-				sendMessage(Protocol.CorrectPassword);
+				sendMessage(new Message(Protocol.CorrectPassword, ID));
 			} else {
 				sendMessage(Protocol.IncorrectPassword);
 				Debug.log("User tried to enter with incorrect password.");
@@ -209,6 +223,10 @@ public class Server implements Runnable{
 		
 		void setFuture(Future<?> future) {
 			this.future = future;
+		}
+		
+		int getID() {
+			return ID;
 		}
 	}
 	

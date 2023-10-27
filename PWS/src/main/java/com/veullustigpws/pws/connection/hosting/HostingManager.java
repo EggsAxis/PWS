@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.AssignmentOptions;
@@ -12,7 +14,7 @@ import com.veullustigpws.pws.assignment.ParticipantWorkState;
 import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.listeners.WorkStateListener;
-import com.veullustigpws.pws.ui.FillUpScreen;
+import com.veullustigpws.pws.ui.fillup.FillUpScreen;
 import com.veullustigpws.pws.ui.monitor.MonitorScreen;
 import com.veullustigpws.pws.ui.monitor.ViewWorkScreen;
 import com.veullustigpws.pws.utils.AssignmentUtilities;
@@ -33,6 +35,7 @@ public class HostingManager {
 	private Server server;
 	private String serverCode;
 	
+	// Pause
 	private boolean paused = false;
 	private long pauseTime;
 	
@@ -41,70 +44,67 @@ public class HostingManager {
 	private static final long requestTimerDelay = 5*1000;
 	private long startTime;
 	
+	private boolean assignmentStarted = false;
+	
 	// Listeners
 	private ArrayList<WorkStateListener> workStateListeners = new ArrayList<>();
 	
 	public HostingManager(AssignmentOptions options) {
 		this.assignmentOptions = options;
 		server = new Server(this);
-		
-		monitorScreen = new MonitorScreen(this);
-		fillUpScreen = new FillUpScreen(this);
-		viewWorkScreen = new ViewWorkScreen(this);
-		
+		initScreens();
 		addWorkStateListener(viewWorkScreen);
 	}
 	
 	
+	private void initScreens() {
+		HostingManager manager = this;
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				monitorScreen = new MonitorScreen(manager);
+				fillUpScreen = new FillUpScreen(manager);
+				viewWorkScreen = new ViewWorkScreen(manager);
+				manager.openFillUpScreen();
+			}
+		});
+	}
+
+
 	// EVENTS
 	void participantEntered(ParticipantData pd) {
 		participants.add(pd);
-		monitorScreen.refreshParticipants();
+		if (assignmentStarted) {
+			monitorScreen.refreshParticipants();
+		} else {
+			fillUpScreen.refreshParticipants();
+		}
+		
 		Debug.log(pd.getName() + " entered.");
 	}
 	
 	void participantLeft(int ID) {
 		ParticipantData pd = getParticipantDataByID(ID);
 		participants.remove(pd);
-		monitorScreen.refreshParticipants();
+		
+		refreshParticipantDisplay();
 		Debug.log(pd.getName() + " left.");
 	}
 	
 	public void startAssignment() {
-		App.Window.setScreen(monitorScreen);
+		assignmentStarted = true;
 		monitorScreen.refreshParticipants();
 		monitorScreen.setCode(serverCode);
 		
 		startTime = System.currentTimeMillis();
 		assignmentOptions.setRunningTime(0);
 		server.startAssignment();
-
+		
 		// Start timers
 		startRequestTimer();
 		startTimeTimer();
 		
+		App.Window.setScreen(monitorScreen);
 		Debug.log("Started assignment.");
-	}
-	
-	private void startTimeTimer() {
-		Timer timeTimer = new Timer();
-		timeTimer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				if (paused) return;
-				monitorScreen.setTime(AssignmentUtilities.getRemainingTime(startTime, assignmentOptions.getAssignmentDuration()));
-			}
-		}, 1000, 1000);
-	}
-	private void startRequestTimer() {
-		requestTimer = new Timer();
-		requestTimer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				server.broadcast(new Message(Protocol.RequestWork));
-				Debug.log("Requested ParticipantWorkState");
-			}
-		}, requestTimerDelay, requestTimerDelay);
 	}
 	
 	public void pauseAssignment() {
@@ -128,21 +128,89 @@ public class HostingManager {
 			Debug.error("Does not contain work of user ID " + participantID);
 			return;
 		}
+		viewWorkScreen.shown = true;
 		viewWorkScreen.setParticipantWorkState(participantWorkStates.get(participantID));
 		App.Window.setScreen(viewWorkScreen);
+		
 	}
 	
+	public void kickParticipant(int ID) {
+		participants.remove(getParticipantDataByID(ID));
+		participantWorkStates.remove(ID);
+		
+		server.kickUser(ID, "Je bent van de room verwijderd.");
+		
+		refreshParticipantDisplay();
+		Debug.log("Kicked user " + ID);
+	}
+	
+	private void startTimeTimer() {
+		Timer timeTimer = new Timer();
+		timeTimer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				if (paused) return;
+				monitorScreen.setTime(AssignmentUtilities.getRemainingTime(startTime, assignmentOptions.getAssignmentDuration()));
+			}
+		}, 1000, 1000);
+	}
+	private void startRequestTimer() {
+		requestTimer = new Timer();
+		requestTimer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				server.broadcast(new Message(Protocol.RequestWork));
+				Debug.log("Requested ParticipantWorkState");
+			}
+		}, requestTimerDelay, requestTimerDelay);
+	}
+	
+	
+	
 	public void receivedRequestedWork(ParticipantWorkState pws, int ID) {
+		if (pws == null) {
+			Debug.error("Received ParticipantWorkState with value null.");
+			return;
+		}
+		
 		participantWorkStates.put(ID, pws);
 		for (WorkStateListener wsl : workStateListeners)  {
 			if (wsl == null) continue;
 			wsl.changedWorkState(participantWorkStates);
 		}
-		Debug.log(" - Received work state of user " + ID);
+//		Debug.log(" - Received work state of user " + ID);
 	}
 	
+	public void exitProgram() {
+		int confirmed = JOptionPane.showConfirmDialog(null, 
+				"Weet u zeker dat u het programma wil sluiten?\nAlle gegevens van de opdracht zullen verloren gaan.", 
+				"Weet u het zeker?", JOptionPane.YES_NO_OPTION);
+		if (confirmed == JOptionPane.YES_OPTION) {
+			server.shutdown("De opdracht is gesloten.");
+			System.exit(0);
+		}
+	}
+	public void closeRoom() {
+		int confirmed = JOptionPane.showConfirmDialog(null, 
+				"Weet u zeker dat u de opdracht wil sluiten?", 
+				"Weet u het zeker?", JOptionPane.YES_NO_OPTION);
+		if (confirmed == JOptionPane.YES_OPTION) {
+			server.shutdown("De opdracht is gesloten.");
+			App.Manager.InAssignment = false;
+			App.Window.setStartScreen();
+		}
+	}
+	
+	private void refreshParticipantDisplay() {
+		if (assignmentStarted) {
+			monitorScreen.refreshParticipants();
+		} else {
+			fillUpScreen.refreshParticipants();
+		}
+	}
 	public void returnToMonitorScreen() {
 		App.Window.setScreen(monitorScreen);
+		
 	}
 	public void openFillUpScreen() {
 		App.Window.setScreen(fillUpScreen);
@@ -156,13 +224,17 @@ public class HostingManager {
 		workStateListeners.add(wsl);
 	}
 	
-	// setters
+	// Setters
 	void setServerCode(String code) {
+		fillUpScreen.setServerCode(code);
 		this.serverCode = code;
 	}
 	
 	
 	// Getters
+	public String getServerCode() {
+		return serverCode;
+	}
 	public ArrayList<ParticipantData> getParticipants() {
 		return participants;
 	}

@@ -47,7 +47,7 @@ public class ParticipantWaitingScreen extends JPanel {
 		
 		leaveBtn = new JButton("Verlaat");
 		GUIUtils.setComponentSize(leaveBtn, new Dimension(120, 35));
-		leaveBtn.setUI(new ColoredButtonUI(ColorPalet.RedButton));
+		leaveBtn.setUI(new ColoredButtonUI(ColorPalet.RedButton, leaveBtn));
 		leaveBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 		leaveBtn.addActionListener(e -> {
 			manager.leave();

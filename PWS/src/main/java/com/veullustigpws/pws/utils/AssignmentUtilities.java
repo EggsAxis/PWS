@@ -10,6 +10,7 @@ public class AssignmentUtilities {
 	}
 	
 	public static int getWordCount(StyledDocument doc) {
+		if (doc.getLength() == 0) return 0;
 		// Get word count
 		String txt = "";
 		try {

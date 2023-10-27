@@ -1,20 +1,17 @@
 package com.veullustigpws.pws.app;
 
-import java.util.Scanner;
 import javax.swing.SwingUtilities;
 import com.veullustigpws.pws.ui.UIFrame;
 
 public class App {
 	
-	public static boolean runServer;
 	public static UIFrame Window;
+	public static AppManager Manager;
+	
+	public static boolean RunningServer = false; 	// If false -> app is running client
 	
 	public static void main(String[] args) {
-		
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Do you want to run a server or a client? [s / c]");
-		runServer = scanner.nextLine().toLowerCase().equals("s");
-		
+		Manager = new AppManager();
 		SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -22,6 +19,7 @@ public class App {
                 Window.open();
             }
         });
-		scanner.close();
+		
+		
 	}
 }

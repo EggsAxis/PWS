@@ -14,8 +14,8 @@ public class Protocol {
 	public static final String SendPassword = "sp";
 	public static final String IncorrectPassword = "wp";
 	public static final String CorrectPassword = "cp";
-
 	
+	public static final String KickUser = "ku";
 	
 	
 	public static String format(String command, String... args) {
