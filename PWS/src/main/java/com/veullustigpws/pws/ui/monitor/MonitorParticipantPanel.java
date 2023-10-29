@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import com.veullustigpws.pws.app.ColorPalet;
-import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.listeners.WorkStateListener;
 import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;

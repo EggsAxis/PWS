@@ -50,10 +50,13 @@ public class MonitorScreen extends JPanel {
 		pauseBtn.addActionListener(e -> {
 			manager.pauseAssignment();
 		});
+		stopBtn.addActionListener(e -> {
+			manager.forceStopAssignment();
+		});
 		
 		// labels
-		timeLbl = new WhiteLabel("");
-		codeLbl = new WhiteLabel("");
+		timeLbl = new WhiteLabel("", 19);
+		codeLbl = new WhiteLabel("", 19);
 		
 		topMenu.addComponent(pauseBtn);
 		topMenu.addRigidArea(20);
@@ -73,6 +76,10 @@ public class MonitorScreen extends JPanel {
 	}
 	public void setCode(String code) {
 		codeLbl.setText(code);
+	}
+	
+	public void assignmentPaused() {
+		timeLbl.setText("Gepauzeerd");
 	}
 	
 	public void refreshParticipants() {

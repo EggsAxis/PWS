@@ -8,9 +8,9 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
-import com.veullustigpws.pws.assignment.AssignmentOptions;
-import com.veullustigpws.pws.assignment.ParticipantData;
-import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.assignment.data.AssignmentOptions;
+import com.veullustigpws.pws.assignment.data.ParticipantData;
+import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
 import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.listeners.WorkStateListener;
@@ -113,7 +113,8 @@ public class HostingManager {
 		if (paused) {
 			pauseTime = System.currentTimeMillis();
 			server.broadcast(new Message(Protocol.PausedAssignment, -1L));
-		} else {
+			monitorScreen.assignmentPaused();
+			} else {
 			long pauseDuration = System.currentTimeMillis() - pauseTime;
 			startTime += pauseDuration;
 			server.broadcast(new Message(Protocol.PausedAssignment, pauseDuration));
@@ -181,6 +182,14 @@ public class HostingManager {
 //		Debug.log(" - Received work state of user " + ID);
 	}
 	
+	public void forceStopAssignment() {
+		int confirmed = JOptionPane.showConfirmDialog(null, 
+				"Weet u zeker dat u de opdracht wilt stoppen?\nU kunt de opdracht later niet hervatten.", 
+				"Weet u het zeker?", JOptionPane.YES_NO_OPTION);
+		if (confirmed == JOptionPane.YES_OPTION) {
+			
+		}
+	}
 	public void exitProgram() {
 		int confirmed = JOptionPane.showConfirmDialog(null, 
 				"Weet u zeker dat u het programma wil sluiten?\nAlle gegevens van de opdracht zullen verloren gaan.", 

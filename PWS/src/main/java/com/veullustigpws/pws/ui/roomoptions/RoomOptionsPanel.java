@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -18,7 +19,8 @@ public class RoomOptionsPanel extends JPanel {
 	private JTextField roomNameTF;
 	private JTextField passwordTF;
 	private CheckSlider fraudDetectionSlider;
-	
+	private CheckSlider timerReminderSlider;
+	private JComboBox<Integer> reminderFreqCB;
 	
 	
 	public RoomOptionsPanel(int width) {
@@ -76,6 +78,26 @@ public class RoomOptionsPanel extends JPanel {
 		this.add(fraudDetectionLbl);
 		addLabelPadding();
 		this.add(fraudDetectionSlider);
+		
+		addComponentPadding();
+		
+		// Time reminder
+		JLabel timeReminderLabel = new WhiteLabel("Tijdsherinnering");
+		timerReminderSlider = new CheckSlider();
+		timerReminderSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JLabel freqLbl = new WhiteLabel("Frequentie");
+		Integer[] options = {5, 10, 15, 30};
+		reminderFreqCB = new JComboBox<Integer>(options);
+		reminderFreqCB.setMaximumSize(new Dimension(40, 25));
+		reminderFreqCB.setAlignmentX(Component.LEFT_ALIGNMENT);
+		reminderFreqCB.setFocusable(false);
+		this.add(timeReminderLabel);
+		addLabelPadding();
+		this.add(timerReminderSlider);
+		addComponentPadding();
+		this.add(freqLbl);
+		addLabelPadding();
+		this.add(reminderFreqCB);
 	}
 	
 	
@@ -95,5 +117,11 @@ public class RoomOptionsPanel extends JPanel {
 	}
 	public boolean getDetectionEnabled() {
 		return fraudDetectionSlider.isSelected();
+	}
+	public boolean getSendTimeReminder() {
+		return timerReminderSlider.isSelected();
+	}
+	public int getTimeReminderFrequency() {
+		return (Integer) reminderFreqCB.getSelectedItem();
 	}
 }

@@ -3,7 +3,7 @@ package com.veullustigpws.pws.app;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.SwingUtilities;
-import com.veullustigpws.pws.assignment.AssignmentOptions;
+import com.veullustigpws.pws.assignment.data.AssignmentOptions;
 import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.connection.hosting.HostingManager;

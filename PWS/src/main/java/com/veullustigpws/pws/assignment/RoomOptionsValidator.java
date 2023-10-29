@@ -1,5 +1,7 @@
 package com.veullustigpws.pws.assignment;
 
+import com.veullustigpws.pws.assignment.data.AssignmentOptions;
+
 public class RoomOptionsValidator {
 	public static boolean ValidateSubmission(AssignmentOptions options) {
 		if (options.getAssignmentName().isEmpty()) return false;

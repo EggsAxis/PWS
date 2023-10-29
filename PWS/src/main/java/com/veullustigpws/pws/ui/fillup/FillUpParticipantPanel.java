@@ -10,7 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import com.veullustigpws.pws.app.ColorPalet;
-import com.veullustigpws.pws.assignment.ParticipantData;
+import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
 import com.veullustigpws.pws.ui.components.WhiteLabel;

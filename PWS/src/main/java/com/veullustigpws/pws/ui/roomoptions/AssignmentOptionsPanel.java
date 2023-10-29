@@ -5,13 +5,11 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import com.veullustigpws.pws.ui.components.CheckSlider;
 import com.veullustigpws.pws.ui.components.WhiteLabel;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
@@ -23,8 +21,6 @@ public class AssignmentOptionsPanel extends JPanel {
 	private JTextArea descriptionTextArea;
 	private JTextField durationTF;
 	private JTextField wordCountTF;
-	private CheckSlider timerReminderSlider;
-	private JComboBox<Integer> reminderFreqCB;
 	
 	public AssignmentOptionsPanel(int width) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -107,26 +103,6 @@ public class AssignmentOptionsPanel extends JPanel {
 		this.add(wordCountTF);
 		
 		
-		addComponentPadding();
-		
-		
-		// Time reminder
-		JLabel timeReminderLabel = new WhiteLabel("Tijdsherinnering");
-		timerReminderSlider = new CheckSlider();
-		timerReminderSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
-		JLabel freqLbl = new WhiteLabel("Frequentie");
-		Integer[] options = {5, 10, 15, 30};
-		reminderFreqCB = new JComboBox<Integer>(options);
-		reminderFreqCB.setMaximumSize(new Dimension(40, 25));
-		reminderFreqCB.setAlignmentX(Component.LEFT_ALIGNMENT);
-		reminderFreqCB.setFocusable(false);
-		this.add(timeReminderLabel);
-		addLabelPadding();
-		this.add(timerReminderSlider);
-		addComponentPadding();
-		this.add(freqLbl);
-		addLabelPadding();
-		this.add(reminderFreqCB);
 	}
 	
 	private void addComponentPadding() {
@@ -151,11 +127,6 @@ public class AssignmentOptionsPanel extends JPanel {
 		if (wordCountTF.getText().isEmpty()) return 0;
 		return Integer.parseInt(wordCountTF.getText());
 	}
-	public boolean getSendTimeReminder() {
-		return timerReminderSlider.isSelected();
-	}
-	public int getTimeReminderFrequency() {
-		return (Integer) reminderFreqCB.getSelectedItem();
-	}
+	
 	
 }

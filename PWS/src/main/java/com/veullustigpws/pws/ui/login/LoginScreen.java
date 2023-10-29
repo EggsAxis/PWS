@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.app.Debug;
-import com.veullustigpws.pws.assignment.ParticipantData;
+import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;

@@ -8,7 +8,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import com.veullustigpws.pws.app.ColorPalet;
-import com.veullustigpws.pws.assignment.ParticipantData;
+import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.ui.fillup.FillUpParticipantPanel;
 
