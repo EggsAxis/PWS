@@ -9,18 +9,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import com.veullustigpws.pws.ui.components.CustomTextField;
 import com.veullustigpws.pws.ui.components.WhiteLabel;
+import com.veullustigpws.pws.utils.GUIUtils;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
 public class AssignmentOptionsPanel extends JPanel {
 	private static final long serialVersionUID = -1949973482540721500L;
 	
-	private JTextField assignmentNameTF;
+	private CustomTextField assignmentNameTF;
 	private JTextArea descriptionTextArea;
-	private JTextField durationTF;
-	private JTextField wordCountTF;
+	private CustomTextField durationTF;
+	private CustomTextField wordCountTF;
+	
+	
 	
 	public AssignmentOptionsPanel(int width) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -45,14 +48,14 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Room name
 		JLabel assignmentNameLbl = new WhiteLabel("Naam opdracht");
-		assignmentNameTF = new JTextField();
+		assignmentNameTF = new CustomTextField();
 		assignmentNameTF.setTransferHandler(null); // Disables copy-paste
 		assignmentNameTF.setMaximumSize(new Dimension(200, 30));
 		assignmentNameTF.setAlignmentX(Component.LEFT_ALIGNMENT);
 		assignmentNameTF.addKeyListener(new TextFieldSizeLimiter(assignmentNameTF, 42));
 		this.add(assignmentNameLbl);
 		addLabelPadding();
-		this.add(assignmentNameTF);
+		this.add(GUIUtils.addIndent(assignmentNameTF, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
 		addComponentPadding();
@@ -68,7 +71,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		descriptionScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.add(descriptionLbl);
 		addLabelPadding();
-		this.add(descriptionScrollPane);
+		this.add(GUIUtils.addIndent(descriptionScrollPane, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
 		addComponentPadding();
@@ -76,7 +79,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Duration
 		JLabel durationLbl = new WhiteLabel("Lengte (minuten)");
-		durationTF = new JTextField();
+		durationTF = new CustomTextField();
 		durationTF.setTransferHandler(null); // Disables copy-paste
 		durationTF.setMaximumSize(new Dimension(40, 25));
 		durationTF.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -84,7 +87,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		durationTF.addKeyListener(new TextFieldIntegerInputFilter());
 		this.add(durationLbl);
 		addLabelPadding();
-		this.add(durationTF);
+		this.add(GUIUtils.addIndent(durationTF, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
 		addComponentPadding();
@@ -92,7 +95,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		
 		// Word count
 		JLabel wordCountLbl = new WhiteLabel("Woordendoel");
-		wordCountTF = new JTextField();
+		wordCountTF = new CustomTextField();
 		wordCountTF.setTransferHandler(null); // Disables copy-paste
 		wordCountTF.setMaximumSize(new Dimension(40, 25));
 		wordCountTF.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -100,7 +103,7 @@ public class AssignmentOptionsPanel extends JPanel {
 		wordCountTF.addKeyListener(new TextFieldIntegerInputFilter());
 		this.add(wordCountLbl);
 		addLabelPadding();
-		this.add(wordCountTF);
+		this.add(GUIUtils.addIndent(wordCountTF, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
 	}

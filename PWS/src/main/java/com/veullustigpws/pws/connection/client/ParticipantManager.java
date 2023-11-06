@@ -12,6 +12,7 @@ import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
+import com.veullustigpws.pws.ui.HandInScreen;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
 import com.veullustigpws.pws.ui.login.ParticipantWaitingScreen;
 import com.veullustigpws.pws.utils.AssignmentUtilities;
@@ -20,6 +21,7 @@ public class ParticipantManager {
 
 	private EditorScreen editorScreen;
 	private ParticipantWaitingScreen waitingScreen;
+	private HandInScreen handInScreen;
 	
 	private Client client;
 	private ParticipantData participantData;
@@ -27,6 +29,7 @@ public class ParticipantManager {
 	private AssignmentOptions assignmentOptions;
 	private long startTime;
 	private boolean paused = false;
+	private Timer infoUpdateTimer;
 	
 	public ParticipantManager(ParticipantConnectData connectData) throws WrongConnectionDataException {
 		participantData = connectData.getParticipantData();
@@ -41,6 +44,7 @@ public class ParticipantManager {
 				public void run() {
 					waitingScreen = new ParticipantWaitingScreen(manager);
 					editorScreen = new EditorScreen(manager);
+					handInScreen = new HandInScreen();
 					openWaitingScreen();
 				}
 			});
@@ -75,9 +79,21 @@ public class ParticipantManager {
 		}
 	}
 	
+	public void assignmentEnded() {
+		handInScreen.setTimeOver(true);
+		closeClient();
+	}
+	
+	public void closeClient() {
+		infoUpdateTimer.cancel();
+		client.shutdown();
+		App.Window.setScreen(handInScreen);
+		App.Manager.handedIn();
+	}
+	
 	private void infoUpdateTimer() {
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
+		infoUpdateTimer = new Timer();
+		infoUpdateTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
 				if (paused) return;

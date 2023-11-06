@@ -73,9 +73,15 @@ public class Server implements Runnable{
 		assignmentStarted = true;
 		broadcast(new Message(Protocol.StartAssignment, manager.getAssignmentOptions()));
 	}
+
 	
 	
 	public void broadcast(Message msg) {
+		for (ConnectionHandler ch : connections) {
+			ch.sendMessage(msg);
+		}
+	}
+	public void broadcast(String msg) {
 		for (ConnectionHandler ch : connections) {
 			ch.sendMessage(msg);
 		}
@@ -95,9 +101,20 @@ public class Server implements Runnable{
 	public void shutdown(String reason) {
 		if (socket.isClosed()) return;
 		try {
-			socket.close();
 			for (ConnectionHandler ch : connections) {
 				ch.sendMessage(new Message(Protocol.KickUser, reason));
+				ch.shutdown();
+			}
+			socket.close();
+		} catch (IOException e) {
+			// Cannot handle
+		}
+	}
+	
+	public void shutdown() {
+		if (socket.isClosed()) return;
+		try {
+			for (ConnectionHandler ch : connections) {
 				ch.shutdown();
 			}
 			socket.close();
@@ -163,8 +180,9 @@ public class Server implements Runnable{
 				case Protocol.SendRequestedWork:
 					ParticipantWorkState pws = (ParticipantWorkState) msg.getContent();
 					manager.receivedRequestedWork(pws, ID);
-					
 					break;
+					
+					
 				default: 
 					Debug.error("Unable to read protocol of server input.");
 				}

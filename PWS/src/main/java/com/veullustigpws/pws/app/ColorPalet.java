@@ -9,10 +9,11 @@ public class ColorPalet {
 	public static Color LightBackgroundColor = new Color(126, 129, 137);
 	
 	// Text Colors
-	public static Color BlackText = new Color(0, 0, 0); //Black
+	public static Color BlackText = new Color(0, 0, 0); 
 	public static Color WhiteText = new Color(215, 214, 238); 
+	public static Color TextFieldText = new Color(232, 232, 239);
 	
-	
+	public static Color TextFieldLine = new Color(168, 168, 174);
 	
 	//Button Colors
 	public static Color GreenButton = new Color(107, 232, 149); //Light green

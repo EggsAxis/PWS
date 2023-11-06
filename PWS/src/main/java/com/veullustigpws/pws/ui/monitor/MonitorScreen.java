@@ -51,7 +51,7 @@ public class MonitorScreen extends JPanel {
 			manager.pauseAssignment();
 		});
 		stopBtn.addActionListener(e -> {
-			manager.forceStopAssignment();
+			manager.endAssignment(true);
 		});
 		
 		// labels

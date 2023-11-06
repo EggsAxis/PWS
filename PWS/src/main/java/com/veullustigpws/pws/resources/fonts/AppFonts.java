@@ -15,6 +15,7 @@ public class AppFonts {
 	public static void LoadFonts() {
 		try {
 			DefaultFont = Font.createFont(Font.TRUETYPE_FONT, new File(AppFonts.class.getResource("default_font.ttf").getFile()));
+			
 			DefaultFont = DefaultFont.deriveFont(Font.PLAIN, 16);
 			BigDefaultFont = DefaultFont.deriveFont(Font.BOLD, 20);
 			

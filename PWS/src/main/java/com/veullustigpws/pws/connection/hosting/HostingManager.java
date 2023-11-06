@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
+import com.veullustigpws.pws.assignment.ExportManager;
 import com.veullustigpws.pws.assignment.data.AssignmentOptions;
 import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
@@ -40,11 +41,12 @@ public class HostingManager {
 	private long pauseTime;
 	
 	// Timer
+	private Timer timeTimer;
 	private Timer requestTimer;
 	private static final long requestTimerDelay = 5*1000;
 	private long startTime;
 	
-	private boolean assignmentStarted = false;
+	private boolean inAssignment = false;
 	
 	// Listeners
 	private ArrayList<WorkStateListener> workStateListeners = new ArrayList<>();
@@ -73,7 +75,7 @@ public class HostingManager {
 	// EVENTS
 	void participantEntered(ParticipantData pd) {
 		participants.add(pd);
-		if (assignmentStarted) {
+		if (inAssignment) {
 			monitorScreen.refreshParticipants();
 		} else {
 			fillUpScreen.refreshParticipants();
@@ -91,7 +93,7 @@ public class HostingManager {
 	}
 	
 	public void startAssignment() {
-		assignmentStarted = true;
+		inAssignment = true;
 		monitorScreen.refreshParticipants();
 		monitorScreen.setCode(serverCode);
 		
@@ -146,7 +148,7 @@ public class HostingManager {
 	}
 	
 	private void startTimeTimer() {
-		Timer timeTimer = new Timer();
+		timeTimer = new Timer();
 		timeTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
@@ -175,6 +177,8 @@ public class HostingManager {
 		}
 		
 		participantWorkStates.put(ID, pws);
+		
+		if (!inAssignment) return;
 		for (WorkStateListener wsl : workStateListeners)  {
 			if (wsl == null) continue;
 			wsl.changedWorkState(participantWorkStates);
@@ -182,14 +186,22 @@ public class HostingManager {
 //		Debug.log(" - Received work state of user " + ID);
 	}
 	
-	public void forceStopAssignment() {
-		int confirmed = JOptionPane.showConfirmDialog(null, 
-				"Weet u zeker dat u de opdracht wilt stoppen?\nU kunt de opdracht later niet hervatten.", 
-				"Weet u het zeker?", JOptionPane.YES_NO_OPTION);
-		if (confirmed == JOptionPane.YES_OPTION) {
-			
+	public void endAssignment(boolean isForced) {
+		if (isForced) {
+			int confirmed = JOptionPane.showConfirmDialog(null, 
+					"Weet u zeker dat u de opdracht wilt stoppen?\nU kunt de opdracht later niet hervatten.", 
+					"Weet u het zeker?", JOptionPane.YES_NO_OPTION);
+			if (confirmed != JOptionPane.YES_OPTION) {
+				return;
+			}
 		}
+		timeTimer.cancel();
+		requestTimer.cancel();
+		
+		inAssignment = false;
+		ExportManager exportManager = new ExportManager(this);
 	}
+	
 	public void exitProgram() {
 		int confirmed = JOptionPane.showConfirmDialog(null, 
 				"Weet u zeker dat u het programma wil sluiten?\nAlle gegevens van de opdracht zullen verloren gaan.", 
@@ -199,6 +211,7 @@ public class HostingManager {
 			System.exit(0);
 		}
 	}
+	
 	public void closeRoom() {
 		int confirmed = JOptionPane.showConfirmDialog(null, 
 				"Weet u zeker dat u de opdracht wil sluiten?", 
@@ -211,7 +224,7 @@ public class HostingManager {
 	}
 	
 	private void refreshParticipantDisplay() {
-		if (assignmentStarted) {
+		if (inAssignment) {
 			monitorScreen.refreshParticipants();
 		} else {
 			fillUpScreen.refreshParticipants();
@@ -241,6 +254,12 @@ public class HostingManager {
 	
 	
 	// Getters
+	public HashMap<Integer, ParticipantWorkState> getParticipantWorkStates() {
+		return participantWorkStates;
+	}
+	public Server getServer() {
+		return server;
+	}
 	public String getServerCode() {
 		return serverCode;
 	}

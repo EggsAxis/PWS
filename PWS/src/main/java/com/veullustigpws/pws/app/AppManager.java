@@ -32,7 +32,11 @@ public class AppManager implements WindowListener {
 			}
 		});
 	}
-
+	
+	public void handedIn() {
+		participantManager = null;
+		InAssignment = false;
+	}
 
 	@Override
 	public void windowClosing(WindowEvent e) {

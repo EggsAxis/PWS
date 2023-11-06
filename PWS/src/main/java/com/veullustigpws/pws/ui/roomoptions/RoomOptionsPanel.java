@@ -8,16 +8,17 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import com.veullustigpws.pws.ui.components.CheckSlider;
+import com.veullustigpws.pws.ui.components.CustomTextField;
 import com.veullustigpws.pws.ui.components.WhiteLabel;
+import com.veullustigpws.pws.utils.GUIUtils;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
 public class RoomOptionsPanel extends JPanel {
 	private static final long serialVersionUID = -5178622122847540349L;
 	
-	private JTextField roomNameTF;
-	private JTextField passwordTF;
+	private CustomTextField roomNameTF;
+	private CustomTextField passwordTF;
 	private CheckSlider fraudDetectionSlider;
 	private CheckSlider timerReminderSlider;
 	private JComboBox<Integer> reminderFreqCB;
@@ -45,13 +46,13 @@ public class RoomOptionsPanel extends JPanel {
 		
 		// Room name
 		WhiteLabel roomNameLbl = new WhiteLabel("Omgevingsnaam");
-		roomNameTF = new JTextField();
+		roomNameTF = new CustomTextField();
 		roomNameTF.setMaximumSize(new Dimension(200, 30));
 		roomNameTF.setAlignmentX(Component.LEFT_ALIGNMENT);
 		roomNameTF.addKeyListener(new TextFieldSizeLimiter(roomNameTF, 42));
 		this.add(roomNameLbl);
 		addLabelPadding();
-		this.add(roomNameTF);
+		this.add(GUIUtils.addIndent(roomNameTF, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
 		addComponentPadding();
@@ -59,13 +60,13 @@ public class RoomOptionsPanel extends JPanel {
 		
 		// Password
 		JLabel passwordLbl = new WhiteLabel("Wachtwoord");
-		passwordTF = new JTextField();
+		passwordTF = new CustomTextField();
 		passwordTF.setMaximumSize(new Dimension(200, 30));
 		passwordTF.setAlignmentX(Component.LEFT_ALIGNMENT);
 		passwordTF.addKeyListener(new TextFieldSizeLimiter(passwordTF, 42));
 		this.add(passwordLbl);
 		addLabelPadding();
-		this.add(passwordTF);
+		this.add(GUIUtils.addIndent(passwordTF, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
 		addComponentPadding();
@@ -77,7 +78,7 @@ public class RoomOptionsPanel extends JPanel {
 		fraudDetectionSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.add(fraudDetectionLbl);
 		addLabelPadding();
-		this.add(fraudDetectionSlider);
+		this.add(GUIUtils.addIndent(fraudDetectionSlider, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		addComponentPadding();
 		
@@ -93,11 +94,11 @@ public class RoomOptionsPanel extends JPanel {
 		reminderFreqCB.setFocusable(false);
 		this.add(timeReminderLabel);
 		addLabelPadding();
-		this.add(timerReminderSlider);
+		this.add(GUIUtils.addIndent(timerReminderSlider, RoomOptionsScreen.COMPONENT_INDENT));
 		addComponentPadding();
 		this.add(freqLbl);
 		addLabelPadding();
-		this.add(reminderFreqCB);
+		this.add(GUIUtils.addIndent(reminderFreqCB, RoomOptionsScreen.COMPONENT_INDENT));
 	}
 	
 	

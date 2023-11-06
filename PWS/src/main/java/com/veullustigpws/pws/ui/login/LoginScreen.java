@@ -10,7 +10,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.app.Debug;
@@ -18,6 +17,7 @@ import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
+import com.veullustigpws.pws.ui.components.CustomTextField;
 import com.veullustigpws.pws.ui.components.RoundPanel;
 import com.veullustigpws.pws.ui.components.WhiteLabel;
 import com.veullustigpws.pws.utils.GUIUtils;
@@ -28,16 +28,16 @@ public class LoginScreen extends JPanel {
 	private static final long serialVersionUID = -3094851789506996929L;
 
 	public static final Dimension size = new Dimension(650, 420);
-	private static final int LABEL_PADDING = 8;
+	private static final int LABEL_PADDING = 3;
 	private static final int COMPONENT_PADDING = 5;
 	private static final int TEXTFIELD_INDENT = 10;
 	
 	private RoundPanel centerPnl;
 	
-	private JTextField nameTF;
-	private JTextField studentNumberTF;
-	private JTextField passwordTF;
-	private JTextField codeTF;
+	private CustomTextField nameTF;
+	private CustomTextField studentNumberTF;
+	private CustomTextField passwordTF;
+	private CustomTextField codeTF;
 	
 	
 	public LoginScreen() {
@@ -121,32 +121,32 @@ public class LoginScreen extends JPanel {
 		
 		// Name
 		JLabel nameLbl = new WhiteLabel("Naam");
-		nameTF = new JTextField();
+		nameTF = new CustomTextField();
 		initTextField(nameTF);
 		leftPnl.add(nameLbl);
 		addLabelPadding(leftPnl);
-		leftPnl.add(addIndent(nameTF, TEXTFIELD_INDENT));
+		leftPnl.add(GUIUtils.addIndent(nameTF, TEXTFIELD_INDENT));
 		
 		addComponentPadding(leftPnl);
 		
 		
 		// Student number
 		JLabel studentNumberLbl = new WhiteLabel("Leerlingnummer");
-		studentNumberTF = new JTextField();
+		studentNumberTF = new CustomTextField();
 		initTextField(studentNumberTF);
 		leftPnl.add(studentNumberLbl);
 		addLabelPadding(leftPnl);
-		leftPnl.add(addIndent(studentNumberTF, TEXTFIELD_INDENT));
+		leftPnl.add(GUIUtils.addIndent(studentNumberTF, TEXTFIELD_INDENT));
 		
 		addComponentPadding(leftPnl);
 		
 		// password 
 		JLabel passwordLbl = new WhiteLabel("Wachtwoord");
-		passwordTF = new JTextField();
+		passwordTF = new CustomTextField();
 		initTextField(passwordTF);
 		leftPnl.add(passwordLbl);
 		addLabelPadding(leftPnl);
-		leftPnl.add(addIndent(passwordTF, TEXTFIELD_INDENT));
+		leftPnl.add(GUIUtils.addIndent(passwordTF, TEXTFIELD_INDENT));
 		
 		centerPnl.add(leftPnl, BorderLayout.WEST);
 	}
@@ -162,19 +162,19 @@ public class LoginScreen extends JPanel {
 		
 		// Code
 		JLabel codeLbl = new WhiteLabel("Code");
-		codeTF = new JTextField();
+		codeTF = new CustomTextField();
 		codeTF.addKeyListener(new TextFieldSizeLimiter(codeTF, 11));
 		codeTF.addKeyListener(new TextFieldIntegerInputFilter());
 		initTextField(codeTF);
 		rightPnl.add(codeLbl);
 		addLabelPadding(rightPnl);
-		rightPnl.add(addIndent(codeTF, TEXTFIELD_INDENT));
+		rightPnl.add(GUIUtils.addIndent(codeTF, TEXTFIELD_INDENT));
 		
 		
 		centerPnl.add(rightPnl, BorderLayout.EAST);	
 	}
 	
-	private void initTextField(JTextField tf) {
+	private void initTextField(CustomTextField tf) {
 		Dimension tfsize = new Dimension(180, 30);
 		tf.setPreferredSize(tfsize);
 		tf.setMaximumSize(tfsize);
@@ -183,16 +183,7 @@ public class LoginScreen extends JPanel {
 		tf.setAlignmentX(Component.LEFT_ALIGNMENT);
 		tf.addKeyListener(new TextFieldSizeLimiter(tf, 32));
 	}
-	
-	private JPanel addIndent(JTextField tf, int indent) {
-		JPanel panel = new JPanel();
-		panel.setOpaque(false);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel.setBorder(BorderFactory.createEmptyBorder(0, indent, 0, 0));
-		panel.add(tf);
-		return panel;
-	}
+
 	
 	
 	private void addComponentPadding(JPanel pnl) {

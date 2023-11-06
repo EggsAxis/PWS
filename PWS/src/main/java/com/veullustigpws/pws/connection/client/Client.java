@@ -128,6 +128,9 @@ public class Client {
 				manager.incorrectPassword();
 				shutdown();
 				break;
+			case Protocol.AssignmentEnded: 
+				manager.assignmentEnded();
+				break;
 			case Protocol.KickUser:
 				String reason = (String) msg.getContent();
 				manager.participantKicked(reason);

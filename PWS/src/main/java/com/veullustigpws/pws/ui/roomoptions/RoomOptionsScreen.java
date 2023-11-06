@@ -24,6 +24,7 @@ public class RoomOptionsScreen extends JPanel {
 	private static final int WIDTH = 800;
 	public static final int LABEL_PADDING = 10;
 	public static final int COMPONENT_PADDING = 30;
+	public static final int COMPONENT_INDENT = 15;
 	
 	private AssignmentOptionsPanel assignmentPnl;
 	private RoomOptionsPanel roomPnl;

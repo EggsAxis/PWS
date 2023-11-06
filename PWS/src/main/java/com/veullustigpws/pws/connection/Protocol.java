@@ -11,6 +11,9 @@ public class Protocol {
 	public static final String SendRequestedWork = "sw";
 	public static final String PausedAssignment = "pa";
 	
+	// End of assignment
+	public static final String AssignmentEnded = "ea";
+	
 	public static final String SendPassword = "sp";
 	public static final String IncorrectPassword = "wp";
 	public static final String CorrectPassword = "cp";

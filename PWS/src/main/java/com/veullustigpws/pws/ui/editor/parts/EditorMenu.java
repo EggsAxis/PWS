@@ -12,6 +12,7 @@ import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.listeners.EditorMenuListener;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
 import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
+import com.veullustigpws.pws.ui.components.CustomTextField;
 import com.veullustigpws.pws.ui.components.RoundPanel;
 import com.veullustigpws.pws.ui.components.TextDecorationButton;
 import com.veullustigpws.pws.utils.GUIUtils;
@@ -29,7 +30,7 @@ public class EditorMenu extends JPanel {
 	private TextDecorationButton boldBtn;
 	private TextDecorationButton italicBtn;
 	private TextDecorationButton underlineBtn;
-	private JTextField fontSizeTF;
+	private CustomTextField fontSizeTF;
 
 	public EditorMenu(TextEditorManager textEditorManager) {
 		
@@ -79,13 +80,13 @@ public class EditorMenu extends JPanel {
 
 	private void initFontsizeTextField() {
 		
-		fontSizeTF = new JTextField();
+		fontSizeTF = new CustomTextField();
 		fontSizeTF.setText("12");
 		fontSizeTF.setHorizontalAlignment(JTextField.RIGHT);
 		fontSizeTF.addKeyListener(new TextFieldIntegerInputFilter());
 		
 		fontSizeTF.addActionListener(menuListener.new FontSizeListener(fontSizeTF));
-		GUIUtils.setComponentSize(fontSizeTF, new Dimension(60, 30));
+		GUIUtils.setComponentSize(fontSizeTF, new Dimension(30, 30));
 		
 		inner.add(fontSizeTF);
 	}

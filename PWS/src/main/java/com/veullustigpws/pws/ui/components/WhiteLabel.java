@@ -25,7 +25,7 @@ public class WhiteLabel extends JLabel {
 		
 		this.setForeground(ColorPalet.WhiteText);
 	}
-	public WhiteLabel(String name, int textSize) {
+	public WhiteLabel(String name, float textSize) {
 		super(name);
 		
 		this.setFont(AppFonts.DefaultFont.deriveFont(Font.BOLD, textSize));

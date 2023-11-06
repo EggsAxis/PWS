@@ -7,8 +7,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
@@ -37,9 +35,7 @@ public class UIFrame extends JFrame   {
 		
 		this.setTitle("PWS - Milan Veul & Samuel Lustig");
 		
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {}
+		
 		
 		initComponents();
 	}
