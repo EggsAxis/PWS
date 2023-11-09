@@ -28,7 +28,7 @@ public class HandInScreen extends JPanel {
 		initComponents();
 	}
 
-	private void initComponents() {
+	private void initComponents() { 
 		RoundPanel centerPnl = new RoundPanel(90, RoundPanel.ALL_CORNERS);
 		centerPnl.setBackground(ColorPalet.DarkBackgroundColor);
 		centerPnl.setLayout(new BoxLayout(centerPnl, BoxLayout.Y_AXIS));
