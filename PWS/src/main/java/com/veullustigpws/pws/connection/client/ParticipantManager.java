@@ -12,8 +12,8 @@ import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
-import com.veullustigpws.pws.ui.HandInScreen;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
+import com.veullustigpws.pws.ui.export.HandInScreen;
 import com.veullustigpws.pws.ui.login.ParticipantWaitingScreen;
 import com.veullustigpws.pws.utils.AssignmentUtilities;
 

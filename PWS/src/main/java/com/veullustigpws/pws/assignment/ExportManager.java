@@ -8,11 +8,11 @@ import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.rtf.RTFEditorKit;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
+import com.veullustigpws.pws.assignment.data.AssignmentOptions;
 import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
 import com.veullustigpws.pws.connection.Protocol;
@@ -25,6 +25,7 @@ public class ExportManager {
 	private ExportAssignmentScreen exportScreen;
 	private HostingManager hostingManager;
 	private HashMap<Integer, ParticipantWorkState> participantWork;
+	private AssignmentOptions assignmentOptions;
 	
 	private File dir;
 	private ArrayList<File> rtfFiles;
@@ -32,7 +33,8 @@ public class ExportManager {
 	
 	public ExportManager(HostingManager hostingManager) {
 		this.hostingManager = hostingManager;
-		dir = FileSystemView.getFileSystemView().getHomeDirectory();
+		dir = new File(System.getProperty("user.home"), "Downloads"); 
+		assignmentOptions = hostingManager.getAssignmentOptions();
 		
 		loadScreens();
 		collectFinalData();
@@ -96,6 +98,25 @@ public class ExportManager {
 		Debug.log("Selected file: " + file.getAbsolutePath());
 	}
 	
+	public void downloadResults() {
+		
+	}
+	
+	public void deleteResults() {
+		int confirmed = JOptionPane.showConfirmDialog(exportScreen, 
+				"Weet u zeker dat u de resultaten wilt verwijderen?\nDit kan niet ongedaan gemaakt worden.", 
+				"Weet u het zeker?", JOptionPane.YES_NO_OPTION);
+		if (confirmed == JOptionPane.YES_OPTION) {
+			toStartScreen();
+		}
+	}
+	
+	private void toStartScreen() {
+		App.Manager.InAssignment = false;
+		App.Window.setStartScreen();
+	}
+	
+	
 	
 	public void generateRTFDocuments(File dir) {
 		rtfFiles = new ArrayList<File>();
@@ -104,9 +125,9 @@ public class ExportManager {
 			ParticipantWorkState pws = set.getValue();
 			ParticipantData pd = pws.getParticipantData();
 			
-			// Generate file
-			String fileName = pd.getStudentID() + '-' + pd.getName();
-			String filePath = dir.getAbsolutePath() + "/assignment/" + fileName + ".rtf";
+			// Generate work file
+			String name = fileNameOf(pd);
+			String filePath = dir.getAbsolutePath() + "/" + assignmentOptions.getAssignmentName() + "/" + name + "/" + name + "- work" +  ".rtf";
 			File rtfFile = new File(filePath);
 			
 			// Write file
@@ -124,7 +145,16 @@ public class ExportManager {
 //		zipFiles(rtfFiles);
 	}
 	
+	private String fileNameOf(ParticipantData pd) {
+		return pd.getStudentID() + '-' + pd.getName();
+	}
+	
 	private void zipFiles(File dir) {
 		
+	}
+	
+	
+	public File getDirectory() {
+		return dir;
 	}
 }

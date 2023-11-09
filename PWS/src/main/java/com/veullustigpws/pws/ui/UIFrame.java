@@ -102,6 +102,7 @@ public class UIFrame extends JFrame   {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				add(startScreen, BorderLayout.CENTER);
+//				add(new ExportAssignmentScreen(null), BorderLayout.CENTER);
 				if (currentPnl != null) remove(currentPnl);
 				revalidate();
 				repaint();

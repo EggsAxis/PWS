@@ -1,4 +1,4 @@
-package com.veullustigpws.pws.ui;
+package com.veullustigpws.pws.ui.export;
 
 import java.awt.Component;
 import java.awt.Dimension;

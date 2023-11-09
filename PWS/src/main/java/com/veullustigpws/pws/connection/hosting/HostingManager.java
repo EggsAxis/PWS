@@ -1,5 +1,6 @@
 package com.veullustigpws.pws.connection.hosting;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
@@ -53,22 +54,27 @@ public class HostingManager {
 	
 	public HostingManager(AssignmentOptions options) {
 		this.assignmentOptions = options;
-		server = new Server(this);
 		initScreens();
 		addWorkStateListener(viewWorkScreen);
+		
+		server = new Server(this);
 	}
 	
 	
 	private void initScreens() {
 		HostingManager manager = this;
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				monitorScreen = new MonitorScreen(manager);
-				fillUpScreen = new FillUpScreen(manager);
-				viewWorkScreen = new ViewWorkScreen(manager);
-				manager.openFillUpScreen();
-			}
-		});
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					monitorScreen = new MonitorScreen(manager);
+					fillUpScreen = new FillUpScreen(manager);
+					viewWorkScreen = new ViewWorkScreen(manager);
+					manager.openFillUpScreen();
+				}
+			});
+		} catch (InvocationTargetException | InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 
