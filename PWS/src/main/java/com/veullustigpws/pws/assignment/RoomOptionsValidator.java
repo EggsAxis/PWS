@@ -1,6 +1,6 @@
 package com.veullustigpws.pws.assignment;
 
-import com.veullustigpws.pws.app.App;
+import com.veullustigpws.pws.assignment.data.AssignmentOptions;
 
 public class RoomOptionsValidator {
 	public static boolean ValidateSubmission(AssignmentOptions options) {
@@ -10,8 +10,6 @@ public class RoomOptionsValidator {
 		if (options.getWordCount() <= 0) return false;
 		if (options.getRoomName().isEmpty()) return false;
 		if (options.getPassword().isEmpty()) return false;
-		
-		App.Window.startRoom(options);
 		
 		return true;
 	}

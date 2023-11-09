@@ -5,32 +5,31 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
-import com.veullustigpws.pws.ui.appearance.CheckSlider;
+import com.veullustigpws.pws.ui.components.CustomTextField;
+import com.veullustigpws.pws.ui.components.WhiteLabel;
+import com.veullustigpws.pws.utils.GUIUtils;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
 public class AssignmentOptionsPanel extends JPanel {
 	private static final long serialVersionUID = -1949973482540721500L;
 	
-	private JTextField assignmentNameTF;
+	private CustomTextField assignmentNameTF;
 	private JTextArea descriptionTextArea;
-	private JTextField durationTF;
-	private JTextField wordCountTF;
-	private CheckSlider timerReminderSlider;
-	private JComboBox<Integer> reminderFreqCB;
+	private CustomTextField durationTF;
+	private CustomTextField wordCountTF;
+	
+	
 	
 	public AssignmentOptionsPanel(int width) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(width, 700));
-		this.setBorder(BorderFactory.createEmptyBorder(50, 20, 0, 20));
-		
+		this.setBorder(BorderFactory.createEmptyBorder(50, 30, 0, 20));
+		this.setOpaque(false);
 		initComponents();
 		
 		// DEBUG
@@ -42,28 +41,28 @@ public class AssignmentOptionsPanel extends JPanel {
 	
 	private void initComponents() {
 		// Title
-		JLabel title = new JLabel("Opdracht");
+		JLabel title = new WhiteLabel("Opdracht", true);
 		this.add(title);
 		
 		this.add(Box.createRigidArea(new Dimension(0, 60)));
 		
 		// Room name
-		JLabel assignmentNameLbl = new JLabel("Naam opdracht");
-		assignmentNameTF = new JTextField();
+		JLabel assignmentNameLbl = new WhiteLabel("Naam opdracht");
+		assignmentNameTF = new CustomTextField();
 		assignmentNameTF.setTransferHandler(null); // Disables copy-paste
 		assignmentNameTF.setMaximumSize(new Dimension(200, 30));
 		assignmentNameTF.setAlignmentX(Component.LEFT_ALIGNMENT);
 		assignmentNameTF.addKeyListener(new TextFieldSizeLimiter(assignmentNameTF, 42));
 		this.add(assignmentNameLbl);
 		addLabelPadding();
-		this.add(assignmentNameTF);
+		this.add(GUIUtils.addIndent(assignmentNameTF, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
 		addComponentPadding();
 		
 		
 		// Assignment description
-		JLabel descriptionLbl = new JLabel("Opdrachtbeschrijving");
+		JLabel descriptionLbl = new WhiteLabel("Opdrachtbeschrijving");
 		descriptionTextArea = new JTextArea();
 		descriptionTextArea.setWrapStyleWord(true);
 		descriptionTextArea.setLineWrap(true);
@@ -72,15 +71,15 @@ public class AssignmentOptionsPanel extends JPanel {
 		descriptionScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.add(descriptionLbl);
 		addLabelPadding();
-		this.add(descriptionScrollPane);
+		this.add(GUIUtils.addIndent(descriptionScrollPane, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
 		addComponentPadding();
 		
 		
 		// Duration
-		JLabel durationLbl = new JLabel("Lengte (minuten)");
-		durationTF = new JTextField();
+		JLabel durationLbl = new WhiteLabel("Lengte (minuten)");
+		durationTF = new CustomTextField();
 		durationTF.setTransferHandler(null); // Disables copy-paste
 		durationTF.setMaximumSize(new Dimension(40, 25));
 		durationTF.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -88,15 +87,15 @@ public class AssignmentOptionsPanel extends JPanel {
 		durationTF.addKeyListener(new TextFieldIntegerInputFilter());
 		this.add(durationLbl);
 		addLabelPadding();
-		this.add(durationTF);
+		this.add(GUIUtils.addIndent(durationTF, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
 		addComponentPadding();
 		
 		
 		// Word count
-		JLabel wordCountLbl = new JLabel("Woordendoel");
-		wordCountTF = new JTextField();
+		JLabel wordCountLbl = new WhiteLabel("Woordendoel");
+		wordCountTF = new CustomTextField();
 		wordCountTF.setTransferHandler(null); // Disables copy-paste
 		wordCountTF.setMaximumSize(new Dimension(40, 25));
 		wordCountTF.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -104,29 +103,9 @@ public class AssignmentOptionsPanel extends JPanel {
 		wordCountTF.addKeyListener(new TextFieldIntegerInputFilter());
 		this.add(wordCountLbl);
 		addLabelPadding();
-		this.add(wordCountTF);
+		this.add(GUIUtils.addIndent(wordCountTF, RoomOptionsScreen.COMPONENT_INDENT));
 		
 		
-		addComponentPadding();
-		
-		
-		// Time reminder
-		JLabel timeReminderLabel = new JLabel("Tijdsherinnering");
-		timerReminderSlider = new CheckSlider();
-		timerReminderSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
-		JLabel freqLbl = new JLabel("Frequentie");
-		Integer[] options = {5, 10, 15, 30};
-		reminderFreqCB = new JComboBox<Integer>(options);
-		reminderFreqCB.setMaximumSize(new Dimension(40, 25));
-		reminderFreqCB.setAlignmentX(Component.LEFT_ALIGNMENT);
-		reminderFreqCB.setFocusable(false);
-		this.add(timeReminderLabel);
-		addLabelPadding();
-		this.add(timerReminderSlider);
-		addLabelPadding();
-		this.add(freqLbl);
-		addLabelPadding();
-		this.add(reminderFreqCB);
 	}
 	
 	private void addComponentPadding() {
@@ -151,11 +130,6 @@ public class AssignmentOptionsPanel extends JPanel {
 		if (wordCountTF.getText().isEmpty()) return 0;
 		return Integer.parseInt(wordCountTF.getText());
 	}
-	public boolean getSendTimeReminder() {
-		return timerReminderSlider.isSelected();
-	}
-	public int getTimeReminderFrequency() {
-		return (Integer) reminderFreqCB.getSelectedItem();
-	}
+	
 	
 }

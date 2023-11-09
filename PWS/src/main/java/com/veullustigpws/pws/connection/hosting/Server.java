@@ -11,28 +11,25 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import com.veullustigpws.pws.app.Debug;
-import com.veullustigpws.pws.assignment.ParticipantData;
-import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.assignment.data.ParticipantData;
+import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
 import com.veullustigpws.pws.connection.ConnectData;
 import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.utils.JoinCodeGenerator;
 
 public class Server implements Runnable{
-	
-	private boolean joinable;
 	private HostingManager manager;
 	
 	private ArrayList<ConnectionHandler> connections;
 	private ServerSocket socket;
 	private ExecutorService threadpool;
 	
+	private boolean assignmentStarted = false;
 	
 	public Server(HostingManager manager) {
 		this.manager = manager;
-		joinable = true;
 		connections = new ArrayList<>();
 		
 		Thread thread = new Thread(this);
@@ -55,12 +52,11 @@ public class Server implements Runnable{
 			Debug.log(" > Port: " + port);
 			Debug.log(" > Code: " + code);
 			
-			
 			manager.setServerCode(code);
 			
 			// Accept all clients
 			threadpool = Executors.newCachedThreadPool();
-			while (joinable) {
+			while (true) {
 				Socket client = socket.accept();
 				ConnectionHandler handler = new ConnectionHandler(client);
 				connections.add(handler);
@@ -68,16 +64,16 @@ public class Server implements Runnable{
 				handler.setFuture(future);
 			}
 		} catch (IOException e) {
-			shutdown();
+			shutdown("An unexpected error occured on the server.");
 		}
 		
 	}
 	
 	public void startAssignment() {
-		joinable = false;
+		assignmentStarted = true;
 		broadcast(new Message(Protocol.StartAssignment, manager.getAssignmentOptions()));
 	}
-	
+
 	
 	
 	public void broadcast(Message msg) {
@@ -85,13 +81,43 @@ public class Server implements Runnable{
 			ch.sendMessage(msg);
 		}
 	}
+	public void broadcast(String msg) {
+		for (ConnectionHandler ch : connections) {
+			ch.sendMessage(msg);
+		}
+	}
+	
+	public void kickUser(int ID, String reason) {
+		for (ConnectionHandler ch : connections) {
+			if (ch.getID() != ID) continue;
+			ch.sendMessage(new Message(Protocol.KickUser, reason));
+			ch.shutdown();
+			
+			connections.remove(ch);
+			return;
+		}
+	}
+	
+	public void shutdown(String reason) {
+		if (socket.isClosed()) return;
+		try {
+			for (ConnectionHandler ch : connections) {
+				ch.sendMessage(new Message(Protocol.KickUser, reason));
+				ch.shutdown();
+			}
+			socket.close();
+		} catch (IOException e) {
+			// Cannot handle
+		}
+	}
 	
 	public void shutdown() {
 		if (socket.isClosed()) return;
 		try {
-			socket.close();
-			for (ConnectionHandler ch : connections) 
+			for (ConnectionHandler ch : connections) {
 				ch.shutdown();
+			}
+			socket.close();
 		} catch (IOException e) {
 			// Cannot handle
 		}
@@ -140,6 +166,12 @@ public class Server implements Runnable{
 					ParticipantData pd = (ParticipantData) msg.getContent();
 					pd.setID(ID);
 					manager.participantEntered(pd);
+					
+					// Start their session if the assignment had already started
+					if (assignmentStarted) {
+						manager.updateRunningTime();
+						sendMessage(new Message(Protocol.StartAssignment, manager.getAssignmentOptions()));
+					}
 					break;
 				case Protocol.ParticipantLeaves:
 					manager.participantLeft(ID);
@@ -148,20 +180,22 @@ public class Server implements Runnable{
 				case Protocol.SendRequestedWork:
 					ParticipantWorkState pws = (ParticipantWorkState) msg.getContent();
 					manager.receivedRequestedWork(pws, ID);
-					
 					break;
+					
+					
 				default: 
 					Debug.error("Unable to read protocol of server input.");
 				}
 			} catch (Exception e) {
-				Debug.error("Unable to read protocol of server input.");
+				Debug.error("An error occured when reading server input.");
+				e.printStackTrace();
 			}
 			
 		}
 		
 		private void managePassword(String password) {
 			if (manager.getAssignmentOptions().getPassword().equals(password)) {
-				sendMessage(Protocol.CorrectPassword);
+				sendMessage(new Message(Protocol.CorrectPassword, ID));
 			} else {
 				sendMessage(Protocol.IncorrectPassword);
 				Debug.log("User tried to enter with incorrect password.");
@@ -207,6 +241,10 @@ public class Server implements Runnable{
 		
 		void setFuture(Future<?> future) {
 			this.future = future;
+		}
+		
+		int getID() {
+			return ID;
 		}
 	}
 	

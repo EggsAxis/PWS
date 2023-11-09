@@ -1,6 +1,6 @@
 package com.veullustigpws.pws.connection.client;
 
-import com.veullustigpws.pws.assignment.ParticipantData;
+import com.veullustigpws.pws.assignment.data.ParticipantData;
 
 public class ParticipantConnectData {
 	private String code;

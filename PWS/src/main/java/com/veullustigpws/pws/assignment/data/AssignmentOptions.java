@@ -1,6 +1,10 @@
-package com.veullustigpws.pws.assignment;
+package com.veullustigpws.pws.assignment.data;
 
-public class AssignmentOptions {
+import java.io.Serializable;
+
+public class AssignmentOptions implements Serializable {
+	private static final long serialVersionUID = -5915536963122121295L;
+	
 	
 	// Assignment options
 	private String assignmentName;
@@ -14,6 +18,7 @@ public class AssignmentOptions {
 	private String roomName;
 	private String password;
 	private boolean detectionEnabled;
+	private long runningTime;
 	
 	// Getters and setters
 	public String getAssignmentName() {
@@ -69,6 +74,12 @@ public class AssignmentOptions {
 	}
 	public void setDetectionEnabled(boolean detectionEnabled) {
 		this.detectionEnabled = detectionEnabled;
+	}
+	public void setRunningTime(long runningTime) {
+		this.runningTime = runningTime;
+	}
+	public long getRunningTime() {
+		return runningTime;
 	}
 	
 	

@@ -1,16 +1,16 @@
 package com.veullustigpws.pws.ui.monitor;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import com.veullustigpws.pws.app.AppConstants;
+import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
+import com.veullustigpws.pws.ui.components.MenuPanel;
+import com.veullustigpws.pws.ui.components.RoundButton;
+import com.veullustigpws.pws.ui.components.WhiteLabel;
 
 public class MonitorScreen extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -18,7 +18,8 @@ public class MonitorScreen extends JPanel {
 	private HostingManager manager;
 	
 	
-	private JLabel timeLabel;
+	private JLabel timeLbl;
+	private JLabel codeLbl;
 	private ParticipantListPanel partsPanel;
 	
 	public MonitorScreen(HostingManager manager) {
@@ -26,7 +27,7 @@ public class MonitorScreen extends JPanel {
 		
 		this.setFocusable(true);
 		this.setLayout(new BorderLayout());
-		this.setBackground(AppConstants.defaultBackgroundColor);
+		this.setBackground(ColorPalet.LightBackgroundColor);
 		
 		
 		initComponents();
@@ -35,38 +36,50 @@ public class MonitorScreen extends JPanel {
 	
 	private void initComponents() {
 		// Participants panel
-		partsPanel = new ParticipantListPanel(manager);
+		partsPanel = new ParticipantListPanel(1000, manager, ParticipantListPanel.MONITOR);
 		
-		// Bottom menu
-		JPanel bottomMenu = new JPanel();
-		bottomMenu.setLayout(new BoxLayout(bottomMenu, BoxLayout.X_AXIS));
-		bottomMenu.setPreferredSize(new Dimension(9999, 70));
-		bottomMenu.setBackground(AppConstants.defaultBackgroundColor);
-		bottomMenu.setBorder(BorderFactory.createEmptyBorder(5, 40, 10, 40));
-		
-		// Time label
-		timeLabel = new JLabel("Resterend: 00:00");
-		timeLabel.setFont(new Font("", Font.PLAIN, 20));
+		// Top menu
+		MenuPanel topMenu = new MenuPanel(new Dimension(600, 60), 30, MenuPanel.SCREEN_LOCATION_TOP);
+		topMenu.getMenu().setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 40));
 		
 		// Buttons
-		Font btnFont = new Font("", Font.BOLD, 18);
-		JButton forceStopBtn = new JButton("Beëindig");
-		JButton pauseBtn = new JButton("Pauzeer");
-		forceStopBtn.setFocusable(false);
-		pauseBtn.setFocusable(false);
-		forceStopBtn.setFont(btnFont);
-		pauseBtn.setFont(btnFont);
+		RoundButton pauseBtn = new RoundButton(16, RoundButton.PLAY_PAUSE);
+		RoundButton stopBtn = new RoundButton(16, RoundButton.STOP);
+		pauseBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
+		stopBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
+		pauseBtn.addActionListener(e -> {
+			manager.pauseAssignment();
+		});
+		stopBtn.addActionListener(e -> {
+			manager.endAssignment(true);
+		});
 		
+		// labels
+		timeLbl = new WhiteLabel("", 19);
+		codeLbl = new WhiteLabel("", 19);
 		
-		bottomMenu.add(timeLabel);
-		bottomMenu.add(Box.createHorizontalGlue());
-		bottomMenu.add(pauseBtn);
-		bottomMenu.add(Box.createHorizontalGlue());
-		bottomMenu.add(forceStopBtn);
+		topMenu.addComponent(pauseBtn);
+		topMenu.addRigidArea(20);
+		topMenu.addComponent(stopBtn);
+		topMenu.addGlue();
+		topMenu.addComponent(timeLbl);
+		topMenu.addGlue();
+		topMenu.addComponent(codeLbl);
 		
 		// Add together
 		this.add(partsPanel, BorderLayout.CENTER);
-		this.add(bottomMenu, BorderLayout.SOUTH);
+		this.add(topMenu, BorderLayout.NORTH);
+	}
+	
+	public void setTime(String time) {
+		timeLbl.setText(time);
+	}
+	public void setCode(String code) {
+		codeLbl.setText(code);
+	}
+	
+	public void assignmentPaused() {
+		timeLbl.setText("Gepauzeerd");
 	}
 	
 	public void refreshParticipants() {
