@@ -87,9 +87,9 @@ public class ParticipantManager {
 	}
 	
 	public void handIn() {
-		int confirmed = JOptionPane.showConfirmDialog(null, 
-				"Weet u zeker dat u het programma wil sluiten?\nAlle gegevens van de opdracht zullen verloren gaan.", 
-				"Weet u het zeker?", JOptionPane.YES_NO_OPTION);
+		int confirmed = JOptionPane.showConfirmDialog(editorScreen, 
+				"Weet je zeker dat je je werk wilt inleveren?\nDit kan niet ongedaan gemaakt worden!", 
+				"Weet je het zeker?", JOptionPane.YES_NO_OPTION);
 		if (confirmed != JOptionPane.YES_OPTION) return;
 		
 		client.sendMessageToServer(new Message(Protocol.FinalWork, getParticipantWorkState()));

@@ -145,6 +145,9 @@ public class Client {
 				manager.participantKicked(reason);
 				shutdown();
 				break;
+			case Protocol.ReceivedFinalWork:
+				manager.handInSuccessful();
+				break;
 			default:
 				Debug.error("Unknown server input.");
 			}

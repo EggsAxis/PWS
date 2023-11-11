@@ -95,7 +95,7 @@ public class EditorScreen extends JLayeredPane implements ComponentListener {
 		textEditorManager = new TextEditorManager(docEditor);
 		
 		// Menus
-		editorMenu = new EditorMenu(textEditorManager);
+		editorMenu = new EditorMenu(manager, textEditorManager);
 		editorInfoPanel = new EditorInfo(manager);
 		
 		JScrollPane scrollTextPane = new JScrollPane(docEditor);

@@ -3,12 +3,14 @@ package com.veullustigpws.pws.connection.hosting;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
+import com.veullustigpws.pws.assignment.ExportManager;
 import com.veullustigpws.pws.assignment.data.AssignmentOptions;
 import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
@@ -159,7 +161,12 @@ public class HostingManager {
 			@Override
 			public void run() {
 				if (paused) return;
-				monitorScreen.setTime(AssignmentUtilities.getRemainingTime(startTime, assignmentOptions.getAssignmentDuration()));
+				String remainingTime = AssignmentUtilities.getRemainingTime(startTime, assignmentOptions.getAssignmentDuration());
+				monitorScreen.setTime(remainingTime);
+				
+				if (remainingTime.equals("00:00:00")) {
+					endAssignment(false);
+				}
 			}
 		}, 1000, 1000);
 	}
@@ -199,6 +206,7 @@ public class HostingManager {
 		participantWorkStates.remove(ID);
 		
 		server.sendMessageToClient(ID, new Message(Protocol.ReceivedFinalWork));
+		server.kickUser(ID, "Handed in");
 		
 		refreshParticipantDisplay();
 		Debug.log("User " + ID + " handed in their work.");
@@ -217,6 +225,7 @@ public class HostingManager {
 		requestTimer.cancel();
 		
 		inAssignment = false;
+		ExportManager exportManager = new ExportManager(this);
 	}
 	
 	public void exitProgram() {
@@ -238,6 +247,17 @@ public class HostingManager {
 			App.Manager.InAssignment = false;
 			App.Window.setStartScreen();
 		}
+	}
+	
+	public HashMap<Integer, ParticipantWorkState> getFinalWork() {
+		HashMap<Integer, ParticipantWorkState> finalWork = new HashMap<>(handedInWork);
+		
+		for (Map.Entry<Integer, ParticipantWorkState> set : participantWorkStates.entrySet()) {
+			if (finalWork.containsKey(set.getKey())) continue;
+			finalWork.put(set.getKey(), set.getValue());
+		}
+		
+		return finalWork;
 	}
 	
 	private void refreshParticipantDisplay() {

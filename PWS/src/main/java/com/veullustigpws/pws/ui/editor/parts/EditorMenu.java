@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.StyledEditorKit;
 import com.veullustigpws.pws.app.ColorPalet;
+import com.veullustigpws.pws.connection.client.ParticipantManager;
 import com.veullustigpws.pws.listeners.EditorMenuListener;
 import com.veullustigpws.pws.texteditor.TextEditorManager;
 import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
@@ -23,6 +24,7 @@ public class EditorMenu extends JPanel {
 	
 	private EditorMenuListener menuListener;
 	private TextEditorManager textEditorManager;
+	private ParticipantManager participantManager;
 	
 	private JPanel inner;
 	private final int padding = 7;
@@ -32,9 +34,8 @@ public class EditorMenu extends JPanel {
 	private TextDecorationButton underlineBtn;
 	private CustomTextField fontSizeTF;
 
-	public EditorMenu(TextEditorManager textEditorManager) {
-		
-		
+	public EditorMenu(ParticipantManager participantManager, TextEditorManager textEditorManager) {
+		this.participantManager = participantManager;
 		this.textEditorManager = textEditorManager;
 		menuListener = new EditorMenuListener(textEditorManager);
 		
@@ -74,6 +75,9 @@ public class EditorMenu extends JPanel {
 		handinBtn.setFocusable(false);
 		GUIUtils.setComponentSize(handinBtn, new Dimension(110, 35));
 		handinBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton, handinBtn));
+		handinBtn.addActionListener(e -> {
+			participantManager.handIn();
+		});
 		
 		inner.add(handinBtn);
 	}
