@@ -1,10 +1,8 @@
 package com.veullustigpws.pws.ui.login;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -12,42 +10,40 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.text.StyledEditorKit.ItalicAction;
-
 import com.veullustigpws.pws.app.App;
-import com.veullustigpws.pws.app.AppConstants;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.app.Debug;
-import com.veullustigpws.pws.assignment.ParticipantData;
+import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
-import com.veullustigpws.pws.resources.fonts.AppFonts;
-import com.veullustigpws.pws.ui.appearance.DefaultButtonUI;
-import com.veullustigpws.pws.ui.appearance.DefaultLabelUI_doesntwork;
-import com.veullustigpws.pws.ui.appearance.RoundPanel;
+import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
+import com.veullustigpws.pws.ui.components.CustomTextField;
+import com.veullustigpws.pws.ui.components.LogInLabel;
+import com.veullustigpws.pws.ui.components.RoundPanel;
+import com.veullustigpws.pws.ui.components.WhiteLabel;
+import com.veullustigpws.pws.utils.GUIUtils;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;
 
 public class LoginScreen extends JPanel {
 	private static final long serialVersionUID = -3094851789506996929L;
 
-	public static final Dimension size = new Dimension(650, 410);
-	private static final int LABEL_PADDING = 8;
+	public static final Dimension size = new Dimension(650, 420);
+	private static final int LABEL_PADDING = 3;
 	private static final int COMPONENT_PADDING = 5;
 	private static final int TEXTFIELD_INDENT = 10;
 	
 	private RoundPanel centerPnl;
 	
-	private JTextField nameTF;
-	private JTextField studentNumberTF;
-	private JTextField passwordTF;
-	private JTextField codeTF;
+	private CustomTextField nameTF;
+	private CustomTextField studentNumberTF;
+	private CustomTextField passwordTF;
+	private CustomTextField codeTF;
 	
 	
 	public LoginScreen() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBackground(Color.white);
+		this.setBackground(ColorPalet.LightBackgroundColor);
 		
 		initComponents();
 		
@@ -59,12 +55,10 @@ public class LoginScreen extends JPanel {
 
 	private void initComponents() {
 		
-		centerPnl = new RoundPanel(90, RoundPanel.ALL_EDGES);
-		centerPnl.setBackground(ColorPalet.DefaultBackgroundColor);
+		centerPnl = new RoundPanel(50, RoundPanel.ALL_CORNERS);
+		centerPnl.setBackground(ColorPalet.DarkBackgroundColor);
 		centerPnl.setLayout(new BorderLayout());
-		centerPnl.setMaximumSize(size);
-		centerPnl.setMinimumSize(size);
-		centerPnl.setPreferredSize(size);
+		GUIUtils.setComponentSize(centerPnl, size);
 		centerPnl.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		centerPnl.add(Box.createRigidArea(new Dimension(10, 0)), BorderLayout.CENTER);
@@ -79,19 +73,31 @@ public class LoginScreen extends JPanel {
 	}
 	
 	private void createButtonPanel() {
+		
+		// TOP
+		JButton cancelBtn = new JButton("<");
+		GUIUtils.setComponentSize(cancelBtn, new Dimension(40, 40));
+		cancelBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+		cancelBtn.setUI(new ColoredButtonUI(ColorPalet.BlueButton, cancelBtn));
+		cancelBtn.addActionListener(e -> {
+			App.Window.setStartScreen();
+		});
+		
+		JPanel topPnl = new JPanel();
+		topPnl.setOpaque(false);
+		topPnl.setLayout(new BoxLayout(topPnl, BoxLayout.X_AXIS));
+		topPnl.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 10));
+		topPnl.add(cancelBtn);
+		topPnl.add(Box.createHorizontalGlue());
+		
+		// BOTTOM
 		JButton loginBtn = new JButton("Login");
-		Dimension btnDim = new Dimension(310, 45);
-		loginBtn.setForeground(ColorPalet.LoginText);
-		loginBtn.setPreferredSize(btnDim);
-		loginBtn.setMaximumSize(btnDim);
-		loginBtn.setMinimumSize(btnDim);
+		GUIUtils.setComponentSize(loginBtn, new Dimension(310, 45));
 		loginBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
-		loginBtn.setFocusable(false);
-		loginBtn.setUI(new DefaultButtonUI());
+		loginBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton, loginBtn));
 		loginBtn.addActionListener(e -> {
 			connect();
 		});
-		
 		
 		JPanel bottomPnl = new JPanel();
 		bottomPnl.setLayout(new BoxLayout(bottomPnl, BoxLayout.X_AXIS));
@@ -99,12 +105,9 @@ public class LoginScreen extends JPanel {
 		bottomPnl.add(loginBtn);
 		bottomPnl.add(Box.createHorizontalGlue());
 		bottomPnl.setOpaque(false);
+		GUIUtils.setComponentSize(bottomPnl, new Dimension(size.width, 130));
 		
-		Dimension dim = new Dimension(size.width, 130);
-		bottomPnl.setMaximumSize(dim);
-		bottomPnl.setMinimumSize(dim);
-		bottomPnl.setPreferredSize(dim);
-		
+		centerPnl.add(topPnl, BorderLayout.NORTH);
 		centerPnl.add(bottomPnl, BorderLayout.SOUTH);
 	}
 	
@@ -112,45 +115,39 @@ public class LoginScreen extends JPanel {
 		JPanel leftPnl = new JPanel();
 		leftPnl.setLayout(new BoxLayout(leftPnl, BoxLayout.Y_AXIS));
 		leftPnl.setPreferredSize(new Dimension(size.width/2 -5, 400));
-		leftPnl.setBorder(BorderFactory.createEmptyBorder(20, 100, 20, 0));
+		leftPnl.setBorder(BorderFactory.createEmptyBorder(0, 100, 20, 0));
 		leftPnl.setOpaque(false);
 		
 		leftPnl.add(Box.createVerticalGlue());
 		
 		// Name
-		JLabel nameLbl = new JLabel("Naam");
-		nameLbl.setFont(AppFonts.DefaultFont);
-		nameLbl.setForeground(ColorPalet.LoginText);
-		nameTF = new JTextField();
+		JLabel nameLbl = new LogInLabel("Naam");
+		nameTF = new CustomTextField();
 		initTextField(nameTF);
 		leftPnl.add(nameLbl);
 		addLabelPadding(leftPnl);
-		leftPnl.add(addIndent(nameTF, TEXTFIELD_INDENT));
+		leftPnl.add(GUIUtils.addIndent(nameTF, TEXTFIELD_INDENT));
 		
 		addComponentPadding(leftPnl);
 		
 		
 		// Student number
-		JLabel studentNumberLbl = new JLabel("Leerlingnummer");
-		studentNumberLbl.setFont(AppFonts.DefaultFont);
-		studentNumberLbl.setForeground(ColorPalet.LoginText);
-		studentNumberTF = new JTextField();
+		JLabel studentNumberLbl = new LogInLabel("Leerlingnummer");
+		studentNumberTF = new CustomTextField();
 		initTextField(studentNumberTF);
 		leftPnl.add(studentNumberLbl);
 		addLabelPadding(leftPnl);
-		leftPnl.add(addIndent(studentNumberTF, TEXTFIELD_INDENT));
+		leftPnl.add(GUIUtils.addIndent(studentNumberTF, TEXTFIELD_INDENT));
 		
 		addComponentPadding(leftPnl);
 		
 		// password 
-		JLabel passwordLbl = new JLabel("Wachtwoord"); 
-		passwordLbl.setFont(AppFonts.DefaultFont);
-		passwordLbl.setForeground(ColorPalet.LoginText);
-		passwordTF = new JTextField();
+		JLabel passwordLbl = new LogInLabel("Wachtwoord");
+		passwordTF = new CustomTextField();
 		initTextField(passwordTF);
 		leftPnl.add(passwordLbl);
 		addLabelPadding(leftPnl);
-		leftPnl.add(addIndent(passwordTF, TEXTFIELD_INDENT));
+		leftPnl.add(GUIUtils.addIndent(passwordTF, TEXTFIELD_INDENT));
 		
 		centerPnl.add(leftPnl, BorderLayout.WEST);
 	}
@@ -165,22 +162,20 @@ public class LoginScreen extends JPanel {
 		rightPnl.add(Box.createVerticalGlue());
 		
 		// Code
-		JLabel codeLbl = new JLabel("Code");
-		codeLbl.setFont(AppFonts.DefaultFont);
-		codeLbl.setForeground(ColorPalet.LoginText);
-		codeTF = new JTextField();
+		JLabel codeLbl = new LogInLabel("Code");
+		codeTF = new CustomTextField();
 		codeTF.addKeyListener(new TextFieldSizeLimiter(codeTF, 11));
 		codeTF.addKeyListener(new TextFieldIntegerInputFilter());
 		initTextField(codeTF);
 		rightPnl.add(codeLbl);
 		addLabelPadding(rightPnl);
-		rightPnl.add(addIndent(codeTF, TEXTFIELD_INDENT));
+		rightPnl.add(GUIUtils.addIndent(codeTF, TEXTFIELD_INDENT));
 		
 		
 		centerPnl.add(rightPnl, BorderLayout.EAST);	
 	}
 	
-	private void initTextField(JTextField tf) {
+	private void initTextField(CustomTextField tf) {
 		Dimension tfsize = new Dimension(180, 30);
 		tf.setPreferredSize(tfsize);
 		tf.setMaximumSize(tfsize);
@@ -189,16 +184,7 @@ public class LoginScreen extends JPanel {
 		tf.setAlignmentX(Component.LEFT_ALIGNMENT);
 		tf.addKeyListener(new TextFieldSizeLimiter(tf, 32));
 	}
-	
-	private JPanel addIndent(JTextField tf, int indent) {
-		JPanel panel = new JPanel();
-		panel.setOpaque(false);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel.setBorder(BorderFactory.createEmptyBorder(0, indent, 0, 0));
-		panel.add(tf);
-		return panel;
-	}
+
 	
 	
 	private void addComponentPadding(JPanel pnl) {
@@ -209,31 +195,38 @@ public class LoginScreen extends JPanel {
 	}
 	
 	private void connect() {
-		ParticipantData participantData = new ParticipantData(nameTF.getText(), studentNumberTF.getText());
-		ParticipantConnectData data = new ParticipantConnectData();
-		data.setCode(codeTF.getText());
-		data.setPassword(passwordTF.getText());
-		data.setParticipantData(participantData);
-		
-		try {
-			App.Window.connectToRoom(data, this);
-		} catch (WrongConnectionDataException e) {
-			Debug.error("Unable to connect to room.");
-			
-			switch (e.getType()) {
-			case WrongConnectionDataException.INVALID_CODE:
-				JOptionPane.showMessageDialog(null, "Geen room gevonden met code" + data.getCode() + ".", "Error", JOptionPane.OK_OPTION);
-				break;
-			case WrongConnectionDataException.WRONG_CODE_FORMAT: 
-				JOptionPane.showMessageDialog(null, "Code moet 11 tekens lang zijn.", "Error", JOptionPane.OK_OPTION);
-				break;
-			case WrongConnectionDataException.UNKNOWN_HOST: 
-				JOptionPane.showMessageDialog(null, "Laden van het lokale adres mislukt.", "Error", JOptionPane.OK_OPTION);
-				break;
+		Thread connectThread = new Thread() {
+			public void run() {
+				ParticipantData participantData = new ParticipantData(nameTF.getText(), studentNumberTF.getText());
+				ParticipantConnectData data = new ParticipantConnectData();
+				data.setCode(codeTF.getText());
+				data.setPassword(passwordTF.getText());
+				data.setParticipantData(participantData);
+				
+				try {
+					App.Manager.connectToRoom(data);
+				} catch (WrongConnectionDataException e) {
+					Debug.error("Unable to connect to room.");
+					
+					switch (e.getType()) {
+					case WrongConnectionDataException.INVALID_CODE:
+						JOptionPane.showMessageDialog(null, "Geen room gevonden met code" + data.getCode() + ".", "Error", JOptionPane.OK_OPTION);
+						break;
+					case WrongConnectionDataException.WRONG_CODE_FORMAT: 
+						JOptionPane.showMessageDialog(null, "Code moet 11 tekens lang zijn.", "Error", JOptionPane.OK_OPTION);
+						break;
+					case WrongConnectionDataException.UNKNOWN_HOST: 
+						JOptionPane.showMessageDialog(null, "Laden van het lokale adres mislukt.", "Error", JOptionPane.OK_OPTION);
+						break;
+					}
+				}
 			}
-		}
+		};
+		connectThread.run();
+		
 	}
-	// test
+	
+	
 	public void incorrectPassword() {
 		JOptionPane.showMessageDialog(null, "Het wachtwoord is onjuist.", "Error", JOptionPane.OK_OPTION);
 	}

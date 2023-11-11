@@ -1,4 +1,4 @@
-package com.veullustigpws.pws.assignment;
+package com.veullustigpws.pws.assignment.data;
 
 import java.io.Serializable;
 import javax.swing.text.StyledDocument;

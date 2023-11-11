@@ -6,10 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
 import com.veullustigpws.pws.app.Debug;
-import com.veullustigpws.pws.assignment.AssignmentOptions;
-import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.assignment.data.AssignmentOptions;
+import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
 import com.veullustigpws.pws.connection.ConnectData;
 import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
@@ -33,6 +32,7 @@ public class Client {
 	}
 	
 	public void connect(ParticipantConnectData participantConnectData) throws WrongConnectionDataException {
+		
 		ConnectData connectData = null;
 		try {
 			connectData = JoinCodeGenerator.codeToIP(participantConnectData.getCode(), InetAddress.getLocalHost().getHostAddress());
@@ -45,15 +45,24 @@ public class Client {
 		
 		try {
 			client = new Socket(connectData.getIp(), connectData.getPort());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new WrongConnectionDataException(WrongConnectionDataException.INVALID_CODE);
 		}
-		
+		System.out.println("Invalid code");
 		initClient();
 	}
 	
 	public void sendMessageToServer(String protocol) {
 		Message msg = new Message(protocol);
+		try {
+			objOut.writeObject(msg);
+		} catch (IOException e) {
+			Debug.error("Unable to send message to server.");
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendMessageToServer(Message msg) {
 		try {
 			objOut.writeObject(msg);
 		} catch (IOException e) {
@@ -104,7 +113,6 @@ public class Client {
 				}
 			} catch (IOException | ClassNotFoundException e) {
 				Debug.error("Unable to receive message from server.");
-				e.printStackTrace();
 			}
 		}
 		
@@ -114,14 +122,27 @@ public class Client {
 			case Protocol.StartAssignment:
 				manager.assignmentStarted((AssignmentOptions) msg.getContent());
 				break;
+			case Protocol.PausedAssignment:
+				long pauseDuration = (long) msg.getContent();
+				manager.assignmentPaused(pauseDuration);
+				break;
 			case Protocol.RequestWork:
 				sendWork();
 				break;
 			case Protocol.CorrectPassword:
-				joinedRoom();
+				int ID = (int) msg.getContent();
+				joinedRoom(ID);
 				break;
 			case Protocol.IncorrectPassword:
 				manager.incorrectPassword();
+				shutdown();
+				break;
+			case Protocol.AssignmentEnded: 
+				manager.assignmentEnded();
+				break;
+			case Protocol.KickUser:
+				String reason = (String) msg.getContent();
+				manager.participantKicked(reason);
 				shutdown();
 				break;
 			default:
@@ -129,8 +150,9 @@ public class Client {
 			}
 		}
 		
-		private void joinedRoom() {
-			manager.joinedRoom();
+		private void joinedRoom(int ID) {
+			manager.joinedRoom(ID);
+			
 			
 			// Send ParticipantData
 			Message pdMsg = new Message(Protocol.SendParticipantData, manager.getParticipantData());

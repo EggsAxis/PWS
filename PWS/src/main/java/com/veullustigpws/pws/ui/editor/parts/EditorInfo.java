@@ -1,20 +1,17 @@
 package com.veullustigpws.pws.ui.editor.parts;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.connection.client.ParticipantManager;
-import com.veullustigpws.pws.ui.appearance.RoundPanel;
+import com.veullustigpws.pws.resources.fonts.AppFonts;
+import com.veullustigpws.pws.ui.components.RoundPanel;
 
 public class EditorInfo extends JPanel {
 	private static final long serialVersionUID = -736287837460504722L;
@@ -36,12 +33,12 @@ public class EditorInfo extends JPanel {
 	}
 	
 	private void initComponents() {
-		RoundPanel inner = new RoundPanel(40, RoundPanel.BOTTOM_EDGES);
+		RoundPanel inner = new RoundPanel(40, RoundPanel.BOTTOM_CORNERS);
 		Dimension dim = new Dimension(500, 50);
 		inner.setMaximumSize(dim);
 		inner.setMinimumSize(dim);
 		inner.setPreferredSize(dim);
-		inner.setBackground(ColorPalet.DefaultBackgroundColor);
+		inner.setBackground(ColorPalet.DarkBackgroundColor);
 		inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
 		inner.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 40));
 		
@@ -53,12 +50,19 @@ public class EditorInfo extends JPanel {
 		timeLbl.setAlignmentY(Component.CENTER_ALIGNMENT);
 		wordCountLbl.setAlignmentY(Component.CENTER_ALIGNMENT);
 		
+		assignmentNameLbl.setFont(AppFonts.DefaultFont.deriveFont(Font.PLAIN, 18));
+		timeLbl.setFont(AppFonts.DefaultFont.deriveFont(Font.PLAIN, 18));
+		wordCountLbl.setFont(AppFonts.DefaultFont.deriveFont(Font.PLAIN, 18));
+		
+		assignmentNameLbl.setForeground(ColorPalet.WhiteText);
+		timeLbl.setForeground(ColorPalet.WhiteText);
+		wordCountLbl.setForeground(ColorPalet.WhiteText);
+		
 		inner.add(assignmentNameLbl);
 		inner.add(Box.createHorizontalGlue());
 		inner.add(timeLbl);
 		inner.add(Box.createHorizontalGlue());
 		inner.add(wordCountLbl);
-		
 		
 		
 		this.add(Box.createHorizontalGlue());

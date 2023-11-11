@@ -1,44 +1,58 @@
 package com.veullustigpws.pws.connection.client;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.swing.text.BadLocationException;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.text.StyledDocument;
 import com.veullustigpws.pws.app.App;
 import com.veullustigpws.pws.app.Debug;
-import com.veullustigpws.pws.assignment.AssignmentOptions;
-import com.veullustigpws.pws.assignment.ParticipantData;
-import com.veullustigpws.pws.assignment.ParticipantWorkState;
+import com.veullustigpws.pws.assignment.data.AssignmentOptions;
+import com.veullustigpws.pws.assignment.data.ParticipantData;
+import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
+import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
-import com.veullustigpws.pws.ui.ParticipantWaitingScreen;
+import com.veullustigpws.pws.ui.TextScreen;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
-import com.veullustigpws.pws.ui.login.LoginScreen;
-import com.veullustigpws.pws.utils.StringUtilities;
+import com.veullustigpws.pws.ui.login.ParticipantWaitingScreen;
+import com.veullustigpws.pws.utils.AssignmentUtilities;
 
 public class ParticipantManager {
-	
-	private LoginScreen loginScreen;
+
 	private EditorScreen editorScreen;
 	private ParticipantWaitingScreen waitingScreen;
+	private TextScreen handInScreen;
 	
 	private Client client;
 	private ParticipantData participantData;
 	
 	private AssignmentOptions assignmentOptions;
 	private long startTime;
+	private boolean paused = false;
+	private Timer infoUpdateTimer;
 	
-	public ParticipantManager(ParticipantConnectData connectData, LoginScreen loginScreen) throws WrongConnectionDataException {
-		this.loginScreen = loginScreen;
+	public ParticipantManager(ParticipantConnectData connectData) throws WrongConnectionDataException {
 		participantData = connectData.getParticipantData();
 		
 		startClient(connectData);
 	}
 	
 	private void loadScreens() {
-		waitingScreen = new ParticipantWaitingScreen(this);
-		editorScreen = new EditorScreen(this);
+		ParticipantManager manager = this;
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					waitingScreen = new ParticipantWaitingScreen(manager);
+					editorScreen = new EditorScreen(manager);
+					handInScreen = new TextScreen();
+					openWaitingScreen();
+				}
+			});
+		} catch (InvocationTargetException | InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void openWaitingScreen() {
@@ -47,20 +61,58 @@ public class ParticipantManager {
 	
 	public void assignmentStarted(AssignmentOptions assignmentOptions) {
 		this.assignmentOptions = assignmentOptions;
-		App.Window.setScreen(editorScreen);
-		
-		startTime = System.currentTimeMillis();
-		infoUpdateTimer();
+		startTime = System.currentTimeMillis() - assignmentOptions.getRunningTime();
 		editorScreen.setAssignmentName(assignmentOptions.getAssignmentName());
 		
+		infoUpdateTimer();
+		App.Window.setScreen(editorScreen);
 		Debug.log("Assignment has started.");
 	}
 	
+	public void assignmentPaused(long pauseDuration) {
+		paused = !paused;
+		editorScreen.setPaused(paused);
+		
+		if (paused) {
+			Debug.log("Assignment was paused.");
+		} else {
+			startTime += pauseDuration;
+			Debug.log("Assignment was resumed.");
+		}
+	}
+	
+	public void assignmentEnded() {
+		handInScreen.setText("Tijd is op! Je werk is ingeleverd.");
+		closeClient();
+	}
+	
+	public void handIn() {
+		int confirmed = JOptionPane.showConfirmDialog(null, 
+				"Weet u zeker dat u het programma wil sluiten?\nAlle gegevens van de opdracht zullen verloren gaan.", 
+				"Weet u het zeker?", JOptionPane.YES_NO_OPTION);
+		if (confirmed != JOptionPane.YES_OPTION) return;
+		
+		client.sendMessageToServer(new Message(Protocol.FinalWork, getParticipantWorkState()));
+	}
+	
+	public void handInSuccessful() {
+		handInScreen.setText("Je werk is ingeleverd!");
+		closeClient();
+	}
+	
+	public void closeClient() {
+		infoUpdateTimer.cancel();
+		client.shutdown();
+		App.Window.setScreen(handInScreen);
+		App.Manager.handedIn();
+	}
+	
 	private void infoUpdateTimer() {
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
+		infoUpdateTimer = new Timer();
+		infoUpdateTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
+				if (paused) return;
 				int wordCount = getWordCount();
 				
 				editorScreen.setWordCount(wordCount);
@@ -72,6 +124,7 @@ public class ParticipantManager {
 
 	public void startClient(ParticipantConnectData participantConnectData) throws WrongConnectionDataException {
 		try {
+			App.RunningServer = false;
 			client = new Client(this);
 			client.connect(participantConnectData);
 		} catch (WrongConnectionDataException e) {
@@ -79,28 +132,29 @@ public class ParticipantManager {
 		}
 	}
 	
+	public void participantKicked(String reason) {
+		App.Window.setStartScreen();
+		App.Window.notify(reason);
+		App.Manager.InAssignment = false;
+		Debug.log("Lost connection for reason: " + reason);
+	}
+	
+	public void exitProgram() {
+		leave();
+		System.exit(0);
+	}
 	
 	public ParticipantWorkState getParticipantWorkState() {
 		StyledDocument doc = editorScreen.getStyledDocument();
 		int wordCount = getWordCount();
 		
 		ParticipantWorkState pws = new ParticipantWorkState(participantData, doc, wordCount);
-		Debug.log("Sent ParticipantWorkState");
 		return pws;
 	}
 	
 	public int getWordCount() {
 		StyledDocument doc = editorScreen.getStyledDocument();
-		
-		// Get word count
-		String txt = "";
-		try {
-			txt = doc.getText(0, doc.getLength());
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
-		
-		return StringUtilities.getWordCount(txt);
+		return AssignmentUtilities.getWordCount(doc);
 	}
 	
 	public void leave() {
@@ -108,26 +162,27 @@ public class ParticipantManager {
 		
 		client.sendMessageToServer(Protocol.ParticipantLeaves);
 		client.shutdown();
-		System.exit(0); // GO BACK TO START SCREEN
+		App.Manager.InAssignment = false;
+		App.Window.setStartScreen();
 	}
 	
-	public void joinedRoom() {
+	public void joinedRoom(int ID) {
+		App.Manager.InAssignment = true;
+		participantData.setID(ID);
 		Debug.log("Correct password. Succesfully joined room.");
 		loadScreens();
-		openWaitingScreen();
+		App.RunningServer = false;
 	}
+	
 	public void incorrectPassword() {
-		loginScreen.incorrectPassword();
+		App.Manager.incorrectPassword();
+		App.Manager.InAssignment = false;
 	}
 	
 	
 	
 	public String getRemainingTime() {
-		long currentTime = System.currentTimeMillis();
-		long timePassed = (currentTime - startTime)/1000; // In seconds
-		long timeRemaining = assignmentOptions.getAssignmentDuration() * 60 - timePassed;
-		String timeStr = (timeRemaining/60/60) + ":" + (timeRemaining/60) + ":" + (timeRemaining%60);
-		return timeStr;
+		return AssignmentUtilities.getRemainingTime(startTime, assignmentOptions.getAssignmentDuration());
 	}
 	public AssignmentOptions getAssignmentOptions() {
 		return assignmentOptions;
