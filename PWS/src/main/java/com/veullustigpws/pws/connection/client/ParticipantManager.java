@@ -3,6 +3,7 @@ package com.veullustigpws.pws.connection.client;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.StyledDocument;
 import com.veullustigpws.pws.app.App;
@@ -10,10 +11,11 @@ import com.veullustigpws.pws.app.Debug;
 import com.veullustigpws.pws.assignment.data.AssignmentOptions;
 import com.veullustigpws.pws.assignment.data.ParticipantData;
 import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
+import com.veullustigpws.pws.connection.Message;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
+import com.veullustigpws.pws.ui.TextScreen;
 import com.veullustigpws.pws.ui.editor.EditorScreen;
-import com.veullustigpws.pws.ui.export.HandInScreen;
 import com.veullustigpws.pws.ui.login.ParticipantWaitingScreen;
 import com.veullustigpws.pws.utils.AssignmentUtilities;
 
@@ -21,7 +23,7 @@ public class ParticipantManager {
 
 	private EditorScreen editorScreen;
 	private ParticipantWaitingScreen waitingScreen;
-	private HandInScreen handInScreen;
+	private TextScreen handInScreen;
 	
 	private Client client;
 	private ParticipantData participantData;
@@ -44,7 +46,7 @@ public class ParticipantManager {
 				public void run() {
 					waitingScreen = new ParticipantWaitingScreen(manager);
 					editorScreen = new EditorScreen(manager);
-					handInScreen = new HandInScreen();
+					handInScreen = new TextScreen();
 					openWaitingScreen();
 				}
 			});
@@ -80,7 +82,21 @@ public class ParticipantManager {
 	}
 	
 	public void assignmentEnded() {
-		handInScreen.setTimeOver(true);
+		handInScreen.setText("Tijd is op! Je werk is ingeleverd.");
+		closeClient();
+	}
+	
+	public void handIn() {
+		int confirmed = JOptionPane.showConfirmDialog(editorScreen, 
+				"Weet je zeker dat je je werk wilt inleveren?\nDit kan niet ongedaan gemaakt worden!", 
+				"Weet je het zeker?", JOptionPane.YES_NO_OPTION);
+		if (confirmed != JOptionPane.YES_OPTION) return;
+		
+		client.sendMessageToServer(new Message(Protocol.FinalWork, getParticipantWorkState()));
+	}
+	
+	public void handInSuccessful() {
+		handInScreen.setText("Je werk is ingeleverd!");
 		closeClient();
 	}
 	
@@ -178,3 +194,4 @@ public class ParticipantManager {
 	
 	
 }
+

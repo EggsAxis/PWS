@@ -46,10 +46,11 @@ public class StartScreen extends JPanel {
 		
 		// label
 		JLabel label = new WhiteLabel("of");
+		label.setForeground(ColorPalet.LogInText);
 		
 		
 		// Center Panel
-		JPanel centerPnl = new RoundPanel(90, RoundPanel.ALL_CORNERS);
+		JPanel centerPnl = new RoundPanel(50, RoundPanel.ALL_CORNERS);
 		centerPnl.setBackground(ColorPalet.DarkBackgroundColor);
 		centerPnl.setLayout(new BoxLayout(centerPnl, BoxLayout.Y_AXIS));
 		GUIUtils.setComponentSize(centerPnl, new Dimension(400, 260));

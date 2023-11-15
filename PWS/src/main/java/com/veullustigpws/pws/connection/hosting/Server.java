@@ -74,7 +74,12 @@ public class Server implements Runnable{
 		broadcast(new Message(Protocol.StartAssignment, manager.getAssignmentOptions()));
 	}
 
-	
+	public void sendMessageToClient(int ID, Message msg) {
+		for (ConnectionHandler ch : connections) {
+			if (ch.ID != ID) continue;
+			ch.sendMessage(msg);
+		}
+	}
 	
 	public void broadcast(Message msg) {
 		for (ConnectionHandler ch : connections) {
@@ -181,7 +186,10 @@ public class Server implements Runnable{
 					ParticipantWorkState pws = (ParticipantWorkState) msg.getContent();
 					manager.receivedRequestedWork(pws, ID);
 					break;
-					
+				case Protocol.FinalWork:
+					ParticipantWorkState finalWork = (ParticipantWorkState) msg.getContent();
+					manager.participantHandedIn(ID, finalWork);
+					break;
 					
 				default: 
 					Debug.error("Unable to read protocol of server input.");

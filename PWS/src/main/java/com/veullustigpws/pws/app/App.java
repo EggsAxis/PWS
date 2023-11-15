@@ -13,14 +13,7 @@ public class App {
 	public static boolean RunningServer = false; 	// If false -> app is running client
 	
 	public static void main(String[] args) {
-//		try {
-//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {}
-//		try {
-//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-//			e.printStackTrace();
-//		}
+
 		
 		Manager = new AppManager();
 		SwingUtilities.invokeLater(new Runnable() {

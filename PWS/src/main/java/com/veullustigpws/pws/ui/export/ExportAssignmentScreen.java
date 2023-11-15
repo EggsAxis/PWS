@@ -43,7 +43,7 @@ public class ExportAssignmentScreen extends JPanel {
 	}
 
 	private void initComponents() {
-		RoundPanel centerPnl = new RoundPanel(90, RoundPanel.ALL_CORNERS);
+		RoundPanel centerPnl = new RoundPanel(50, RoundPanel.ALL_CORNERS);
 		centerPnl.setBackground(ColorPalet.DarkBackgroundColor);
 		centerPnl.setLayout(new BorderLayout());
 		GUIUtils.setComponentSize(centerPnl, new Dimension(600, 350));
@@ -111,7 +111,7 @@ public class ExportAssignmentScreen extends JPanel {
 		buttonPnl.setBorder(BorderFactory.createEmptyBorder(20, 70, 40, 70));
 		
 		// Download button
-		JButton downloadBtn = new JButton("Download");
+		JButton downloadBtn = new JButton("Genereer");
 		downloadBtn.setUI(new ColoredButtonUI(ColorPalet.GreenButton, downloadBtn));
 		GUIUtils.setComponentSize(downloadBtn, new Dimension(150, 50));
 		downloadBtn.setAlignmentY(Component.CENTER_ALIGNMENT);

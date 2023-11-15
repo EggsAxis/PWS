@@ -62,6 +62,15 @@ public class Client {
 		}
 	}
 	
+	public void sendMessageToServer(Message msg) {
+		try {
+			objOut.writeObject(msg);
+		} catch (IOException e) {
+			Debug.error("Unable to send message to server.");
+			e.printStackTrace();
+		}
+	}
+	
 	private void initClient() throws WrongConnectionDataException {
 		try {
 			objOut = new ObjectOutputStream(client.getOutputStream());
@@ -135,6 +144,9 @@ public class Client {
 				String reason = (String) msg.getContent();
 				manager.participantKicked(reason);
 				shutdown();
+				break;
+			case Protocol.ReceivedFinalWork:
+				manager.handInSuccessful();
 				break;
 			default:
 				Debug.error("Unknown server input.");

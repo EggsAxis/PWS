@@ -53,7 +53,7 @@ public class MonitorParticipantPanel extends JPanel implements WorkStateListener
 		// Name Label
 		WhiteLabel nameLabel = new WhiteLabel(name);
 		
-		// Wordcount label
+		// Word count label
 		wordCountLabel = new WhiteLabel(wordCount + " woorden");
 		
 		// Buttons

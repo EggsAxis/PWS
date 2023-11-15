@@ -9,6 +9,7 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.AbstractButton;
+import com.veullustigpws.pws.utils.GUIUtils;
 
 public class CheckSlider extends AbstractButton implements MouseListener {
 	private static final long serialVersionUID = -3508736475874392659L;
@@ -21,7 +22,7 @@ public class CheckSlider extends AbstractButton implements MouseListener {
 	private boolean selected;
 	
 	public CheckSlider() {
-		this.setMaximumSize(dimension);
+		GUIUtils.setComponentSize(this, dimension);
 		this.addMouseListener(this);
 	}
 	
@@ -41,6 +42,8 @@ public class CheckSlider extends AbstractButton implements MouseListener {
 		if (selected) 	g.setColor(Color.green);
 		else 			g.setColor(Color.red);
 		g.fillRoundRect(0, 0, dimension.width, dimension.height, dimension.height, dimension.height);
+		
+		g.setColor(Color.white);
 	}
 	
 	

@@ -2,7 +2,6 @@ package com.veullustigpws.pws.assignment;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFileChooser;
@@ -18,18 +17,19 @@ import com.veullustigpws.pws.assignment.data.ParticipantWorkState;
 import com.veullustigpws.pws.connection.Protocol;
 import com.veullustigpws.pws.connection.hosting.HostingManager;
 import com.veullustigpws.pws.connection.hosting.Server;
+import com.veullustigpws.pws.ui.TextScreen;
 import com.veullustigpws.pws.ui.export.ExportAssignmentScreen;
 
 public class ExportManager {
 	
 	private ExportAssignmentScreen exportScreen;
+	private TextScreen finishedDownloadingScreen;
+	
 	private HostingManager hostingManager;
 	private HashMap<Integer, ParticipantWorkState> participantWork;
 	private AssignmentOptions assignmentOptions;
 	
 	private File dir;
-	private ArrayList<File> rtfFiles;
-	private File zippedFile;
 	
 	public ExportManager(HostingManager hostingManager) {
 		this.hostingManager = hostingManager;
@@ -46,17 +46,19 @@ public class ExportManager {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				exportScreen = new ExportAssignmentScreen(manager);
+				finishedDownloadingScreen = new TextScreen();
 			}
 		});
 	}
 	
-	public void setExportScreen() {
+	private void setExportScreen() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				App.Window.setScreen(exportScreen);
 			}
 		});
 	}
+	
 	
 	public void collectFinalData() {
 		Thread t = new Thread() {
@@ -71,7 +73,7 @@ public class ExportManager {
 				server.broadcast(Protocol.AssignmentEnded);
 				server.shutdown();
 				
-				participantWork = hostingManager.getParticipantWorkStates();
+				participantWork = hostingManager.getFinalWork();
 			}
 		};
 		t.start();
@@ -99,7 +101,10 @@ public class ExportManager {
 	}
 	
 	public void downloadResults() {
-		
+		generateRTFDocuments();
+		finishedDownloadingScreen.setText("De resultaten zijn gegenereerd.");
+		App.Window.setScreen(finishedDownloadingScreen);
+		App.Manager.InAssignment = false;
 	}
 	
 	public void deleteResults() {
@@ -118,8 +123,10 @@ public class ExportManager {
 	
 	
 	
-	public void generateRTFDocuments(File dir) {
-		rtfFiles = new ArrayList<File>();
+	public void generateRTFDocuments() { 
+		String folderName = assignmentOptions.getAssignmentName();
+		File folder = new File(dir.getAbsolutePath() + "/" + folderName);
+		folder.mkdir();
 		
 		for (Map.Entry<Integer, ParticipantWorkState> set : participantWork.entrySet()) {
 			ParticipantWorkState pws = set.getValue();
@@ -127,7 +134,7 @@ public class ExportManager {
 			
 			// Generate work file
 			String name = fileNameOf(pd);
-			String filePath = dir.getAbsolutePath() + "/" + assignmentOptions.getAssignmentName() + "/" + name + "/" + name + "- work" +  ".rtf";
+			String filePath = dir.getAbsolutePath() + "/" + folderName + "/" + name + ".rtf";
 			File rtfFile = new File(filePath);
 			
 			// Write file
@@ -139,22 +146,17 @@ public class ExportManager {
 				outputStream.close();
 			} catch (Exception e) {
 				Debug.error("Could not generate rtf file.");
+				e.printStackTrace();
 			}
 		}
-		
-//		zipFiles(rtfFiles);
 	}
 	
 	private String fileNameOf(ParticipantData pd) {
 		return pd.getStudentID() + '-' + pd.getName();
 	}
 	
-	private void zipFiles(File dir) {
-		
-	}
-	
-	
 	public File getDirectory() {
 		return dir;
 	}
 }
+

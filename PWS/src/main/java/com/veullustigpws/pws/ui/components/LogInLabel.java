@@ -5,16 +5,16 @@ import javax.swing.JLabel;
 import com.veullustigpws.pws.app.ColorPalet;
 import com.veullustigpws.pws.resources.fonts.AppFonts;
 
-public class WhiteLabel extends JLabel {
+public class LogInLabel extends JLabel {
 	private static final long serialVersionUID = -3380327339957541541L;
 
-	public WhiteLabel(String name) {
+	public LogInLabel(String name) {
 		super(name);
 		
 		this.setFont(AppFonts.DefaultFont);
-		this.setForeground(ColorPalet.WhiteText);
+		this.setForeground(ColorPalet.LogInText);
 	}
-	public WhiteLabel(String name, boolean bigText) {
+	public LogInLabel(String name, boolean bigText) {
 		super(name);
 		
 		if (bigText) {
@@ -23,13 +23,13 @@ public class WhiteLabel extends JLabel {
 			this.setFont(AppFonts.DefaultFont);
 		}
 		
-		this.setForeground(ColorPalet.WhiteText);
+		this.setForeground(ColorPalet.LogInText);
 	}
-	public WhiteLabel(String name, float textSize) {
+	public LogInLabel(String name, float textSize) {
 		super(name);
 		
 		this.setFont(AppFonts.DefaultFont.deriveFont(Font.BOLD, textSize));
-		this.setForeground(ColorPalet.WhiteText);
+		this.setForeground(ColorPalet.LogInText);
 	}
 
 }

@@ -13,6 +13,8 @@ public class Protocol {
 	
 	// End of assignment
 	public static final String AssignmentEnded = "ea";
+	public static final String FinalWork = "fw";
+	public static final String ReceivedFinalWork = "rfw";
 	
 	public static final String SendPassword = "sp";
 	public static final String IncorrectPassword = "wp";

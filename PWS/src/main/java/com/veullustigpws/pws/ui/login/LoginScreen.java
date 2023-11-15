@@ -18,6 +18,7 @@ import com.veullustigpws.pws.connection.client.ParticipantConnectData;
 import com.veullustigpws.pws.exceptions.WrongConnectionDataException;
 import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
 import com.veullustigpws.pws.ui.components.CustomTextField;
+import com.veullustigpws.pws.ui.components.LogInLabel;
 import com.veullustigpws.pws.ui.components.RoundPanel;
 import com.veullustigpws.pws.ui.components.WhiteLabel;
 import com.veullustigpws.pws.utils.GUIUtils;
@@ -54,7 +55,7 @@ public class LoginScreen extends JPanel {
 
 	private void initComponents() {
 		
-		centerPnl = new RoundPanel(90, RoundPanel.ALL_CORNERS);
+		centerPnl = new RoundPanel(50, RoundPanel.ALL_CORNERS);
 		centerPnl.setBackground(ColorPalet.DarkBackgroundColor);
 		centerPnl.setLayout(new BorderLayout());
 		GUIUtils.setComponentSize(centerPnl, size);
@@ -120,7 +121,7 @@ public class LoginScreen extends JPanel {
 		leftPnl.add(Box.createVerticalGlue());
 		
 		// Name
-		JLabel nameLbl = new WhiteLabel("Naam");
+		JLabel nameLbl = new LogInLabel("Naam");
 		nameTF = new CustomTextField();
 		initTextField(nameTF);
 		leftPnl.add(nameLbl);
@@ -131,7 +132,7 @@ public class LoginScreen extends JPanel {
 		
 		
 		// Student number
-		JLabel studentNumberLbl = new WhiteLabel("Leerlingnummer");
+		JLabel studentNumberLbl = new LogInLabel("Leerlingnummer");
 		studentNumberTF = new CustomTextField();
 		initTextField(studentNumberTF);
 		leftPnl.add(studentNumberLbl);
@@ -141,7 +142,7 @@ public class LoginScreen extends JPanel {
 		addComponentPadding(leftPnl);
 		
 		// password 
-		JLabel passwordLbl = new WhiteLabel("Wachtwoord");
+		JLabel passwordLbl = new LogInLabel("Wachtwoord");
 		passwordTF = new CustomTextField();
 		initTextField(passwordTF);
 		leftPnl.add(passwordLbl);
@@ -161,7 +162,7 @@ public class LoginScreen extends JPanel {
 		rightPnl.add(Box.createVerticalGlue());
 		
 		// Code
-		JLabel codeLbl = new WhiteLabel("Code");
+		JLabel codeLbl = new LogInLabel("Code");
 		codeTF = new CustomTextField();
 		codeTF.addKeyListener(new TextFieldSizeLimiter(codeTF, 11));
 		codeTF.addKeyListener(new TextFieldIntegerInputFilter());
