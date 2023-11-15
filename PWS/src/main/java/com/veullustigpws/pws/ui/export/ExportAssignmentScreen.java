@@ -117,7 +117,7 @@ public class ExportAssignmentScreen extends JPanel {
 		downloadBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
 		
 		// Download button
-		JButton cancelBtn = new JButton("Verwijder");
+		JButton cancelBtn = new JButton("Annuleer");
 		cancelBtn.setUI(new ColoredButtonUI(ColorPalet.RedButton, cancelBtn));
 		GUIUtils.setComponentSize(cancelBtn, new Dimension(150, 50));
 		cancelBtn.setAlignmentY(Component.CENTER_ALIGNMENT);

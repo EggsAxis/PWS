@@ -14,4 +14,16 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>PWS/src/main/java/com/veullustigpws/pws/app/icons/On button.png</name>
+			<type>1</type>
+			<location>C:/Users/samue/OneDrive/Afbeeldingen/PWS/Settings tab/On button.png</location>
+		</link>
+		<link>
+			<name>PWS/src/main/java/com/veullustigpws/pws/app/icons/off button.png</name>
+			<type>1</type>
+			<location>C:/Users/samue/OneDrive/Afbeeldingen/PWS/Settings tab/off button.png</location>
+		</link>
+	</linkedResources>
 </projectDescription>
