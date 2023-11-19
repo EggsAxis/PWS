@@ -20,7 +20,6 @@ import com.veullustigpws.pws.ui.appearance.ColoredButtonUI;
 import com.veullustigpws.pws.ui.components.CustomTextField;
 import com.veullustigpws.pws.ui.components.LogInLabel;
 import com.veullustigpws.pws.ui.components.RoundPanel;
-import com.veullustigpws.pws.ui.components.WhiteLabel;
 import com.veullustigpws.pws.utils.GUIUtils;
 import com.veullustigpws.pws.utils.TextFieldIntegerInputFilter;
 import com.veullustigpws.pws.utils.TextFieldSizeLimiter;

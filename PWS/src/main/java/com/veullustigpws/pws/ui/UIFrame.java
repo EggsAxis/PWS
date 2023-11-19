@@ -33,9 +33,7 @@ public class UIFrame extends JFrame   {
 		this.setLayout(new BorderLayout());
 		this.addWindowListener(App.Manager);
 		
-		this.setTitle("PWS - Milan Veul & Samuel Lustig");
-		
-		
+		this.setTitle("PWS v1.0");
 		
 		initComponents();
 	}
